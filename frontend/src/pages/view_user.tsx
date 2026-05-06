@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../components/toast";
 import userService from "../services/user_service";
 import type { User } from "../types/user";
+import { ROLE_LABELS } from "../constants";
 
 const ViewUser = () => {
 	const { id } = useParams();
@@ -75,9 +76,6 @@ const InfoField = ({ label, value, className = "" }: { label: string; value?: st
 	</div>
 );
 
-const getRoleName = (roleId: number) => {
-	const roles: Record<number, string> = { 1: "Développeur", 2: "Gérant", 3: "Responsable", 4: "Serveur" };
-	return roles[roleId] || "Inconnu";
-};
+const getRoleName = (roleId: number) => ROLE_LABELS[roleId] || "Inconnu";
 
 export default ViewUser;

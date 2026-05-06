@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useCashRegister } from "../hooks/use_cash_register";
 import Filters from "../components/filters";
+import { formatTodayDate, DASHBOARD_RECENT_LIMIT } from "../constants";
 
 const Dashboard: React.FC = () => {
 	const {
@@ -14,9 +15,7 @@ const Dashboard: React.FC = () => {
 		refreshTransactions,
 	} = useCashRegister();
 
-	const [selectedDate, setSelectedDate] = useState<string>(
-		new Date().toISOString().split("T")[0],
-	);
+	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
 
 	const handleDateChange = async (date: string) => {
 		setSelectedDate(date);
@@ -98,7 +97,7 @@ const Dashboard: React.FC = () => {
 						<p className="text-gray-500">Aucune transaction</p>
 					) : (
 						<div className="space-y-2 max-h-64 overflow-y-auto">
-							{transactions.slice(0, 10).map((t) => (
+							{transactions.slice(0, DASHBOARD_RECENT_LIMIT).map((t) => (
 								<div key={t.id_transaction} className="flex justify-between items-center p-2 bg-gray-50 rounded">
 									<div className="text-sm">
 										<span className="font-medium">{new Date(t.created_at).toLocaleTimeString()}</span>

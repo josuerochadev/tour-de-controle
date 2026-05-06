@@ -3,11 +3,12 @@ import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/user_model";
 import { hashPassword } from "../utils/password_utils";
+import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 
 // GET /api/users
 export async function getAll(req: Request, res: Response) {
 	const page = Number(req.query.page) || 1;
-	const limit = Number(req.query.limit) || 50;
+	const limit = Number(req.query.limit) || DEFAULT_PAGE_LIMIT;
 	const result = await model.findAll(page, limit);
 	return res.json(result);
 }

@@ -70,24 +70,3 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 		</DialogContext.Provider>
 	);
 };
-
-// Compat layer for existing code that uses Dialog.show()
-const Dialog = {
-	_resolve: null as ((value: boolean) => void) | null,
-	_setDialog: null as ((state: DialogState | null) => void) | null,
-
-	show: (options: DialogOptions): Promise<boolean> => {
-		return new Promise((resolve) => {
-			const container = document.getElementById("dialog-root");
-			if (!container) {
-				resolve(false);
-				return;
-			}
-			container.dispatchEvent(
-				new CustomEvent("show-dialog", { detail: { ...options, resolve } }),
-			);
-		});
-	},
-};
-
-export default Dialog;

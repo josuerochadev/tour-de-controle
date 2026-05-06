@@ -1,4 +1,5 @@
 import pool from "../config/db";
+import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 
 export interface Transaction {
 	id_transaction: number;
@@ -72,7 +73,7 @@ export const findAll = async (
 	const total = Number(countResult.rows[0].count);
 
 	const page = query?.page ?? 1;
-	const limit = query?.limit ?? 50;
+	const limit = query?.limit ?? DEFAULT_PAGE_LIMIT;
 	const offset = (page - 1) * limit;
 
 	sql += ` ORDER BY created_at DESC`;

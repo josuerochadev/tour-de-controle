@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useCashRegister } from "../hooks/use_cash_register";
 import Filters from "../components/filters";
+import { formatTodayDate } from "../constants";
 
 const TransactionsPage = () => {
 	const { transactions, loading, error, refreshTransactions, getPaymentTypeName } =
 		useCashRegister();
 
-	const [selectedDate, setSelectedDate] = useState<string>(
-		new Date().toISOString().split("T")[0],
-	);
+	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
 
 	const handleDateChange = async (date: string) => {
 		setSelectedDate(date);

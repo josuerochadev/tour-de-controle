@@ -4,6 +4,7 @@ import CashRegisterService, {
 	type Transaction,
 	type Funds,
 } from "../services/cash_register_service";
+import { PAYMENT_TYPE_FALLBACK } from "../constants";
 
 export const useCashRegister = () => {
 	const [currentRegister, setCurrentRegister] = useState<CashRegister | null>(
@@ -24,7 +25,7 @@ export const useCashRegister = () => {
 			setPaymentTypes(map);
 		} catch {
 			// Fallback si l'endpoint n'existe pas encore
-			setPaymentTypes({ 1: "Espèces", 2: "CB", 3: "Ticket Restaurant", 4: "Chèque", 5: "Chèques Vacances", 6: "American Express" });
+			setPaymentTypes(PAYMENT_TYPE_FALLBACK);
 		}
 	};
 

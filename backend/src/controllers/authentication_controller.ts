@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/authentication_model";
 import { hashPassword } from "../utils/password_utils";
-import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/constants";
+import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE } from "../config/constants";
 import { blacklistToken } from "../utils/token_blacklist_utils";
 import { sendResetPasswordEmail } from "../config/mailer";
 
@@ -37,7 +37,7 @@ export async function login(req: Request, res: Response) {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === "production",
 				sameSite: "lax",
-				maxAge: 3600000,
+				maxAge: COOKIE_MAX_AGE,
 			})
 			.status(200)
 			.json({ message: "Connexion réussie" });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../components/toast";
 import userService from "../services/user_service";
+import { ROLES, ROLE_LABELS, formatDateToISO } from "../constants";
 
 interface UserFormData {
 	first_name: string;
@@ -25,7 +26,7 @@ const EditUser: React.FC = () => {
 		postal_address: "",
 		phone_number: "",
 		hire_date: "",
-		id_role: 4,
+		id_role: ROLES.SERVER,
 	});
 
 	useEffect(() => {
@@ -36,7 +37,7 @@ const EditUser: React.FC = () => {
 					...user,
 					postal_address: user.postal_address || "",
 					phone_number: user.phone_number || "",
-					hire_date: new Date(user.hire_date).toISOString().split("T")[0],
+					hire_date: formatDateToISO(user.hire_date),
 				});
 			} catch {
 				showToast("Utilisateur introuvable", "error");
@@ -93,10 +94,9 @@ const EditUser: React.FC = () => {
 						<label htmlFor="id_role" className="block text-sm font-medium mb-1">Rôle</label>
 						<select id="id_role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className="w-full p-2 border rounded-md" required>
 							<option value="">Sélectionner un rôle</option>
-							<option value="1">Développeur</option>
-							<option value="2">Gérant</option>
-							<option value="3">Responsable</option>
-							<option value="4">Serveur</option>
+							{Object.entries(ROLE_LABELS).map(([id, label]) => (
+								<option key={id} value={id}>{label}</option>
+							))}
 						</select>
 					</div>
 					<div className="flex justify-end space-x-4">

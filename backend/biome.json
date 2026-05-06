@@ -9,6 +9,24 @@
 		"indentWidth": 2
 	},
 	"linter": {
-		"rules": {}
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noExtraBooleanCast": "error",
+				"noUselessSwitchCase": "error"
+			},
+			"correctness": {
+				"noUnusedVariables": "warn",
+				"noUnusedImports": "warn"
+			},
+			"suspicious": {
+				"noExplicitAny": "warn",
+				"noDoubleEquals": "error"
+			},
+			"style": {
+				"useConst": "error",
+				"noVar": "error"
+			}
+		}
 	}
 }

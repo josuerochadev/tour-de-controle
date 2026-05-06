@@ -9,6 +9,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "../docs/swagger/swagger";
 import { errorHandler } from "./middlewares/error_middleware";
 import { apiLimiter } from "./middlewares/rate_limit_middleware";
+import { FRONTEND_URL } from "./config/constants";
 import logger from "./config/logger";
 
 dotenv.config({
@@ -27,7 +28,7 @@ const PORT = process.env.PORT || 4000;
 app.use(helmet());
 app.use(
 	cors({
-		origin: process.env.CLIENT_URL || "http://localhost:5173",
+		origin: process.env.CLIENT_URL || FRONTEND_URL,
 		methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 		allowedHeaders: ["Content-Type", "Authorization", "Cookie", "Set-Cookie"],
 		credentials: true,

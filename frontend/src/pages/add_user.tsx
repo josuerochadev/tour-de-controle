@@ -4,6 +4,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { z } from "zod";
 import { useToast } from "../components/toast";
 import userService from "../services/user_service";
+import { ROLES, ROLE_LABELS, formatTodayDate } from "../constants";
 
 const userSchema = z.object({
 	first_name: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
@@ -42,8 +43,6 @@ const AddUser: React.FC = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [loading, setLoading] = useState(false);
 
-	const today = new Date().toISOString().split("T")[0];
-
 	const [formData, setFormData] = useState<UserFormData>({
 		first_name: "",
 		last_name: "",
@@ -51,8 +50,8 @@ const AddUser: React.FC = () => {
 		password: "",
 		postal_address: "",
 		phone_number: "",
-		hire_date: today,
-		id_role: 4,
+		hire_date: formatTodayDate(),
+		id_role: ROLES.SERVER,
 	});
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -134,10 +133,9 @@ const AddUser: React.FC = () => {
 						<label htmlFor="role" className="block text-sm font-medium mb-1">Rôle *</label>
 						<select id="role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className="w-full p-2 border rounded-md" required>
 							<option value="">Sélectionner un rôle</option>
-							<option value="1">Développeur</option>
-							<option value="2">Gérant</option>
-							<option value="3">Responsable</option>
-							<option value="4">Serveur</option>
+							{Object.entries(ROLE_LABELS).map(([id, label]) => (
+								<option key={id} value={id}>{label}</option>
+							))}
 						</select>
 					</div>
 					<div className="flex justify-end space-x-4">

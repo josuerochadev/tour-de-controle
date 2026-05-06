@@ -1,5 +1,6 @@
 import pool from "../config/db";
 import { ApiError } from "../middlewares/error_middleware";
+import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 
 export interface User {
 	id_user: number;
@@ -16,7 +17,7 @@ export interface User {
 
 export const findAll = async (
 	page = 1,
-	limit = 50,
+	limit = DEFAULT_PAGE_LIMIT,
 ): Promise<{ data: User[]; total: number; page: number; limit: number }> => {
 	const countResult = await pool.query("SELECT COUNT(*) FROM users");
 	const total = Number(countResult.rows[0].count);

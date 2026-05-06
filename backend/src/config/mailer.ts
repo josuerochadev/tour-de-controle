@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import logger from "./logger";
+import { FRONTEND_URL } from "./constants";
 
 const transporter = nodemailer.createTransport({
 	host: process.env.SMTP_HOST || "smtp.ethereal.email",
@@ -12,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendResetPasswordEmail(email: string, token: string) {
-	const resetUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/reset-password?token=${token}`;
+	const resetUrl = `${FRONTEND_URL}/reset-password?token=${token}`;
 
 	try {
 		await transporter.sendMail({

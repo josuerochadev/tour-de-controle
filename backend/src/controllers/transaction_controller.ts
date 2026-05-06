@@ -2,11 +2,7 @@
 import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/transaction_model";
-import {
-	createSchema,
-	updateSchema,
-	filterSchema,
-} from "../schemas/transaction_schema";
+import { filterSchema } from "../schemas/transaction_schema";
 
 /**
  * Retrieves all transactions based on provided filters.
@@ -49,8 +45,7 @@ export async function getById(req: Request, res: Response) {
  * @returns The created transaction as a JSON response.
  */
 export async function create(req: Request, res: Response) {
-	const validatedData = createSchema.parse(req.body);
-	const newTransaction = await model.create(validatedData);
+	const newTransaction = await model.create(req.body);
 	return res.status(201).json(newTransaction);
 }
 
@@ -70,8 +65,7 @@ export async function updateById(req: Request, res: Response) {
 		throw new ApiError("Invalid ID", 400);
 	}
 
-	// Validate the provided fields
-	const validatedData = updateSchema.parse(req.body);
+	const validatedData = req.body;
 
 	// Retrieve the current transaction from the database
 	const currentTransaction = await model.findById(Number(id));
