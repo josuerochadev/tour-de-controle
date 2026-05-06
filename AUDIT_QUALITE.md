@@ -226,59 +226,69 @@ Patterns manquants : `.env.local`, `.env.*.local`, `*.log`, `coverage/`.
 
 ## Note globale
 
-### 4.5 / 10
+### Avant audit : 4.5 / 10 | Apres remediation : 7.5 / 10
 
-| Critère | Score |
-|---------|-------|
-| Architecture / Structure | 7/10 |
-| Lisibilité / Nommage | 7/10 |
-| KISS / SRP / SOLID | 5/10 |
-| Duplication (DRY) | 3/10 |
-| Code mort | 4/10 |
-| Tests frontend | 0/10 |
-| Tests backend | 5/10 |
-| Magic numbers | 3/10 |
-| Typage TypeScript | 7/10 |
-| Infra / Docker | 3/10 |
-| Sécurité (credentials) | 2/10 |
+| Critere | Avant | Apres |
+|---------|-------|-------|
+| Architecture / Structure | 7/10 | 8/10 |
+| Lisibilite / Nommage | 7/10 | 7/10 |
+| KISS / SRP / SOLID | 5/10 | 7/10 |
+| Duplication (DRY) | 3/10 | 7/10 |
+| Code mort | 4/10 | 8/10 |
+| Tests frontend | 0/10 | 0/10 |
+| Tests backend | 5/10 | 8/10 |
+| Magic numbers | 3/10 | 8/10 |
+| Typage TypeScript | 7/10 | 8/10 |
+| Infra / Docker | 3/10 | 8/10 |
+| Securite (credentials) | 2/10 | 7/10 |
 
-### Résumé
+### Resume
 
-L'architecture du projet (MVC backend, structure par domaine, middlewares) est saine et le code est globalement lisible. Cependant, l'absence totale de tests frontend, les credentials versionnés dans `sqitch.conf`, les Dockerfiles cassés/manquants, et la duplication massive (patterns SQL, validation d'ID, magic numbers dans 15+ endroits) représentent des risques critiques. Le projet a besoin d'un sprint de consolidation avant toute mise en production.
+Apres remediation (Phases 1-3), les problemes critiques ont ete corriges : credentials externalises, Dockerfiles fonctionnels, magic numbers centralises, duplication eliminee via middleware `validateIdParam`, 30 tests unitaires ajoutes. Le point faible restant est l'absence de tests frontend (Vitest a configurer).
 
 ---
 
 ## Plan de remédiation
 
-### Phase 1 — Critiques (Sprint immédiat)
+### Phase 1 — Critiques (FAIT)
 
-| ID | Action | Effort estimé |
-|----|--------|---------------|
-| C1 | Configurer Vitest + écrire tests pour `useCashRegister`, services, filtres | L |
-| C2 | Externaliser credentials de `sqitch.conf` via variables d'environnement | S |
-| C3 | Réécrire `backend/Dockerfile` avec npm au lieu de Yarn | S |
-| C4 | Créer `frontend/Dockerfile` (Vite + nginx) | S |
-| C5 | Supprimer les 8 `console.error()` ou les remplacer par un logger conditionnel | S |
-| C6 | Supprimer `SALT_ROUNDS` de `password_utils.ts`, importer depuis `constants.ts` | XS |
-| C7 | Supprimer les imports morts et la variable `hire_date` inutilisée | XS |
+| ID | Action | Statut |
+|----|--------|--------|
+| C1 | Configurer Vitest + tests frontend | A faire |
+| C2 | Externaliser credentials de `sqitch.conf` | FAIT |
+| C3 | Réécrire `backend/Dockerfile` avec npm | FAIT |
+| C4 | Créer `frontend/Dockerfile` (Vite + nginx) | FAIT |
+| C5 | Supprimer 8 `console.error()` et try/catch inutiles | FAIT |
+| C6 | Centraliser `SALT_ROUNDS` depuis `constants.ts` | FAIT |
+| C7 | Supprimer imports morts et variable `hire_date` | FAIT |
 
-### Phase 2 — Important (Sprint suivant)
+### Phase 2 — Important (FAIT)
 
-| ID | Action | Effort estimé |
-|----|--------|---------------|
-| I1 | Extraire magic numbers en `constants.ts` (backend) et `constants.ts` (frontend) | M |
-| I2-I4 | Créer helpers génériques : `findById()`, `handleError()`, middleware `validateIdParam` | M |
-| I5 | Créer `frontend/src/utils/date.ts` avec `formatTodayDate()` | XS |
-| I6 | Créer `types/jwt.ts`, `types/roles.ts`, `types/payment_types.ts` partagés | M |
-| I7 | Ajouter tests unitaires pour utils backend (password, token, schemas) | M |
-| I8 | Centraliser `FRONTEND_URL` en constante unique | XS |
-| I9-I10 | Nettoyer code mort dialog.tsx, imports React, package-lock.json | S |
-| I11-I12 | Activer `no-explicit-any` ESLint, configurer rules Biome | S |
+| ID | Action | Statut |
+|----|--------|--------|
+| I1 | Extraire magic numbers en constantes (backend + frontend) | FAIT |
+| I2-I4 | Middleware `validateIdParam`, suppression duplication ID validation | FAIT |
+| I5 | `formatTodayDate()` et `formatDateToISO()` dans `constants.ts` | FAIT |
+| I6 | Types centralisés : `ROLES`, `ROLE_LABELS`, `PAYMENT_TYPE_FALLBACK` | FAIT |
+| I7 | Tests unitaires : password, token, schemas, validateIdParam (30 tests) | FAIT |
+| I8 | `FRONTEND_URL` centralisé | FAIT |
+| I9-I10 | Code mort dialog.tsx, package-lock nettoyé | FAIT |
+| I11-I12 | ESLint `no-explicit-any`, Biome rules activées | FAIT |
 
-### Phase 3 — Mineurs (Backlog)
+### Phase 3 — Mineurs (FAIT)
 
-| ID | Action | Effort estimé |
-|----|--------|---------------|
-| M1-M7 | Renommage variables, accessibilité, useMemo, .gitignore, extraction composants | S chacun |
+| ID | Action | Statut |
+|----|--------|--------|
+| M3 | Accessibilité header : icônes dans `<button>` | FAIT |
+| M6 | `.gitignore` complété | FAIT |
+| I3 | Auth controller : try/catch manuels supprimés (express-async-errors) | FAIT |
 
-**Légende effort :** XS = <30min, S = 30min-1h, M = 1-3h, L = 3h+
+### Restant (Backlog)
+
+| ID | Action | Statut |
+|----|--------|--------|
+| C1 | Tests frontend (Vitest) | A faire |
+| M1 | Renommer variables courtes (`t` -> `transaction`) | A faire |
+| M2 | Harmoniser messages d'erreur FR/EN | A faire |
+| M5 | useMemo pour calculs répétés | A faire |
+| M7 | Extraire ProfileModal et InfoField en composants | A faire |
