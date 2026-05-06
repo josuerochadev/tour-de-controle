@@ -9,8 +9,8 @@ const Dashboard: React.FC = () => {
 		transactions,
 		loading,
 		error,
-		getTotalsByType,
-		getTheoreticalTotal,
+		totalsByType,
+		theoreticalTotal,
 		getPaymentTypeName,
 		refreshTransactions,
 	} = useCashRegister();
@@ -25,8 +25,7 @@ const Dashboard: React.FC = () => {
 	if (loading) return <div className="p-6">Chargement...</div>;
 	if (error) return <div className="p-6 text-red-500">{error}</div>;
 
-	const totals = getTotalsByType();
-	const theoreticalTotal = getTheoreticalTotal();
+	const totals = totalsByType;
 	const avgTransaction = transactions.length > 0
 		? (theoreticalTotal / transactions.length).toFixed(2)
 		: "0.00";
@@ -97,13 +96,13 @@ const Dashboard: React.FC = () => {
 						<p className="text-gray-500">Aucune transaction</p>
 					) : (
 						<div className="space-y-2 max-h-64 overflow-y-auto">
-							{transactions.slice(0, DASHBOARD_RECENT_LIMIT).map((t) => (
-								<div key={t.id_transaction} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+							{transactions.slice(0, DASHBOARD_RECENT_LIMIT).map((transaction) => (
+								<div key={transaction.id_transaction} className="flex justify-between items-center p-2 bg-gray-50 rounded">
 									<div className="text-sm">
-										<span className="font-medium">{new Date(t.created_at).toLocaleTimeString()}</span>
-										<span className="ml-3 text-gray-600">{getPaymentTypeName(t.id_payment_type)}</span>
+										<span className="font-medium">{new Date(transaction.created_at).toLocaleTimeString()}</span>
+										<span className="ml-3 text-gray-600">{getPaymentTypeName(transaction.id_payment_type)}</span>
 									</div>
-									<span className="font-bold">{t.amount.toFixed(2)} EUR</span>
+									<span className="font-bold">{transaction.amount.toFixed(2)} EUR</span>
 								</div>
 							))}
 						</div>

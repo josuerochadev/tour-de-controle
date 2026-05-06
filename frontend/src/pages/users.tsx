@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../components/dialog";
@@ -49,16 +49,16 @@ const UsersList: React.FC = () => {
 		}
 	};
 
-	const filteredUsers = users.filter((user) => {
+	const filteredUsers = useMemo(() => {
 		const searchTerm = search.toLowerCase();
-		return (
+		return users.filter((user) =>
 			user.first_name.toLowerCase().includes(searchTerm) ||
 			user.last_name.toLowerCase().includes(searchTerm) ||
 			user.email.toLowerCase().includes(searchTerm) ||
 			new Date(user.hire_date).toLocaleDateString().includes(searchTerm) ||
-			user.phone_number?.includes(searchTerm)
+			user.phone_number?.includes(searchTerm),
 		);
-	});
+	}, [users, search]);
 
 	if (loading) return <div className="p-6">Chargement...</div>;
 

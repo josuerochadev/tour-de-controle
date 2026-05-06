@@ -75,13 +75,13 @@ export async function getProfile(req: Request, res: Response) {
 	const userId = req.user?.userId; // Récupérer l'ID utilisateur depuis le token JWT
 
 	if (!userId) {
-		return res.status(400).json({ message: "Utilisateur non authentifié" });
+		throw new ApiError("Not authenticated", 400);
 	}
 
 	const user = await model.findById(userId);
 
 	if (!user) {
-		return res.status(404).json({ message: "Utilisateur non trouvé" });
+		throw new ApiError("User not found", 404);
 	}
 
 	return res.json({

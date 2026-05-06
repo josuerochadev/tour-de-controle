@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useCashRegister } from "../hooks/use_cash_register";
 import Filters from "../components/filters";
 import { formatTodayDate } from "../constants";
@@ -14,9 +14,10 @@ const TransactionsPage = () => {
 		await refreshTransactions(date);
 	};
 
-	const getTotalTransactions = () => {
-		return transactions.reduce((sum, t) => sum + t.amount, 0);
-	};
+	const totalTransactions = useMemo(
+		() => transactions.reduce((sum, transaction) => sum + transaction.amount, 0),
+		[transactions],
+	);
 
 	if (loading) return <div className="p-6">Chargement...</div>;
 	if (error) return <div className="p-6 text-red-500">{error}</div>;
@@ -48,7 +49,7 @@ const TransactionsPage = () => {
 						<div className="border-t pt-4 mt-4">
 							<div className="flex justify-between font-bold text-lg">
 								<span>Total des transactions:</span>
-								<span>{getTotalTransactions()} EUR</span>
+								<span>{totalTransactions} EUR</span>
 							</div>
 						</div>
 					</div>

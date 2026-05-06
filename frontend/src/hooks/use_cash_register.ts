@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import CashRegisterService, {
 	type CashRegister,
 	type Transaction,
@@ -19,8 +19,8 @@ export const useCashRegister = () => {
 		try {
 			const types = await CashRegisterService.getPaymentTypes();
 			const map: Record<number, string> = {};
-			for (const t of types) {
-				map[t.id_payment_type] = t.payment_type_name;
+			for (const paymentType of types) {
+				map[paymentType.id_payment_type] = paymentType.payment_type_name;
 			}
 			setPaymentTypes(map);
 		} catch {
@@ -56,10 +56,10 @@ export const useCashRegister = () => {
 			// L'API retourne { data, total, page, limit } ou un tableau directement
 			const raw = Array.isArray(result) ? result : result.data;
 			// PostgreSQL DECIMAL retourne des strings, on les convertit en numbers
-			const list = raw.map((t: Transaction) => ({
-				...t,
-				amount: Number(t.amount),
-				tip: t.tip ? Number(t.tip) : 0,
+			const list = raw.map((transaction: Transaction) => ({
+				...transaction,
+				amount: Number(transaction.amount),
+				tip: transaction.tip ? Number(transaction.tip) : 0,
 			}));
 			setTransactions(list);
 			return list;
@@ -110,26 +110,24 @@ export const useCashRegister = () => {
 		init();
 	}, []);
 
-	// Calculer les totaux par type de paiement
-	const getTotalsByType = () => {
+	const totalsByType = useMemo(() => {
 		return transactions.reduce(
 			(acc, transaction) => {
-				const paymentType = transaction.id_payment_type;
-				acc[paymentType] = (acc[paymentType] || 0) + transaction.amount;
+				const type = transaction.id_payment_type;
+				acc[type] = (acc[type] || 0) + transaction.amount;
 				return acc;
 			},
 			{} as Record<number, number>,
 		);
-	};
+	}, [transactions]);
 
-	// Calculer le total théorique
-	const getTheoreticalTotal = () => {
-		return transactions.reduce((sum, t) => sum + t.amount, 0);
-	};
+	const theoreticalTotal = useMemo(() => {
+		return transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+	}, [transactions]);
 
-	const getPaymentTypeName = (typeId: number) => {
+	const getPaymentTypeName = useCallback((typeId: number) => {
 		return paymentTypes[typeId] || `Type ${typeId}`;
-	};
+	}, [paymentTypes]);
 
 	return {
 		currentRegister,
@@ -138,8 +136,8 @@ export const useCashRegister = () => {
 		loading,
 		error,
 		getPaymentTypeName,
-		getTotalsByType,
-		getTheoreticalTotal,
+		totalsByType,
+		theoreticalTotal,
 		openRegister,
 		closeRegister,
 		refreshTransactions: fetchTransactions,

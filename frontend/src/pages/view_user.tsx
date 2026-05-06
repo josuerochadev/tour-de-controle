@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../components/toast";
+import InfoField from "../components/info_field";
 import userService from "../services/user_service";
 import type { User } from "../types/user";
 import { ROLE_LABELS } from "../constants";
@@ -25,6 +26,8 @@ const ViewUser = () => {
 	}, [id, navigate]);
 
 	if (!user) return null;
+
+	const getRoleName = (roleId: number) => ROLE_LABELS[roleId] || "Inconnu";
 
 	return (
 		<div className="min-h-screen flex flex-col p-4">
@@ -68,14 +71,5 @@ const ViewUser = () => {
 		</div>
 	);
 };
-
-const InfoField = ({ label, value, className = "" }: { label: string; value?: string | number; className?: string }) => (
-	<div className="flex border-b pb-2">
-		<span className="w-1/3 text-gray-600">{label}</span>
-		<span className={`w-2/3 ${className}`}>{value || "Non renseigné"}</span>
-	</div>
-);
-
-const getRoleName = (roleId: number) => ROLE_LABELS[roleId] || "Inconnu";
 
 export default ViewUser;
