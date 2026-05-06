@@ -30,7 +30,9 @@ export const useCashRegister = () => {
 
 	const fetchCurrentRegister = async () => {
 		try {
-			const register = await CashRegisterService.getCurrentRegister();
+			const result = await CashRegisterService.getCurrentRegister();
+			// L'API retourne un tableau de caisses ouvertes
+			const register = Array.isArray(result) ? result[0] || null : result;
 			setCurrentRegister(register);
 			return register;
 		} catch {
@@ -49,9 +51,11 @@ export const useCashRegister = () => {
 					}
 				: undefined;
 
-			const transactions = await CashRegisterService.getTransactions(query);
-			setTransactions(transactions);
-			return transactions;
+			const result = await CashRegisterService.getTransactions(query);
+			// L'API retourne { data, total, page, limit } ou un tableau directement
+			const list = Array.isArray(result) ? result : result.data;
+			setTransactions(list);
+			return list;
 		} catch {
 			setError("Erreur lors de la récupération des transactions");
 			return [];

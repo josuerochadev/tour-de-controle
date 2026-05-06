@@ -34,7 +34,7 @@ class CashRegisterService {
 
 	async getCurrentRegister() {
 		try {
-			const response = await axios.get<CashRegister>(
+			const response = await axios.get<CashRegister[]>(
 				`${CashRegisterService.BASE_URL}/cash-registers/current`,
 				{
 					withCredentials: true,
@@ -88,7 +88,7 @@ class CashRegisterService {
 		user_id?: number;
 	}) {
 		try {
-			const response = await axios.get<Transaction[]>(
+			const response = await axios.get(
 				`${CashRegisterService.BASE_URL}/transactions`,
 				{
 					withCredentials: true,
@@ -139,7 +139,7 @@ class CashRegisterService {
 
 	async updateTransaction(id: number, transaction: Partial<Transaction>) {
 		try {
-			const response = await axios.put<Transaction>(
+			const response = await axios.patch<Transaction>(
 				`${CashRegisterService.BASE_URL}/transactions/${id}`,
 				transaction,
 				{
