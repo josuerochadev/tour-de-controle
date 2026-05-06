@@ -3,7 +3,6 @@ import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/user_model";
 import { hashPassword } from "../utils/password_utils";
-import { createSchema, updateSchema } from "../schemas/user_schema";
 
 // GET /api/users
 export async function getAll(req: Request, res: Response) {
@@ -31,8 +30,7 @@ export async function getById(req: Request, res: Response) {
 
 // POST /api/users
 export async function create(req: Request, res: Response) {
-	// Validate input data using Zod
-	const validatedData = createSchema.parse(req.body);
+	const validatedData = req.body;
 	// Hash the password
 	const hashedPassword = await hashPassword(validatedData.password);
 	// Insert the new user
@@ -47,14 +45,12 @@ export async function create(req: Request, res: Response) {
 // PATCH /api/users/:id
 export async function update(req: Request, res: Response) {
 	const { id } = req.params;
-	const { hire_date } = req.body;
 
 	if (!id || Number.isNaN(Number(id))) {
 		throw new ApiError("Invalid user ID", 400);
 	}
 
-	// Validate the input data using Zod
-	const validatedData = updateSchema.parse(req.body);
+	const validatedData = req.body;
 
 	// Check if the user exists
 	const existingUser = await model.findById(Number(id));

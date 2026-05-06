@@ -1,7 +1,6 @@
 // backend/src/utils/password.utils.ts
 import bcrypt from 'bcryptjs';
-
-const SALT_ROUNDS = 12;
+import { SALT_ROUNDS } from '../config/constants';
 
 export const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, SALT_ROUNDS);

@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/cash_register_model";
-import { closeSchema } from "../schemas/cash_register_schema";
 
 export async function create(req: Request, res: Response) {
 	const userId = req.user?.userId;
@@ -14,7 +13,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function close(req: Request, res: Response) {
-	const validatedData = closeSchema.parse(req.body);
+	const validatedData = req.body;
 	const { id } = req.params;
 	const userId = req.user?.userId;
 

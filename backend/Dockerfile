@@ -1,14 +1,14 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 COPY . .
 
-RUN yarn build
+RUN npm run build
 
 EXPOSE 4000
 
-CMD ["yarn", "start"]
+CMD ["node", "dist/index.js"]
