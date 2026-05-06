@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "outDir": "./dist",
+      "rootDir": "./",
+      "typeRoots": ["./node_modules/@types"],
+      "sourceMap": true
+    },
+    "include": ["src/**/*.ts", "dist/src/test-email.js", "src/utils/mailer.ts"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+  }

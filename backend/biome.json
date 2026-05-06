@@ -1,0 +1,14 @@
+{
+	"$schema": "https://json.schemastore.org/schema-catalog.json",
+	"files": {
+		"ignore": ["dist/**", "node_modules/**"]
+	},
+	"formatter": {
+		"lineWidth": 80,
+		"indentStyle": "space",
+		"indentWidth": 2
+	},
+	"linter": {
+		"rules": {}
+	}
+}
