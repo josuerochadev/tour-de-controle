@@ -1,37 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import AuthenticationService from "../services/authentification_service";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Dialog from "../components/dialog";
-
-interface User {
-	id_user: number;
-	first_name: string;
-	last_name: string;
-	email: string;
-	phone_number: string;
-	hire_date: string;
-	is_active: boolean;
-	role_name: string;
-}
+import { useDialog } from "../components/dialog";
+import { useToast } from "../components/toast";
+import userService from "../services/user_service";
+import type { User } from "../types/user";
 
 const UsersList: React.FC = () => {
 	const navigate = useNavigate();
+	const { showDialog } = useDialog();
+	const { showToast } = useToast();
 	const [users, setUsers] = useState<User[]>([]);
 	const [search, setSearch] = useState("");
+	const [loading, setLoading] = useState(true);
 
 	const fetchUsers = async () => {
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_BASE_URL}/users`,
-				{
-					headers: AuthenticationService.getAuthHeader(),
-				},
-			);
-			setUsers(response.data);
-		} catch (error) {
-			console.error("Error fetching users:", error);
+			const result = await userService.getAll();
+			setUsers(result.data);
+		} catch {
+			showToast("Erreur lors du chargement des utilisateurs", "error");
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -40,30 +30,21 @@ const UsersList: React.FC = () => {
 	}, []);
 
 	const handleDelete = async (userId: number) => {
-		const result = await Dialog.show({
+		const confirmed = await showDialog({
 			title: "Confirmation",
 			message: "Voulez-vous vraiment supprimer cet utilisateur ?",
 			buttons: [
-				{
-					label: "Annuler",
-					className: "px-4 py-2 border rounded-md hover:bg-gray-100",
-				},
-				{
-					label: "Supprimer",
-					className:
-						"px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700",
-				},
+				{ label: "Annuler", className: "px-4 py-2 border rounded-md hover:bg-gray-100" },
+				{ label: "Supprimer", className: "px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700" },
 			],
 		});
-		if (result) {
+		if (confirmed) {
 			try {
-				await axios.delete(
-					`${import.meta.env.VITE_API_BASE_URL}/users/${userId}`,
-					{ headers: AuthenticationService.getAuthHeader() },
-				);
+				await userService.remove(userId);
+				showToast("Utilisateur supprimé", "success");
 				fetchUsers();
-			} catch (error) {
-				console.error("Error deleting user:", error);
+			} catch {
+				showToast("Erreur lors de la suppression", "error");
 			}
 		}
 	};
@@ -79,12 +60,12 @@ const UsersList: React.FC = () => {
 		);
 	});
 
+	if (loading) return <div className="p-6">Chargement...</div>;
+
 	return (
-		<div className="p-4 md:p-6 mb-16 ">
+		<div className="p-4 md:p-6 mb-16">
 			<div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-				<h1 className="text-xl md:text-2xl font-bold">
-					Liste des utilisateurs
-				</h1>
+				<h1 className="text-xl md:text-2xl font-bold">Liste des utilisateurs</h1>
 				<button
 					type="button"
 					aria-label="Ajouter un utilisateur"
@@ -109,12 +90,8 @@ const UsersList: React.FC = () => {
 						<tr className="bg-gray-50 border-b">
 							<th className="p-2 md:p-4 text-center">Nom</th>
 							<th className="p-2 md:p-4 text-center">Prénom</th>
-							<th className="p-2 md:p-4 text-center hidden md:table-cell">
-								Email
-							</th>
-							<th className="p-2 md:p-4 text-center hidden md:table-cell">
-								Date d'embauche
-							</th>
+							<th className="p-2 md:p-4 text-center hidden md:table-cell">Email</th>
+							<th className="p-2 md:p-4 text-center hidden md:table-cell">Date d'embauche</th>
 							<th className="p-2 md:p-4 text-center">Actions</th>
 						</tr>
 					</thead>
@@ -123,9 +100,7 @@ const UsersList: React.FC = () => {
 							<tr key={user.id_user} className="border-t hover:bg-gray-50">
 								<td className="p-2 md:p-4 text-center">{user.last_name}</td>
 								<td className="p-2 md:p-4 text-center">{user.first_name}</td>
-								<td className="hidden md:table-cell p-2 md:p-4 text-center">
-									{user.email}
-								</td>
+								<td className="hidden md:table-cell p-2 md:p-4 text-center">{user.email}</td>
 								<td className="hidden md:table-cell p-2 md:p-4 text-center">
 									{new Date(user.hire_date).toLocaleDateString()}
 								</td>
@@ -136,43 +111,15 @@ const UsersList: React.FC = () => {
 											{new Date(user.hire_date).toLocaleDateString()}
 										</div>
 									</div>
-
 									<div className="flex justify-center space-x-2">
-										<button
-											aria-label="Voir détails"
-											type="button"
-											onClick={() => navigate(`/users/view/${user.id_user}`)}
-											className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md"
-											title="Voir détails"
-										>
-											<FaEye
-												className="w-4 h-4 md:w-5 md:h-5"
-												aria-hidden="true"
-											/>
+										<button aria-label="Voir détails" type="button" onClick={() => navigate(`/users/view/${user.id_user}`)} className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md" title="Voir détails">
+											<FaEye className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
 										</button>
-										<button
-											aria-label="Modifier"
-											type="button"
-											onClick={() => navigate(`/users/edit/${user.id_user}`)}
-											className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md"
-											title="Modifier"
-										>
-											<FaEdit
-												className="w-4 h-4 md:w-5 md:h-5"
-												aria-hidden="true"
-											/>
+										<button aria-label="Modifier" type="button" onClick={() => navigate(`/users/edit/${user.id_user}`)} className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md" title="Modifier">
+											<FaEdit className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
 										</button>
-										<button
-											aria-label="Supprimer"
-											type="button"
-											onClick={() => handleDelete(user.id_user)}
-											className="p-1 md:p-2 text-red-600 hover:text-red-700 border border-red-600 rounded-md"
-											title="Supprimer"
-										>
-											<FaTrash
-												className="w-4 h-4 md:w-5 md:h-5"
-												aria-hidden="true"
-											/>
+										<button aria-label="Supprimer" type="button" onClick={() => handleDelete(user.id_user)} className="p-1 md:p-2 text-red-600 hover:text-red-700 border border-red-600 rounded-md" title="Supprimer">
+											<FaTrash className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
 										</button>
 									</div>
 								</td>

@@ -1,41 +1,53 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaEnvelope } from "react-icons/fa";
 import axios from "axios";
 
 const ForgotPasswordPage = () => {
-	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [responseMessage, setResponseMessage] = useState("");
+	const [submitted, setSubmitted] = useState(false);
+	const [error, setError] = useState("");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-		setResponseMessage("");
+		setError("");
 
 		try {
-			const response = await axios.post(
+			await axios.post(
 				`${import.meta.env.VITE_API_BASE_URL}/auth/forgot-password`,
 				{ email },
+				{ withCredentials: true },
 			);
-			console.log("Response:", response.data);
-			if (response.data) {
-				console.log("Redirecting to reset-password");
-				localStorage.setItem("resetEmail", email);
-				navigate("/reset-password");
-			}
-		} catch (error: unknown) {
-			if (axios.isAxiosError(error)) {
-				console.error("Error:", error.response?.data);
-			} else {
-				console.error("Unexpected error:", error);
-			}
-			setResponseMessage("Email non trouvé ou erreur serveur.");
+			setSubmitted(true);
+		} catch {
+			setError("Une erreur est survenue. Veuillez réessayer.");
 		} finally {
 			setLoading(false);
 		}
 	};
+
+	if (submitted) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+				<div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md text-center">
+					<img
+						src="/LogoLaTourDeControle.png"
+						alt="La Tour de Contrôle"
+						className="h-24 w-24 mb-4 mx-auto"
+					/>
+					<h1 className="text-2xl font-bold text-gray-900 mb-4">Email envoyé</h1>
+					<p className="text-gray-600 mb-6">
+						Si un compte existe avec l'adresse <strong>{email}</strong>, vous recevrez un lien de réinitialisation par email.
+					</p>
+					<Link to="/login" className="text-cyan-600 hover:text-cyan-500">
+						Retour à la connexion
+					</Link>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -66,15 +78,15 @@ const ForgotPasswordPage = () => {
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								required
-								className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm 
+								className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm
                            focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
 							/>
 						</div>
 					</div>
 
-					{responseMessage && (
+					{error && (
 						<div className="p-3 rounded-md bg-red-50">
-							<p className="text-red-800">{responseMessage}</p>
+							<p className="text-red-800">{error}</p>
 						</div>
 					)}
 
@@ -86,7 +98,7 @@ const ForgotPasswordPage = () => {
                        hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500
                        disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						{loading ? "Vérification..." : "Continuer"}
+						{loading ? "Envoi en cours..." : "Envoyer le lien"}
 					</button>
 				</form>
 

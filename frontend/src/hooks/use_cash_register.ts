@@ -10,8 +10,23 @@ export const useCashRegister = () => {
 		null,
 	);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
+	const [paymentTypes, setPaymentTypes] = useState<Record<number, string>>({});
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const fetchPaymentTypes = async () => {
+		try {
+			const types = await CashRegisterService.getPaymentTypes();
+			const map: Record<number, string> = {};
+			for (const t of types) {
+				map[t.id_payment_type] = t.payment_type_name;
+			}
+			setPaymentTypes(map);
+		} catch {
+			// Fallback si l'endpoint n'existe pas encore
+			setPaymentTypes({ 1: "Espèces", 2: "CB", 3: "Ticket Restaurant", 4: "Chèque", 5: "Chèques Vacances", 6: "American Express" });
+		}
+	};
 
 	const fetchCurrentRegister = async () => {
 		try {
@@ -76,6 +91,7 @@ export const useCashRegister = () => {
 	useEffect(() => {
 		const init = async () => {
 			setLoading(true);
+			await fetchPaymentTypes();
 			await fetchCurrentRegister();
 			await fetchTransactions();
 			setLoading(false);
@@ -100,11 +116,17 @@ export const useCashRegister = () => {
 		return transactions.reduce((sum, t) => sum + t.amount, 0);
 	};
 
+	const getPaymentTypeName = (typeId: number) => {
+		return paymentTypes[typeId] || `Type ${typeId}`;
+	};
+
 	return {
 		currentRegister,
 		transactions,
+		paymentTypes,
 		loading,
 		error,
+		getPaymentTypeName,
 		getTotalsByType,
 		getTheoreticalTotal,
 		openRegister,
