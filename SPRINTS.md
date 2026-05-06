@@ -55,17 +55,17 @@ Suivi des améliorations et corrections du projet.
 
 ---
 
-## Sprint 4 — Durcissement & infra (P2-P3)
+## Sprint 4 — Durcissement & infra (P2-P3) ✅
 
 > Sécurité, base de données, CI/CD, documentation.
 
 | # | Tâche | Statut |
 |---|-------|--------|
-| 4.1 | Ajouter les index manquants en BDD (FK : id_role, id_payment_type, created_by, etc.) | ⬜ Todo |
-| 4.2 | Créer `.dockerignore` | ⬜ Todo |
-| 4.3 | Créer `.env.example` (template sans secrets) | ⬜ Todo |
-| 4.4 | Externaliser les secrets du `docker-compose.yml` (utiliser `${VARIABLE}`) | ⬜ Todo |
-| 4.5 | Mettre en place une CI GitHub Actions (lint + type-check + tests) | ⬜ Todo |
-| 4.6 | Compléter la documentation Swagger des endpoints | ⬜ Todo |
-| 4.7 | Ajouter des constantes pour les rôles (DEVELOPER=1, MANAGER=2, etc.) | ⬜ Todo |
-| 4.8 | Mettre à jour le README avec les instructions actuelles | ⬜ Todo |
+| 4.1 | Migration Sqitch `add-indexes` : 10 index sur FK (users, transactions, cash_registers, action_logs) | ✅ Done |
+| 4.2 | `.dockerignore` créé (exclut .git, node_modules, .env, conception) | ✅ Done |
+| 4.3 | `.env.example` créé avec toutes les variables documentées | ✅ Done |
+| 4.4 | Secrets externalisés dans docker-compose (DATABASE_URL supprimé, tout via `${VAR}`) | ✅ Done |
+| 4.5 | CI GitHub Actions : backend (type-check + lint + tests) + frontend (type-check + lint + build) | ✅ Done |
+| 4.6 | Swagger mis à jour : schémas corrigés (User, Transaction, CashRegister, Login), auth cookieAuth | ✅ Done |
+| 4.7 | Constantes ROLES + ADMIN_ROLES dans `config/constants.ts`, utilisées dans toutes les routes | ✅ Done |
+| 4.8 | README réécrit : stack, fonctionnalités, démarrage rapide, Docker, tests | ✅ Done |

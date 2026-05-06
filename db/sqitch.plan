@@ -1,4 +1,5 @@
 %syntax-version=1.0.0
 %project=tour_de_controle
 
-create-tables 2025-01-21T12:14:05Z Clemencelb <clemencelb@clemencelb-Lenovo-YOGA-730-13IKB> # Création des tables de la base
+create-tables 2025-01-21T12:14:05Z josuerochadev <josue@tourdecontrole.dev> # Création des tables de la base
+add-indexes 2026-05-06T12:00:00Z josuerochadev <josue@tourdecontrole.dev> # Indexes sur les FK pour les performances

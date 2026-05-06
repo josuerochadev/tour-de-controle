@@ -1,0 +1,11 @@
+-- Indexes on foreign keys for query performance
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(id_role);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_transactions_payment_type ON transactions(id_payment_type);
+CREATE INDEX IF NOT EXISTS idx_transactions_cash_register ON transactions(id_cash_register);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_by ON transactions(created_by);
+CREATE INDEX IF NOT EXISTS idx_cash_registers_opened_by ON cash_registers(opened_by);
+CREATE INDEX IF NOT EXISTS idx_cash_registers_closed_by ON cash_registers(closed_by);
+CREATE INDEX IF NOT EXISTS idx_cash_registers_status ON cash_registers(status);
+CREATE INDEX IF NOT EXISTS idx_action_logs_user ON action_logs(id_user);
+CREATE INDEX IF NOT EXISTS idx_action_logs_type ON action_logs(action_type);

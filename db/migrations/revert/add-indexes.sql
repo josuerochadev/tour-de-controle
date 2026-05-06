@@ -1,0 +1,10 @@
+DROP INDEX IF EXISTS idx_users_role;
+DROP INDEX IF EXISTS idx_users_email;
+DROP INDEX IF EXISTS idx_transactions_payment_type;
+DROP INDEX IF EXISTS idx_transactions_cash_register;
+DROP INDEX IF EXISTS idx_transactions_created_by;
+DROP INDEX IF EXISTS idx_cash_registers_opened_by;
+DROP INDEX IF EXISTS idx_cash_registers_closed_by;
+DROP INDEX IF EXISTS idx_cash_registers_status;
+DROP INDEX IF EXISTS idx_action_logs_user;
+DROP INDEX IF EXISTS idx_action_logs_type;

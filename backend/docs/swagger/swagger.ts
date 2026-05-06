@@ -4,230 +4,125 @@ const options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "API Documentation",
+			title: "Tour de Contrôle API",
 			version: "1.0.0",
-			description:
-				"Documentation de l'API pour gérer les transactions, utilisateurs, caisses, et authentification.",
+			description: "API de gestion des caisses et du personnel pour la restauration.",
 		},
 		servers: [
-			{
-				url: "http://localhost:4000",
-				description: "Serveur de développement",
-			},
+			{ url: "http://localhost:4000", description: "Développement" },
 		],
 		components: {
 			securitySchemes: {
-				bearerAuth: {
-					type: "http",
-					scheme: "bearer",
-					bearerFormat: "JWT",
+				cookieAuth: {
+					type: "apiKey",
+					in: "cookie",
+					name: "authenticationToken",
 				},
 			},
 			schemas: {
-				// Schéma pour les utilisateurs
 				User: {
 					type: "object",
 					properties: {
-						id_user: {
-							type: "integer",
-							description: "ID unique de l'utilisateur",
-						},
-						name: {
-							type: "string",
-							description: "Nom de l'utilisateur",
-						},
-						email: {
-							type: "string",
-							description: "Adresse email de l'utilisateur",
-						},
-						role: {
-							type: "integer",
-							description: "Rôle de l'utilisateur",
-						},
-						created_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date de création de l'utilisateur",
-						},
-						updated_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date de mise à jour de l'utilisateur",
-						},
+						id_user: { type: "integer" },
+						first_name: { type: "string" },
+						last_name: { type: "string" },
+						email: { type: "string", format: "email" },
+						postal_address: { type: "string" },
+						phone_number: { type: "string" },
+						hire_date: { type: "string", format: "date" },
+						is_active: { type: "boolean" },
+						id_role: { type: "integer", description: "1=Développeur, 2=Gérant, 3=Responsable, 4=Serveur" },
 					},
 				},
 				UserCreate: {
 					type: "object",
-					required: ["name", "email", "password"],
+					required: ["first_name", "last_name", "email", "password", "hire_date", "id_role"],
 					properties: {
-						name: {
-							type: "string",
-							description: "Nom de l'utilisateur",
-						},
-						email: {
-							type: "string",
-							description: "Adresse email",
-						},
-						password: {
-							type: "string",
-							description: "Mot de passe",
-						},
+						first_name: { type: "string", minLength: 2 },
+						last_name: { type: "string", minLength: 2 },
+						email: { type: "string", format: "email" },
+						password: { type: "string", minLength: 8, description: "Min 8 chars, 1 majuscule, 1 chiffre" },
+						postal_address: { type: "string" },
+						phone_number: { type: "string", pattern: "^(\\+33|0)[1-9](\\d{2}){4}$" },
+						hire_date: { type: "string", format: "date" },
+						id_role: { type: "integer" },
 					},
 				},
-				UserUpdate: {
-					type: "object",
-					properties: {
-						name: {
-							type: "string",
-							description: "Nom mis à jour de l'utilisateur",
-						},
-						email: {
-							type: "string",
-							description: "Email mis à jour de l'utilisateur",
-						},
-					},
-				},
-
-				// Schéma pour les transactions
 				Transaction: {
 					type: "object",
 					properties: {
-						id_transaction: {
-							type: "integer",
-							description: "ID unique de la transaction",
-						},
-						amount: {
-							type: "number",
-							description: "Montant de la transaction",
-						},
-						tip: {
-							type: "number",
-							description: "Pourboire facultatif",
-						},
-						created_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date de création de la transaction",
-						},
-						updated_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date de mise à jour de la transaction",
-						},
-						id_payment_type: {
-							type: "integer",
-							description: "ID du type de paiement",
-						},
-						id_cash_register: {
-							type: "integer",
-							description: "ID de la caisse associée",
-						},
-						id_user: {
-							type: "integer",
-							description: "ID de l'utilisateur associé",
-						},
+						id_transaction: { type: "integer" },
+						amount: { type: "number", format: "decimal" },
+						tip: { type: "number", format: "decimal" },
+						created_at: { type: "string", format: "date-time" },
+						updated_at: { type: "string", format: "date-time" },
+						id_payment_type: { type: "integer" },
+						id_cash_register: { type: "integer" },
+						id_user: { type: "integer" },
 					},
 				},
 				TransactionCreate: {
 					type: "object",
-					required: [
-						"amount",
-						"id_payment_type",
-						"id_cash_register",
-						"id_user",
-					],
+					required: ["amount", "id_payment_type", "id_cash_register", "created_by"],
 					properties: {
-						amount: {
-							type: "number",
-							description: "Montant de la transaction",
-						},
-						tip: {
-							type: "number",
-							description: "Pourboire facultatif",
-						},
-						id_payment_type: {
-							type: "integer",
-							description: "ID du type de paiement",
-						},
-						id_cash_register: {
-							type: "integer",
-							description: "ID de la caisse associée",
-						},
-						id_user: {
-							type: "integer",
-							description: "ID de l'utilisateur associé",
-						},
+						amount: { type: "number", minimum: 0, exclusiveMinimum: true },
+						tip: { type: "number", minimum: 0 },
+						id_payment_type: { type: "integer" },
+						id_cash_register: { type: "integer" },
+						created_by: { type: "integer" },
 					},
 				},
-				TransactionUpdate: {
-					type: "object",
-					properties: {
-						amount: {
-							type: "number",
-							description: "Montant mis à jour de la transaction",
-						},
-						tip: {
-							type: "number",
-							description: "Pourboire mis à jour",
-						},
-					},
-				},
-
-				// Schéma pour les caisses (cash registers)
 				CashRegister: {
 					type: "object",
 					properties: {
-						id_cash_register: {
-							type: "integer",
-							description: "ID unique de la caisse",
-						},
-						opening_balance: {
-							type: "number",
-							description: "Solde initial de la caisse",
-						},
-						closing_balance: {
-							type: "number",
-							description: "Solde final de la caisse (si fermé)",
-						},
-						status: {
-							type: "string",
-							enum: ["open", "closed"],
-							description: "Statut de la caisse",
-						},
-						created_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date d'ouverture de la caisse",
-						},
-						updated_at: {
-							type: "string",
-							format: "date-time",
-							description: "Date de mise à jour de la caisse",
-						},
-					},
-				},
-				CashRegisterCreate: {
-					type: "object",
-					required: ["opening_balance"],
-					properties: {
-						opening_balance: {
-							type: "number",
-							description: "Solde initial de la caisse",
-						},
+						id_cash_register: { type: "integer" },
+						date_opened: { type: "string", format: "date-time" },
+						date_closed: { type: "string", format: "date-time", nullable: true },
+						has_gap: { type: "boolean" },
+						physical_amount: { type: "number", format: "decimal" },
+						theoretical_amount: { type: "number", format: "decimal" },
+						status: { type: "string", enum: ["OPEN", "CLOSED"] },
+						opened_by: { type: "integer" },
+						closed_by: { type: "integer", nullable: true },
 					},
 				},
 				CashRegisterClose: {
 					type: "object",
-					required: ["closing_balance"],
+					required: ["funds"],
 					properties: {
-						closing_balance: {
-							type: "number",
-							description: "Solde final de la caisse",
+						funds: {
+							type: "array",
+							items: {
+								type: "object",
+								required: ["id_payment_type", "physical_amount"],
+								properties: {
+									id_payment_type: { type: "integer" },
+									physical_amount: { type: "number" },
+								},
+							},
 						},
+					},
+				},
+				LoginRequest: {
+					type: "object",
+					required: ["email", "password"],
+					properties: {
+						email: { type: "string", format: "email" },
+						password: { type: "string", minLength: 8 },
+					},
+				},
+				PaginatedResponse: {
+					type: "object",
+					properties: {
+						data: { type: "array", items: {} },
+						total: { type: "integer" },
+						page: { type: "integer" },
+						limit: { type: "integer" },
 					},
 				},
 			},
 		},
+		security: [{ cookieAuth: [] }],
 	},
 	apis: ["./src/routes/*.ts"],
 };

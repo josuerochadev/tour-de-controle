@@ -1,131 +1,98 @@
-# Tour-De-Controle
+# Tour de Contrôle
 
 ![Logo Tour De Controle](./images/LogoLaTourDeControle.svg)
 
-**La Tour de Contrôle** est une application web offrant une solution complète pour le contrôle des caisses et la gestion du personnel dans le secteur de la restauration. Elle permet aux gérants de restaurants d'optimiser leurs opérations, de réduire les erreurs et d'améliorer leur efficacité. L'application est conçue pour être simple à utiliser, fiable et sécurisée.
+**La Tour de Contrôle** est une application web de contrôle des caisses et de gestion du personnel pour le secteur de la restauration. Elle permet aux gérants de restaurants d'optimiser leurs opérations quotidiennes.
 
----
+## Stack technique
+
+| Couche | Technologies |
+|--------|-------------|
+| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS |
+| **Backend** | Express.js, TypeScript, Zod, Winston, JWT |
+| **Base de données** | PostgreSQL 15, Sqitch (migrations) |
+| **Infrastructure** | Docker Compose, GitHub Actions CI |
+| **Tests** | Jest, Supertest (48 tests d'intégration) |
+
+## Fonctionnalités
+
+- **Authentification sécurisée** — JWT via cookies httpOnly, rate limiting, reset password par email
+- **Gestion des caisses** — Ouverture/fermeture avec détection des écarts
+- **Suivi des transactions** — Par type de paiement, avec filtres et pagination
+- **Gestion du personnel** — CRUD utilisateurs avec rôles (Développeur, Gérant, Responsable, Serveur)
+- **Dashboard** — KPIs en temps réel, répartition par moyen de paiement
 
 ## Structure du projet
 
 ```
-tour-de-controle
-│
-├── backend          # API et logique serveur
-├── conception       # Diagrammes UML, wireframes et documentation
-├── db               # Gestion de la base de données (Sqitch, scripts SQL)
-├── frontend         # Application frontend (React + Vite)
-├── images           # Ressources graphiques du projet
-├── .env             # Variables d'environnement (à configurer)
-├── .gitignore       # Fichiers à exclure de Git
-├── docker-compose.yml # Configuration Docker pour une exécution simplifiée
-└── README.md        # Documentation du projet
+tour-de-controle/
+├── backend/          # API Express.js (MVC)
+├── frontend/         # Application React + Vite
+├── db/               # Migrations Sqitch + seeders SQL
+├── conception/       # Diagrammes UML, wireframes, maquettes
+├── .github/          # CI GitHub Actions
+├── docker-compose.yml
+└── SPRINTS.md        # Suivi des sprints
 ```
 
----
+## Démarrage rapide
 
-## Prérequis
+### Prérequis
 
-Avant de commencer, assurez-vous que les outils suivants sont installés sur votre machine :
+- Node.js 20+
+- PostgreSQL 15+
+- Sqitch
 
-- [Node.js](https://nodejs.org/) (version 16+ recommandée)
-- [PostgreSQL](https://www.postgresql.org/) (version 14 ou supérieure)
-- [Sqitch](https://sqitch.org/) (pour la gestion des migrations)
-- [Git](https://git-scm.com/) (pour cloner le projet)
+### 1. Configuration
 
----
-
-## Installation
-
-### 1. Cloner le dépôt
-Clonez ce dépôt sur votre machine locale :
 ```bash
-git clone https://github.com/votre-compte/tour-de-controle.git
-cd tour-de-controle
+cp .env.example .env
+# Éditer .env avec vos valeurs
 ```
 
-### 2. Configurer les variables d'environnement
-Copiez le fichier `.env.example` fourni à la racine du projet et renommez-le en `.env`. Personnalisez les valeurs en fonction de votre environnement.
-```env
-# Variables pour PostgreSQL
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=admin123
-POSTGRES_DB=tour_de_controle
-DB_PORT=5432
-DATABASE_URL=postgresql://admin:admin123@localhost:5432/tour_de_controle
+### 2. Base de données
 
-# Variables pour le client
-CLIENT_URL=http://localhost:3000
-```
-
----
-
-### 3. Préparer la base de données
-
-#### Étape 1 : Créer le rôle utilisateur et la base
-Assurez-vous que PostgreSQL est installé et en cours d'exécution. Ensuite, créez le rôle et la base de données :
-```bash
-psql -U postgres -h localhost
-```
-Dans la console PostgreSQL, exécutez les commandes suivantes :
-```sql
-CREATE ROLE admin WITH LOGIN PASSWORD 'admin123';
-ALTER ROLE admin CREATEDB;
-CREATE DATABASE tour_de_controle OWNER admin;
-\q
-```
-
-#### Étape 2 : Appliquer les migrations
-Appliquez les migrations Sqitch pour créer les tables :
 ```bash
 cd db
 sqitch deploy
+psql -U $DB_USER -h localhost -d $DB_NAME -f seeders/sample_data.sql
 ```
 
-#### Étape 3 : Ajouter les données initiales
-Exécutez le script SQL de seeding pour insérer les données de base :
-```bash
-psql -U admin -h localhost -d tour_de_controle -f db/data/seeding.sql
-```
+### 3. Backend
 
----
-
-### 4. Installer et lancer le backend
-Dans le dossier `backend`, installez les dépendances et lancez le serveur :
 ```bash
 cd backend
 npm install
-npm run dev
+npm run dev        # http://localhost:4000
 ```
-Le backend sera accessible à l’adresse `http://localhost:4000`.
 
----
+### 4. Frontend
 
-### 5. Installer et lancer le frontend
-Dans le dossier `frontend`, installez les dépendances et démarrez le serveur de développement :
 ```bash
-cd ../frontend
+cd frontend
 npm install
-npm run dev
+npm run dev        # http://localhost:5173
 ```
-Le frontend sera accessible à l’adresse `http://localhost:3000`.
 
----
+### Alternative Docker
+
+```bash
+docker compose up -d
+```
+
+Services : Frontend (3000), Backend (4000), Swagger (8080), pgAdmin (8081)
 
 ## Tests
 
-Pour exécuter les tests du backend :
 ```bash
 cd backend
-npm run test
+npm test           # 48 tests d'intégration
 ```
 
----
+## API Documentation
 
-## Fonctionnalités principales
+Swagger UI disponible sur `http://localhost:8080` (Docker) ou `http://localhost:4000/api-docs` (local).
 
-- **Gestion des caisses** : Suivi précis des transactions et des montants collectés.
-- **Gestion du personnel** : Organisation des plannings, suivi des performances, etc.
-- **Rapports détaillés** : Génération de rapports pour une meilleure prise de décision.
+## Licence
 
----
+MIT

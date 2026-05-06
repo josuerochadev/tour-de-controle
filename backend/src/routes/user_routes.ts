@@ -16,29 +16,28 @@ import {
 
 import { validateBody } from "../middlewares/validate_middleware";
 import { createSchema, updateSchema } from "../schemas/user_schema";
+import { ADMIN_ROLES } from "../config/constants";
 
 const router = express.Router();
 
-const adminRole = [1, 2];
-
-router.get("/", authenticateJWT, authorizeRoles(adminRole), getAll);
-router.get("/:id", authenticateJWT, authorizeRoles(adminRole), getById);
+router.get("/", authenticateJWT, authorizeRoles(ADMIN_ROLES), getAll);
+router.get("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), getById);
 router.post(
 	"/",
 	authenticateJWT,
-	authorizeRoles(adminRole),
+	authorizeRoles(ADMIN_ROLES),
 	validateBody(createSchema),
 	create,
 );
 router.patch(
 	"/:id",
 	authenticateJWT,
-	authorizeRoles(adminRole),
+	authorizeRoles(ADMIN_ROLES),
 	validateBody(updateSchema),
 	update,
 );
 
-router.delete("/:id", authenticateJWT, authorizeRoles(adminRole), remove);
+router.delete("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), remove);
 router.get("/me", authenticateJWT, getProfile);
 
 export default router;

@@ -14,16 +14,16 @@ import {
 
 import { validateBody } from "../middlewares/validate_middleware";
 import { createSchema, closeSchema } from "../schemas/cash_register_schema";
+import { ADMIN_ROLES } from "../config/constants";
 
 const router = express.Router();
-const adminRole = [1, 2];
 
-router.get("/current", authenticateJWT, authorizeRoles(adminRole), current);
+router.get("/current", authenticateJWT, authorizeRoles(ADMIN_ROLES), current);
 
 router.put(
 	"/:id/close",
 	authenticateJWT,
-	authorizeRoles(adminRole),
+	authorizeRoles(ADMIN_ROLES),
 	validateBody(closeSchema),
 	close,
 );
@@ -31,7 +31,7 @@ router.put(
 router.post(
 	"/",
 	authenticateJWT,
-	authorizeRoles(adminRole),
+	authorizeRoles(ADMIN_ROLES),
 	validateBody(createSchema),
 	create,
 );

@@ -42,7 +42,7 @@ export const authenticateJWT = async (
 };
 
 export const authorizeRoles =
-	(roles: number[]) => (req: Request, res: Response, next: NextFunction) => {
+	(roles: readonly number[]) => (req: Request, res: Response, next: NextFunction) => {
 		if (!req.user || !roles.includes(req.user.role)) {
 			return res
 				.status(403)
