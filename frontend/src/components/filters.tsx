@@ -21,20 +21,13 @@ const Filters: React.FC<FiltersProps> = ({ onDateChange }) => {
 					return;
 				}
 				setIsAdmin(user.role === 1 || user.role === 2);
-
-				if (!(user.role === 1 || user.role === 2)) {
-					const today = new Date().toISOString().split("T")[0];
-					setSelectedDate(today);
-					onDateChange(today);
-				}
-			} catch (error) {
+			} catch {
 				setError("Error checking user role");
-				console.error("Error:", error);
 			}
 		};
 
 		checkUserRole();
-	}, [onDateChange]);
+	}, []);
 
 	const handleDateChange = (date: string) => {
 		setSelectedDate(date);

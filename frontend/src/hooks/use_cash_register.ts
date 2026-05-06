@@ -53,7 +53,13 @@ export const useCashRegister = () => {
 
 			const result = await CashRegisterService.getTransactions(query);
 			// L'API retourne { data, total, page, limit } ou un tableau directement
-			const list = Array.isArray(result) ? result : result.data;
+			const raw = Array.isArray(result) ? result : result.data;
+			// PostgreSQL DECIMAL retourne des strings, on les convertit en numbers
+			const list = raw.map((t: Transaction) => ({
+				...t,
+				amount: Number(t.amount),
+				tip: t.tip ? Number(t.tip) : 0,
+			}));
 			setTransactions(list);
 			return list;
 		} catch {
