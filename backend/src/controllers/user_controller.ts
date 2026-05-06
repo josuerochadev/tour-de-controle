@@ -7,8 +7,10 @@ import { createSchema, updateSchema } from "../schemas/user_schema";
 
 // GET /api/users
 export async function getAll(req: Request, res: Response) {
-	const users = await model.findAll();
-	return res.json(users);
+	const page = Number(req.query.page) || 1;
+	const limit = Number(req.query.limit) || 50;
+	const result = await model.findAll(page, limit);
+	return res.json(result);
 }
 
 // GET /api/users/:id

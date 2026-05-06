@@ -28,7 +28,7 @@ router.post(
 	create,
 );
 
-router.put(
+router.patch(
 	"/:id",
 	authenticateJWT,
 	authorizeRoles(adminRole),

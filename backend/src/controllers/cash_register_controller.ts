@@ -1,42 +1,42 @@
-// controllers/cash-register.controller.ts
 import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/cash_register_model";
-import { createSchema, closeSchema } from "../schemas/cash_register_schema";
-
-interface AuthUser {
-	userId: number;
-	role: number;
-}
+import { closeSchema } from "../schemas/cash_register_schema";
 
 export async function create(req: Request, res: Response) {
-	const user = req.user as AuthUser | undefined;
-
-	if (!user?.userId) {
+	const userId = req.user?.userId;
+	if (!userId) {
 		throw new ApiError("User not authenticated", 401);
 	}
 
-	const newRegister = await model.create(user.userId);
+	const newRegister = await model.create(userId);
 	return res.status(201).json(newRegister);
 }
 
 export async function close(req: Request, res: Response) {
 	const validatedData = closeSchema.parse(req.body);
 	const { id } = req.params;
+	const userId = req.user?.userId;
 
-	try {
-		await model.close(Number(id), validatedData);
-	} catch (error) {
-		const err = error as Error;
-
-		if (err.message === "Invalid funds") {
-			throw new ApiError("Invalid funds", 400);
-		}
-
-		throw error;
+	if (!userId) {
+		throw new ApiError("User not authenticated", 401);
 	}
 
-	return res.sendStatus(204);
+	const { cashRegister, hasGap } = await model.close(Number(id), validatedData, userId);
+
+	if (hasGap) {
+		return res.status(200).json({
+			message: "Caisse fermée avec un écart détecté",
+			cashRegister,
+			hasGap: true,
+		});
+	}
+
+	return res.status(200).json({
+		message: "Caisse fermée avec succès",
+		cashRegister,
+		hasGap: false,
+	});
 }
 
 export async function current(req: Request, res: Response) {

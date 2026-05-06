@@ -1,4 +1,3 @@
-// models/transaction.model.ts
 import pool from "../config/db";
 
 export interface Transaction {
@@ -19,48 +18,71 @@ export interface TransactionQuery {
 	amount_min?: number;
 	amount_max?: number;
 	user_id?: number;
+	page?: number;
+	limit?: number;
 }
 
 export const findAll = async (
 	query?: TransactionQuery,
-): Promise<Transaction[]> => {
+): Promise<{ data: Transaction[]; total: number; page: number; limit: number }> => {
+	let countSql = "SELECT COUNT(*) FROM transactions WHERE 1 = 1";
 	let sql = "SELECT * FROM transactions WHERE 1 = 1";
-	const params = [];
+	const params: unknown[] = [];
 
 	if (query) {
 		if (query.date_from) {
 			params.push(query.date_from);
-			sql += ` AND created_at >= $${params.length}`;
+			const clause = ` AND created_at >= $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
-
 		if (query.date_to) {
 			params.push(query.date_to);
-			sql += ` AND created_at <= $${params.length}`;
+			const clause = ` AND created_at <= $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
-
 		if (query.payment_type) {
 			params.push(query.payment_type);
-			sql += ` AND id_payment_type = $${params.length}`;
+			const clause = ` AND id_payment_type = $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
-
 		if (query.amount_min) {
 			params.push(query.amount_min);
-			sql += ` AND amount >= $${params.length}`;
+			const clause = ` AND amount >= $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
-
 		if (query.amount_max) {
 			params.push(query.amount_max);
-			sql += ` AND amount <= $${params.length}`;
+			const clause = ` AND amount <= $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
-
 		if (query.user_id) {
 			params.push(query.user_id);
-			sql += ` AND id_user = $${params.length}`;
+			const clause = ` AND id_user = $${params.length}`;
+			sql += clause;
+			countSql += clause;
 		}
 	}
 
+	const countResult = await pool.query(countSql, params);
+	const total = Number(countResult.rows[0].count);
+
+	const page = query?.page ?? 1;
+	const limit = query?.limit ?? 50;
+	const offset = (page - 1) * limit;
+
+	sql += ` ORDER BY created_at DESC`;
+	params.push(limit);
+	sql += ` LIMIT $${params.length}`;
+	params.push(offset);
+	sql += ` OFFSET $${params.length}`;
+
 	const result = await pool.query(sql, params);
-	return result.rows;
+	return { data: result.rows, total, page, limit };
 };
 
 export const findById = async (id: number): Promise<Transaction | null> => {
@@ -68,7 +90,6 @@ export const findById = async (id: number): Promise<Transaction | null> => {
 		"SELECT * FROM transactions WHERE id_transaction = $1",
 		[id],
 	);
-
 	return result.rows[0] || null;
 };
 
@@ -114,7 +135,6 @@ export const update = async (
 			id,
 		],
 	);
-
 	return result.rows[0];
 };
 

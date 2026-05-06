@@ -1,4 +1,3 @@
-// backend/src/models/user.model.ts
 import pool from "../config/db";
 import { ApiError } from "../middlewares/error_middleware";
 
@@ -15,9 +14,20 @@ export interface User {
 	id_role: number;
 }
 
-export const findAll = async (): Promise<User[]> => {
-	const result = await pool.query("SELECT * FROM users");
-	return result.rows;
+export const findAll = async (
+	page = 1,
+	limit = 50,
+): Promise<{ data: User[]; total: number; page: number; limit: number }> => {
+	const countResult = await pool.query("SELECT COUNT(*) FROM users");
+	const total = Number(countResult.rows[0].count);
+
+	const offset = (page - 1) * limit;
+	const result = await pool.query(
+		"SELECT * FROM users ORDER BY id_user ASC LIMIT $1 OFFSET $2",
+		[limit, offset],
+	);
+
+	return { data: result.rows, total, page, limit };
 };
 
 export const findById = async (id: number): Promise<User | null> => {

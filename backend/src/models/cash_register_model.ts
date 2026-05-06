@@ -1,4 +1,3 @@
-// models/cash-register.model.ts
 import pool from "../config/db";
 
 export interface CashRegister {
@@ -21,13 +20,12 @@ export interface CashRegisterClose {
 }
 
 export const create = async (opened_by: number): Promise<CashRegister> => {
-	// On commence toujours avec un montant de 0 pour une nouvelle caisse
 	const initialAmount = 0;
 
 	const result = await pool.query(
-		`INSERT INTO cash_registers 
-     (date_opened, physical_amount, theoretical_amount, status, opened_by) 
-     VALUES ($1, $2, $3, $4, $5) 
+		`INSERT INTO cash_registers
+     (date_opened, physical_amount, theoretical_amount, status, opened_by)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
 		[new Date(), initialAmount, initialAmount, "OPEN", opened_by],
 	);
@@ -35,14 +33,18 @@ export const create = async (opened_by: number): Promise<CashRegister> => {
 	return result.rows[0];
 };
 
-export const close = async (id: number, obj: CashRegisterClose) => {
+export const close = async (
+	id: number,
+	obj: CashRegisterClose,
+	closedBy: number,
+): Promise<{ cashRegister: CashRegister; hasGap: boolean }> => {
 	const transactions = await pool.query(
 		"SELECT * FROM transactions WHERE id_cash_register = $1",
 		[id],
 	);
 
 	const theoreticalAmount = transactions.rows.reduce((acc, cur) => {
-		return acc + cur.amount;
+		return acc + Number(cur.amount);
 	}, 0);
 
 	const physicalAmount = obj.funds.reduce((acc, cur) => {
@@ -51,21 +53,20 @@ export const close = async (id: number, obj: CashRegisterClose) => {
 
 	const hasGap = theoreticalAmount !== physicalAmount;
 
-	await pool.query(
+	const result = await pool.query(
 		`UPDATE cash_registers SET
       date_closed = $1,
       has_gap = $2,
       physical_amount = $3,
       theoretical_amount = $4,
-      status = $5
-     WHERE id_cash_register = $6
+      status = $5,
+      closed_by = $6
+     WHERE id_cash_register = $7
      RETURNING *`,
-		[new Date(), hasGap, physicalAmount, theoreticalAmount, "CLOSED", id],
+		[new Date(), hasGap, physicalAmount, theoreticalAmount, "CLOSED", closedBy, id],
 	);
 
-	if (hasGap) {
-		throw new Error("Invalid funds");
-	}
+	return { cashRegister: result.rows[0], hasGap };
 };
 
 export const current = async (): Promise<CashRegister[]> => {

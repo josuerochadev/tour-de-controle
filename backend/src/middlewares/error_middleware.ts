@@ -1,5 +1,5 @@
-// backend/src/middlewares/error.middleware.ts
 import type { Request, Response, NextFunction } from "express";
+import logger from "../config/logger";
 
 export class ApiError extends Error {
 	public statusCode: number;
@@ -27,7 +27,7 @@ export function errorHandler(
 		});
 	}
 
-	console.error("Unexpected error:", err);
+	logger.error("Unexpected error", { error: err, path: req.path, method: req.method });
 	return res.status(500).json({
 		error: "Internal Server Error",
 		statusCode: 500,

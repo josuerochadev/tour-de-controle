@@ -28,5 +28,7 @@ export const filterSchema = z.object({
   payment_type: z.string().optional().transform(val => val ? Number(val) : undefined),
   amount_min: z.string().optional().transform(val => val ? Number(val) : undefined),
   amount_max: z.string().optional().transform(val => val ? Number(val) : undefined),
-  user_id: z.string().optional().transform(val => val ? Number(val) : undefined)
+  user_id: z.string().optional().transform(val => val ? Number(val) : undefined),
+  page: z.string().optional().transform(val => val ? Number(val) : undefined),
+  limit: z.string().optional().transform(val => val ? Number(val) : undefined),
 });
