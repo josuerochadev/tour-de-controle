@@ -17,8 +17,8 @@ import {
  */
 export async function getAll(req: Request, res: Response) {
 	const filters = filterSchema.parse(req.query);
-	const transactions = await model.findAll(filters);
-	return res.json(transactions);
+	const result = await model.findAll(filters);
+	return res.json(result);
 }
 
 /**

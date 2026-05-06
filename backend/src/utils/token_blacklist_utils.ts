@@ -1,4 +1,5 @@
 import Redis from "ioredis";
+import logger from "../config/logger";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
@@ -18,7 +19,7 @@ redis
 		redisAvailable = true;
 	})
 	.catch(() => {
-		console.warn("Redis unavailable, using in-memory token blacklist (not suitable for production)");
+		logger.warn("Redis unavailable, using in-memory token blacklist");
 	});
 
 export async function blacklistToken(token: string, expiresInSeconds = 3600) {

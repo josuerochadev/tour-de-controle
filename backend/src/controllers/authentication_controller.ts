@@ -6,6 +6,7 @@ import * as model from "../models/authentication_model";
 import { hashPassword } from "../utils/password_utils";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/constants";
 import { blacklistToken } from "../utils/token_blacklist_utils";
+import { sendResetPasswordEmail } from "../config/mailer";
 
 export async function login(req: Request, res: Response) {
 	try {
@@ -99,12 +100,7 @@ export async function forgotPassword(req: Request, res: Response) {
 
 		const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
 		await model.saveResetToken(email, resetToken);
-
-		// TODO: Envoyer l'email avec nodemailer
-		// En attendant, on retourne le token (dev uniquement)
-		if (process.env.NODE_ENV !== "production") {
-			return res.json({ message: "Token de réinitialisation généré.", token: resetToken });
-		}
+		await sendResetPasswordEmail(email, resetToken);
 
 		return res.json({ message: "Si cet email existe, un lien de réinitialisation a été envoyé." });
 	} catch (error) {
