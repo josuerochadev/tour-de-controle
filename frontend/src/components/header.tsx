@@ -63,9 +63,15 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 					<span className="hidden md:inline text-lg font-medium">
 						Bonjour, {user ? `${user.first_name} ${user.last_name}` : ""}
 					</span>
-					<FaQuestionCircle className="text-2xl cursor-pointer hover:text-gray-200" title="Aide" aria-label="Aide" />
-					<FaUserCircle className="text-2xl cursor-pointer hover:text-gray-200" onClick={() => setIsProfileOpen(!isProfileOpen)} title="Profil" aria-label="Mon profil" />
-					<FaSignOutAlt className="text-2xl cursor-pointer hover:text-gray-200" onClick={onLogout} title="Déconnexion" aria-label="Se déconnecter" />
+					<button type="button" aria-label="Aide" title="Aide" className="text-2xl cursor-pointer hover:text-gray-200 bg-transparent border-none text-white">
+						<FaQuestionCircle aria-hidden="true" />
+					</button>
+					<button type="button" aria-label="Mon profil" title="Profil" onClick={() => setIsProfileOpen(!isProfileOpen)} className="text-2xl cursor-pointer hover:text-gray-200 bg-transparent border-none text-white">
+						<FaUserCircle aria-hidden="true" />
+					</button>
+					<button type="button" aria-label="Se déconnecter" title="Déconnexion" onClick={onLogout} className="text-2xl cursor-pointer hover:text-gray-200 bg-transparent border-none text-white">
+						<FaSignOutAlt aria-hidden="true" />
+					</button>
 				</div>
 			</header>
 			<ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} user={user} />

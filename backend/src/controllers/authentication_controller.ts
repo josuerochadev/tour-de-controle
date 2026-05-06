@@ -1,52 +1,44 @@
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import { comparePassword, hashPassword } from "../utils/password_utils";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/authentication_model";
-import { hashPassword } from "../utils/password_utils";
 import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE } from "../config/constants";
 import { blacklistToken } from "../utils/token_blacklist_utils";
 import { sendResetPasswordEmail } from "../config/mailer";
 
 export async function login(req: Request, res: Response) {
-	try {
-		const { email, password } = req.body;
+	const { email, password } = req.body;
 
-		if (!email || !password) {
-			throw new ApiError("Email and password are required", 400);
-		}
-
-		const user = await model.findByEmail(email);
-		if (!user) {
-			throw new ApiError("Invalid email or password", 401);
-		}
-
-		const isValidPassword = await bcrypt.compare(password, user.password);
-		if (!isValidPassword) {
-			throw new ApiError("Invalid email or password", 401);
-		}
-
-		const token = jwt.sign(
-			{ userId: user.id_user, role: user.id_role },
-			JWT_SECRET,
-			{ expiresIn: JWT_EXPIRES_IN },
-		);
-
-		return res
-			.cookie("authenticationToken", token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "lax",
-				maxAge: COOKIE_MAX_AGE,
-			})
-			.status(200)
-			.json({ message: "Connexion réussie" });
-	} catch (error) {
-		if (error instanceof ApiError) {
-			return res.status(error.statusCode).json({ message: error.message });
-		}
-		return res.status(500).json({ message: "Internal Server Error" });
+	if (!email || !password) {
+		throw new ApiError("Email and password are required", 400);
 	}
+
+	const user = await model.findByEmail(email);
+	if (!user) {
+		throw new ApiError("Invalid email or password", 401);
+	}
+
+	const isValidPassword = await comparePassword(password, user.password);
+	if (!isValidPassword) {
+		throw new ApiError("Invalid email or password", 401);
+	}
+
+	const token = jwt.sign(
+		{ userId: user.id_user, role: user.id_role },
+		JWT_SECRET,
+		{ expiresIn: JWT_EXPIRES_IN },
+	);
+
+	return res
+		.cookie("authenticationToken", token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax",
+			maxAge: COOKIE_MAX_AGE,
+		})
+		.status(200)
+		.json({ message: "Connexion réussie" });
 }
 
 export async function getMe(req: Request, res: Response) {
@@ -76,66 +68,52 @@ export async function getMe(req: Request, res: Response) {
 }
 
 export async function logout(req: Request, res: Response) {
-	try {
-		const token = req.cookies.authenticationToken;
-		if (token) {
-			await blacklistToken(token);
-		}
-		res.clearCookie("authenticationToken");
-		return res.status(200).json({ message: "Déconnexion réussie" });
-	} catch (error) {
-		return res.status(500).json({ message: "Erreur serveur" });
+	const token = req.cookies.authenticationToken;
+	if (token) {
+		await blacklistToken(token);
 	}
+	res.clearCookie("authenticationToken");
+	return res.status(200).json({ message: "Déconnexion réussie" });
 }
 
 export async function forgotPassword(req: Request, res: Response) {
 	const { email } = req.body;
+	const genericMessage = "Si cet email existe, un lien de réinitialisation a été envoyé.";
 
-	try {
-		const user = await model.findByEmail(email);
-		if (!user) {
-			// Réponse générique pour ne pas révéler si l'email existe
-			return res.json({ message: "Si cet email existe, un lien de réinitialisation a été envoyé." });
-		}
-
-		const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
-		await model.saveResetToken(email, resetToken);
-		await sendResetPasswordEmail(email, resetToken);
-
-		return res.json({ message: "Si cet email existe, un lien de réinitialisation a été envoyé." });
-	} catch (error) {
-		return res.status(500).json({ message: "Erreur serveur" });
+	const user = await model.findByEmail(email);
+	if (!user) {
+		return res.json({ message: genericMessage });
 	}
+
+	const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+	await model.saveResetToken(email, resetToken);
+	await sendResetPasswordEmail(email, resetToken);
+
+	return res.json({ message: genericMessage });
 }
 
 export async function resetPassword(req: Request, res: Response) {
 	const { token, password } = req.body;
 
 	if (!token || !password) {
-		return res.status(400).json({ message: "Token et mot de passe requis" });
+		throw new ApiError("Token et mot de passe requis", 400);
 	}
 
+	let decoded: { email: string };
 	try {
-		// Vérifier et décoder le token
-		const decoded = jwt.verify(token, JWT_SECRET) as { email: string };
-
-		// Vérifier que le token correspond à celui stocké en BDD
-		const user = await model.findByEmail(decoded.email);
-		if (!user || user.reset_token !== token) {
-			return res.status(400).json({ message: "Token invalide ou expiré" });
-		}
-
-		const hashedPassword = await hashPassword(password);
-		await model.updatePasswordByEmail(decoded.email, hashedPassword);
-
-		// Invalider le token après usage
-		await model.saveResetToken(decoded.email, "");
-
-		return res.json({ message: "Mot de passe mis à jour avec succès" });
-	} catch (error) {
-		if (error instanceof jwt.JsonWebTokenError) {
-			return res.status(400).json({ message: "Token invalide ou expiré" });
-		}
-		return res.status(500).json({ message: "Erreur serveur" });
+		decoded = jwt.verify(token, JWT_SECRET) as { email: string };
+	} catch {
+		throw new ApiError("Token invalide ou expiré", 400);
 	}
+
+	const user = await model.findByEmail(decoded.email);
+	if (!user || user.reset_token !== token) {
+		throw new ApiError("Token invalide ou expiré", 400);
+	}
+
+	const hashedPassword = await hashPassword(password);
+	await model.updatePasswordByEmail(decoded.email, hashedPassword);
+	await model.saveResetToken(decoded.email, "");
+
+	return res.json({ message: "Mot de passe mis à jour avec succès" });
 }

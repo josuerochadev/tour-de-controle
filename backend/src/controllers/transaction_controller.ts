@@ -26,11 +26,7 @@ export async function getAll(req: Request, res: Response) {
  * @returns The transaction as a JSON response.
  */
 export async function getById(req: Request, res: Response) {
-	const { id } = req.params;
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid ID", 400);
-	}
-	const transaction = await model.findById(Number(id));
+	const transaction = await model.findById(Number(req.params.id));
 	if (!transaction) {
 		throw new ApiError("Not found", 404);
 	}
@@ -58,17 +54,10 @@ export async function create(req: Request, res: Response) {
  * @returns The updated transaction as a JSON response.
  */
 export async function updateById(req: Request, res: Response) {
-	const { id } = req.params;
-
-	// Validate ID
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid ID", 400);
-	}
-
+	const id = Number(req.params.id);
 	const validatedData = req.body;
 
-	// Retrieve the current transaction from the database
-	const currentTransaction = await model.findById(Number(id));
+	const currentTransaction = await model.findById(id);
 	if (!currentTransaction) {
 		throw new ApiError("Transaction not found", 404);
 	}
@@ -84,8 +73,7 @@ export async function updateById(req: Request, res: Response) {
 		id_user: currentTransaction.id_user, // Do not modify the creator
 	};
 
-	// Update the transaction
-	const updatedTransaction = await model.update(Number(id), updatedData);
+	const updatedTransaction = await model.update(id, updatedData);
 	return res.json(updatedTransaction);
 }
 
@@ -98,16 +86,13 @@ export async function updateById(req: Request, res: Response) {
  * @returns A 204 No Content status.
  */
 export async function deleteById(req: Request, res: Response) {
-	const { id } = req.params;
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid ID", 400);
-	}
+	const id = Number(req.params.id);
 
-	const transaction = await model.findById(Number(id));
+	const transaction = await model.findById(id);
 	if (!transaction) {
 		throw new ApiError("Not found", 404);
 	}
 
-	await model.remove(Number(id));
+	await model.remove(id);
 	return res.sendStatus(204);
 }

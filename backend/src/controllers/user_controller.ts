@@ -15,17 +15,10 @@ export async function getAll(req: Request, res: Response) {
 
 // GET /api/users/:id
 export async function getById(req: Request, res: Response) {
-	const { id } = req.params;
-
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid user ID", 400);
-	}
-
-	const user = await model.findById(Number(id));
+	const user = await model.findById(Number(req.params.id));
 	if (!user) {
 		throw new ApiError("User not found", 404);
 	}
-
 	return res.json(user);
 }
 
@@ -45,16 +38,10 @@ export async function create(req: Request, res: Response) {
 
 // PATCH /api/users/:id
 export async function update(req: Request, res: Response) {
-	const { id } = req.params;
-
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid user ID", 400);
-	}
-
+	const id = Number(req.params.id);
 	const validatedData = req.body;
 
-	// Check if the user exists
-	const existingUser = await model.findById(Number(id));
+	const existingUser = await model.findById(id);
 	if (!existingUser) {
 		throw new ApiError("User not found", 404);
 	}
@@ -67,26 +54,20 @@ export async function update(req: Request, res: Response) {
 		patchedData.password = await hashPassword(validatedData.password);
 	}
 
-	// Update the user in the database
-	const updated = await model.update(Number(id), patchedData);
+	const updated = await model.update(id, patchedData);
 	return res.json(updated);
 }
 
 // DELETE /api/users/:id
 export async function remove(req: Request, res: Response) {
-	const { id } = req.params;
+	const id = Number(req.params.id);
 
-	if (!id || Number.isNaN(Number(id))) {
-		throw new ApiError("Invalid user ID", 400);
-	}
-
-	// Check if the user exists
-	const user = await model.findById(Number(id));
+	const user = await model.findById(id);
 	if (!user) {
 		throw new ApiError("User not found", 404);
 	}
 
-	await model.remove(Number(id));
+	await model.remove(id);
 	return res.sendStatus(204);
 }
 

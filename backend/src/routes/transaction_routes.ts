@@ -11,14 +11,14 @@ import {
 	authorizeRoles,
 } from "../middlewares/authentication_middleware";
 import { validateBody } from "../middlewares/validate_middleware";
+import { validateIdParam } from "../middlewares/validate_id_param";
 import { createSchema, updateSchema } from "../schemas/transaction_schema";
 import { ADMIN_ROLES } from "../config/constants";
 
 const router = express.Router();
 
 router.get("/", authenticateJWT, authorizeRoles(ADMIN_ROLES), getAll);
-
-router.get("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), getById);
+router.get("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), validateIdParam(), getById);
 
 router.post(
 	"/",
@@ -32,10 +32,11 @@ router.patch(
 	"/:id",
 	authenticateJWT,
 	authorizeRoles(ADMIN_ROLES),
+	validateIdParam(),
 	validateBody(updateSchema),
 	updateById,
 );
 
-router.delete("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), deleteById);
+router.delete("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), validateIdParam(), deleteById);
 
 export default router;
