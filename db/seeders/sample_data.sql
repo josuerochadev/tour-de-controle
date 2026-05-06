@@ -4,15 +4,15 @@ BEGIN;
 INSERT INTO roles (role_name) VALUES
   ('Développeur'),
   ('Gérant'),
-  ('Responsable'), 
+  ('Responsable'),
   ('Serveur');
 
--- 2. Users
+-- 2. Users (mot de passe: Password1)
 INSERT INTO users (first_name, last_name, email, password, reset_token, postal_address, phone_number, hire_date, is_active, id_role) VALUES
-  ('Alice', 'Dupont', 'developpeur@tour-de-controle.com', '$2a$12$XNl/PtlMv9u8WkqBJeWWXuvGcaKyhNLLYRu5nVEsm4ngM0ZCr5Ftq', NULL, '123 Rue de Paris', '0612345678', '2023-01-15', TRUE, 1),
-  ('Bob', 'Martin', 'gerant@tour-de-controle.com', '$2a$12$zbPRlsct66IeqMBI28M4Mu5ruP9yd02Wz1VoUZjTfXSw.EF4HNqGG', NULL, '456 Rue de Lyon', '0612345679', '2023-02-20', TRUE, 2),
-  ('Claire', 'Durand', 'responsable@tour-de-controle.com', '$2a$12$a0oJU/SSesnasdDxttYvJupXo4UFxyTG1cw9/bcYMw0KCq5MRISFe', NULL, '789 Rue de Marseille', '0612345680', '2023-03-10', TRUE, 3),
-  ('David', 'Petit', 'serveur@tour-de-controle.com', '$2a$12$thcr2wfwlB2BIIxHHmuEUedMwv9OW70BavYakup/Xel4OUg2JGuIG', NULL, '101 Rue de Bordeaux', '0612345681', '2023-04-05', TRUE, 4);
+  ('Alice', 'Dupont', 'developpeur@tour-de-controle.com', '$2a$12$z5DPyrEvw1Mb8s54.8OTSOwQLclkGAO2HgEZ1PIK26jG.lVg4ujuq', NULL, '123 Rue de Paris', '0612345678', '2023-01-15', TRUE, 1),
+  ('Bob', 'Martin', 'gerant@tour-de-controle.com', '$2a$12$z5DPyrEvw1Mb8s54.8OTSOwQLclkGAO2HgEZ1PIK26jG.lVg4ujuq', NULL, '456 Rue de Lyon', '0612345679', '2023-02-20', TRUE, 2),
+  ('Claire', 'Durand', 'responsable@tour-de-controle.com', '$2a$12$z5DPyrEvw1Mb8s54.8OTSOwQLclkGAO2HgEZ1PIK26jG.lVg4ujuq', NULL, '789 Rue de Marseille', '0612345680', '2023-03-10', TRUE, 3),
+  ('David', 'Petit', 'serveur@tour-de-controle.com', '$2a$12$z5DPyrEvw1Mb8s54.8OTSOwQLclkGAO2HgEZ1PIK26jG.lVg4ujuq', NULL, '101 Rue de Bordeaux', '0612345681', '2023-04-05', TRUE, 4);
 
 -- 3. Types de paiement
 INSERT INTO payment_types (payment_type_name, is_active) VALUES
@@ -38,7 +38,7 @@ INSERT INTO transactions (amount, tip, created_at, id_payment_type, id_cash_regi
   (89.30, 10.00, NOW(), 1, 3, 4),
   (67.80, 7.00, NOW(), 2, 3, 4);
 
--- 6. Logs 
+-- 6. Logs
 INSERT INTO action_logs (action_type, action, details, created_at, id_user) VALUES
   ('AUTH', 'Connexion Utilisateur', '{"ip": "192.168.1.1", "navigateur": "Chrome"}', NOW() - INTERVAL '2 days', 1),
   ('CASH', 'Ouverture Caisse', '{"montant": 1000.00, "id_caisse": 1}', NOW() - INTERVAL '2 days', 3),

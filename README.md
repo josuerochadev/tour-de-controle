@@ -82,6 +82,17 @@ docker compose up -d
 
 Services : Frontend (3000), Backend (4000), Swagger (8080), pgAdmin (8081)
 
+## Comptes de démonstration
+
+Après le seeding, ces comptes sont disponibles (mot de passe : `Password1`) :
+
+| Rôle | Email | Accès |
+|------|-------|-------|
+| Développeur | `developpeur@tour-de-controle.com` | Admin complet |
+| Gérant | `gerant@tour-de-controle.com` | Admin complet |
+| Responsable | `responsable@tour-de-controle.com` | Accès limité |
+| Serveur | `serveur@tour-de-controle.com` | Accès limité |
+
 ## Tests
 
 ```bash
