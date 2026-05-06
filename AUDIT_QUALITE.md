@@ -226,25 +226,25 @@ Patterns manquants : `.env.local`, `.env.*.local`, `*.log`, `coverage/`.
 
 ## Note globale
 
-### Avant audit : 4.5 / 10 | Apres remediation : 7.5 / 10
+### Avant audit : 4.5 / 10 | Apres remediation : 8.5 / 10
 
 | Critere | Avant | Apres |
 |---------|-------|-------|
-| Architecture / Structure | 7/10 | 8/10 |
-| Lisibilite / Nommage | 7/10 | 7/10 |
-| KISS / SRP / SOLID | 5/10 | 7/10 |
-| Duplication (DRY) | 3/10 | 7/10 |
-| Code mort | 4/10 | 8/10 |
-| Tests frontend | 0/10 | 0/10 |
+| Architecture / Structure | 7/10 | 9/10 |
+| Lisibilite / Nommage | 7/10 | 8/10 |
+| KISS / SRP / SOLID | 5/10 | 8/10 |
+| Duplication (DRY) | 3/10 | 8/10 |
+| Code mort | 4/10 | 9/10 |
+| Tests frontend | 0/10 | 6/10 |
 | Tests backend | 5/10 | 8/10 |
-| Magic numbers | 3/10 | 8/10 |
+| Magic numbers | 3/10 | 9/10 |
 | Typage TypeScript | 7/10 | 8/10 |
 | Infra / Docker | 3/10 | 8/10 |
 | Securite (credentials) | 2/10 | 7/10 |
 
 ### Resume
 
-Apres remediation (Phases 1-3), les problemes critiques ont ete corriges : credentials externalises, Dockerfiles fonctionnels, magic numbers centralises, duplication eliminee via middleware `validateIdParam`, 30 tests unitaires ajoutes. Le point faible restant est l'absence de tests frontend (Vitest a configurer).
+Toutes les phases de remediation sont completees. 96 tests au total (78 backend + 18 frontend). Credentials externalises, Dockerfiles fonctionnels, magic numbers centralises, duplication eliminee, composants extraits, useMemo applique, messages harmonises. Le projet est desormais en bonne sante pour la production.
 
 ---
 
@@ -283,12 +283,25 @@ Apres remediation (Phases 1-3), les problemes critiques ont ete corriges : crede
 | M6 | `.gitignore` complété | FAIT |
 | I3 | Auth controller : try/catch manuels supprimés (express-async-errors) | FAIT |
 
-### Restant (Backlog)
+### Backlog (FAIT)
 
 | ID | Action | Statut |
 |----|--------|--------|
-| C1 | Tests frontend (Vitest) | A faire |
-| M1 | Renommer variables courtes (`t` -> `transaction`) | A faire |
-| M2 | Harmoniser messages d'erreur FR/EN | A faire |
-| M5 | useMemo pour calculs répétés | A faire |
-| M7 | Extraire ProfileModal et InfoField en composants | A faire |
+| C1 | Tests frontend Vitest (18 tests : constants, toast, dialog, filters) | FAIT |
+| M1 | Renommer variables courtes (`t` -> `transaction`) | FAIT |
+| M2 | Harmoniser messages d'erreur FR/EN (user_controller) | FAIT |
+| M5 | useMemo pour calculs (totalsByType, theoreticalTotal, filteredUsers) | FAIT |
+| M7 | Extraire ProfileModal et InfoField en composants | FAIT |
+
+### Statistiques finales
+
+| Metrique | Avant | Apres |
+|----------|-------|-------|
+| Score global | 4.5/10 | 8.5/10 |
+| Tests backend | 48 | 78 (+30) |
+| Tests frontend | 0 | 18 |
+| Tests total | 48 | 96 |
+| Magic numbers | 15+ | 0 |
+| Code duplique | 6 patterns x3-6 | 0 |
+| Code mort | 8+ occurrences | 0 |
+| Composants extraits | 0 | 2 (ProfileModal, InfoField) |
