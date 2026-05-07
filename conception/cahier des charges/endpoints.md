@@ -8,7 +8,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
 - **Méthode HTTP:** POST
 - **URL:** /api/auth/login
-- **Description:** Authentifie un utilisateur avec son email et mot de passe, et renvoie un jeton JWT.
+- **Description:** Authentifie un utilisateur avec son email et mot de passe. Le JWT est retourné dans un cookie httpOnly (`authenticationToken`), pas dans le corps de la réponse.
 - **Corps de la requête:**
 
     ```json
@@ -20,10 +20,10 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
 - **Réponse:**
     - **Succès (200 OK):**
+        - Header `Set-Cookie: authenticationToken=<jwt>; HttpOnly; Secure; SameSite=Strict`
 
         ```json
         {
-            "token": "string",
             "user": {
                 "id_user": "int",
                 "first_name": "string",
@@ -47,9 +47,9 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
 - **Méthode HTTP:** POST
 - **URL:** /api/auth/logout
-- **Description:** Invalide le jeton JWT de l’utilisateur (si une gestion côté serveur des jetons invalidés est implémentée).
+- **Description:** Blackliste le jeton JWT courant via Redis et supprime le cookie.
 - **En-têtes requis:**
-    - Authorization: Bearer <token>
+    - Cookie: authenticationToken=&lt;jwt&gt;
 - **Réponse:**
     - **Succès (200 OK):**
 
@@ -67,7 +67,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/users
 - **Description:** Récupère la liste de tous les utilisateurs.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Réponse:**
     - **Succès (200 OK):**
 
@@ -92,7 +92,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/users
 - **Description:** Crée un nouvel utilisateur avec les informations fournies.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Corps de la requête:**
 
     ```json
@@ -140,7 +140,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/users/{id_user}
 - **Description:** Récupère les informations d’un utilisateur spécifique.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Paramètres de chemin:**
     - id_user: ID de l’utilisateur à récupérer.
 - **Réponse:**
@@ -172,11 +172,11 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
 ### 6.2.4 Modifier un utilisateur
 
-- **Méthode HTTP:** PUT
+- **Méthode HTTP:** PATCH
 - **URL:** /api/users/{id_user}
-- **Description:** Modifie les informations d’un utilisateur existant.
+- **Description:** Modifie partiellement les informations d’un utilisateur existant. Seuls les champs fournis sont mis à jour.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Paramètres de chemin:**
     - id_user: ID de l’utilisateur à modifier.
 - **Corps de la requête:**
@@ -226,7 +226,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/users/{id_user}
 - **Description:** Supprime un utilisateur existant.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Paramètres de chemin:**
     - id_user: ID de l’utilisateur à supprimer.
 - **Réponse:**
@@ -254,7 +254,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/transactions
 - **Description:** Récupère la liste des transactions, avec possibilité de filtrage.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôles: Gérant, Responsable, Serveur)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôles: Gérant, Responsable, Serveur)
 - **Paramètres de requête (optionnels):**
     - date_from: Date de début (YYYY-MM-DD)
     - date_to: Date de fin (YYYY-MM-DD)
@@ -288,7 +288,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/transactions
 - **Description:** Enregistre une nouvelle transaction.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôles: Responsable, Serveur)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôles: Responsable, Serveur)
 - **Corps de la requête:**
 
     ```json
@@ -332,7 +332,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/transactions/{id_transaction}
 - **Description:** Récupère les détails d’une transaction spécifique.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôles: Gérant, Responsable, Serveur)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôles: Gérant, Responsable, Serveur)
 - **Paramètres de chemin:**
     - id_transaction: ID de la transaction à récupérer.
 - **Réponse:**
@@ -369,12 +369,12 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/cash-registers
 - **Description:** Ouvre une nouvelle caisse pour le restaurant courant.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Responsable)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Responsable)
 - **Corps de la requête:**
 
     ```json
     {
-        "description": "string"
+        "id_restaurant": "int"
     }
     ```
 
@@ -383,13 +383,12 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
         ```json
         {
-            "message": "Caisse ouverte avec succès.",
-            "cash_register": {
-                "id_cash_register": "int",
-                "date_opened": "datetime",
-                "id_restaurant": "int",
-                "description": "string"
-            }
+            "id_cash_register": "int",
+            "date_opened": "datetime",
+            "physical_amount": 0,
+            "theoretical_amount": 0,
+            "status": "OPEN",
+            "opened_by": "int"
         }
         ```
 
@@ -399,7 +398,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/cash-registers/{id_cash_register}/close
 - **Description:** Clôture la caisse spécifiée, en saisissant les fonds physiques et en comparant avec les transactions enregistrées.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Responsable)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Responsable)
 - **Paramètres de chemin:**
     - id_cash_register: ID de la caisse à clôturer.
 - **Corps de la requête:**
@@ -422,24 +421,18 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 
         ```json
         {
-            "message": "Caisse clôturée avec succès.",
-            "cash_register": {
+            "cashRegister": {
                 "id_cash_register": "int",
+                "date_opened": "datetime",
                 "date_closed": "datetime",
-                "justification_of_gap": "string",
-                "id_restaurant": "int",
-                "description": "string"
+                "has_gap": "boolean",
+                "physical_amount": "decimal",
+                "theoretical_amount": "decimal",
+                "status": "CLOSED",
+                "opened_by": "int",
+                "closed_by": "int"
             },
-            "discrepancies": [
-                {
-                    "id_payment_type": "int",
-                    "payment_type_name": "string",
-                    "theoretical_amount": "decimal",
-                    "physical_amount": "decimal",
-                    "difference": "decimal"
-                },
-                ...
-            ]
+            "hasGap": "boolean"
         }
         ```
 
@@ -457,7 +450,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/cash-registers/current
 - **Description:** Récupère les informations de la caisse actuellement ouverte pour le restaurant courant.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Responsable)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Responsable)
 - **Réponse:**
     - **Succès (200 OK):**
 
@@ -487,7 +480,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/payment-types
 - **Description:** Récupère la liste des types de paiement disponibles.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Utilisateurs connectés)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Utilisateurs connectés)
 - **Réponse:**
     - **Succès (200 OK):**
 
@@ -510,7 +503,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/action-logs
 - **Description:** Récupère les journaux des actions effectuées par les utilisateurs, avec possibilité de filtrage.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôle: Gérant)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôle: Gérant)
 - **Paramètres de requête (optionnels):**
     - user_id: ID de l’utilisateur
     - date_from: Date de début
@@ -542,7 +535,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/support
 - **Description:** Envoie un message au support technique.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Rôles: Responsable, Serveur)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Rôles: Responsable, Serveur)
 - **Corps de la requête:**
 
     ```json
@@ -577,7 +570,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
 - **URL:** /api/help
 - **Description:** Récupère le contenu de la documentation intégrée.
 - **En-têtes requis:**
-    - Authorization: Bearer <token> (Utilisateurs connectés)
+    - Cookie: authenticationToken=&lt;jwt&gt; (Utilisateurs connectés)
 - **Réponse:**
     - **Succès (200 OK):**
 
@@ -621,7 +614,7 @@ Cette section détaille les endpoints de l’API backend, en fournissant une lis
     }
     ```
 
-**Note:** Tous les endpoints protégés nécessitent un jeton JWT valide dans l’en-tête Authorization. Les rôles des utilisateurs déterminent les permissions d’accès aux différents endpoints.
+**Note:** Tous les endpoints protégés nécessitent un jeton JWT valide transmis via le cookie httpOnly `authenticationToken`. Les rôles des utilisateurs déterminent les permissions d’accès aux différents endpoints.
 
 **Résumé:**
 

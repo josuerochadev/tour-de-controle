@@ -349,7 +349,7 @@ flowchart TD
         I["GET /api/transactions"]
         J["GET /api/transactions/:id"]
         K["POST /api/transactions"]
-        L["PUT /api/transactions/:id"]
+        L["PATCH /api/transactions/:id"]
         M["DELETE /api/transactions/:id"]
   end
  subgraph Utilisateurs["Utilisateurs"]
@@ -391,39 +391,39 @@ flowchart TD
 
 | Méthode | Endpoint | Description | Rôles | Corps/Paramètres |
 |---------|----------|-------------|--------|-----------------|
-| POST | `/api/auth/login` | Connexion | Public | `{email, password}` |
-| POST | `/api/auth/logout` | Déconnexion | Auth | - |
+| POST | `/api/auth/login` | Connexion (retourne JWT via cookie httpOnly) | Public | `{email, password}` |
+| POST | `/api/auth/logout` | Déconnexion (blackliste le JWT) | Auth | - |
 | GET | `/api/auth/me` | Profil courant | Auth | - |
-| POST | `/api/auth/support` | Contact support | Auth | `{message, subject}` |
-| GET | `/api/auth/help` | Documentation | Auth | - |
+| POST | `/api/auth/forgot-password` | Demande de réinitialisation (email) | Public | `{email}` |
+| POST | `/api/auth/reset-password` | Réinitialisation du mot de passe | Public | `{token, password}` |
 
 ### Caisse
 
 | Méthode | Endpoint | Description | Rôles | Corps/Paramètres |
 |---------|----------|-------------|--------|-----------------|
-| GET | `/api/cash-registers/current` | État actuel | Resp | - |
-| POST | `/api/cash-registers` | Ouverture | Resp | `{physical_amount}` |
-| PUT | `/api/cash-registers/{id}/close` | Fermeture | Resp | `{physical_amount}` |
-| GET | `/api/payment-types` | Types paiement | Auth | - |
+| GET | `/api/cash-registers/current` | Caisses ouvertes | Dev/Gérant | - |
+| POST | `/api/cash-registers` | Ouverture | Dev/Gérant | `{id_restaurant}` |
+| PUT | `/api/cash-registers/{id}/close` | Fermeture (comparaison fonds) | Dev/Gérant | `{funds: [{id_payment_type, physical_amount}]}` |
 
-### Transactions 
+### Transactions
 
 | Méthode | Endpoint | Description | Rôles | Corps/Paramètres |
 |---------|----------|-------------|--------|-----------------|
-| GET | `/api/transactions` | Liste | Auth | `?date,type,amount` |
-| POST | `/api/transactions` | Création | Serv/Resp | `{amount,type,tip?}` |
-| GET | `/api/transactions/{id}` | Détails | Auth | - |
-| PUT | `/api/transactions/{id}` | Modification | Resp | `{amount?,type?}` |
-| DELETE | `/api/transactions/{id}` | Suppression | Resp | - |
+| GET | `/api/transactions` | Liste (paginée, filtrable) | Dev/Gérant | `?date_from,date_to,payment_type,amount_min,amount_max,user_id,page,limit` |
+| POST | `/api/transactions` | Création | Dev/Gérant | `{amount,id_payment_type,id_cash_register,created_by,tip?}` |
+| GET | `/api/transactions/{id}` | Détails | Dev/Gérant | - |
+| PATCH | `/api/transactions/{id}` | Modification partielle | Dev/Gérant | `{amount?,tip?,id_payment_type?,id_cash_register?}` |
+| DELETE | `/api/transactions/{id}` | Suppression | Dev/Gérant | - |
 
 ### Utilisateurs
 
 | Méthode | Endpoint | Description | Rôles | Corps/Paramètres |
 |---------|----------|-------------|--------|-----------------|
-| GET | `/api/users` | Liste | Dev/Gérant | `?role,active` |
+| GET | `/api/users/me` | Profil connecté | Auth | - |
+| GET | `/api/users` | Liste (paginée) | Dev/Gérant | `?page,limit` |
 | POST | `/api/users` | Création | Dev/Gérant | `UserCreateDTO` |
 | GET | `/api/users/{id}` | Détails | Dev/Gérant | - |
-| PUT | `/api/users/{id}` | Modification | Dev/Gérant | `UserUpdateDTO` |
+| PATCH | `/api/users/{id}` | Modification partielle | Dev/Gérant | `UserUpdateDTO` |
 | DELETE | `/api/users/{id}` | Suppression | Dev/Gérant | - |
 
 ### Journaux
@@ -434,7 +434,7 @@ flowchart TD
 
 #### Légende des Rôles
 
-- **Dev/Gérant**: Accès complet à toutes les fonctionnalités
+- **Dev/Gérant**: Accès complet à toutes les fonctionnalités (ADMIN_ROLES)
 - **Responsable**: Accès à toutes les fonctionnalités sauf administration
 - **Serveur**: Accès limité au dashboard et aux transactions
 - **Auth**: Utilisateur authentifié (tous rôles)
@@ -443,8 +443,9 @@ flowchart TD
 #### Notes
 
 - Les réponses incluent toujours un code HTTP approprié
-- Authentication via JWT Bearer token dans le header
-- Format des dates: ISO 8601
+- Authentification via JWT stocké dans un cookie httpOnly (`authenticationToken`)
+- Format des dates : ISO 8601
+- Les endpoints paginés retournent `{data, total, page, limit}`
 
 ## **8. Sécurité et conformité**
 

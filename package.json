@@ -1,0 +1,21 @@
+{
+  "name": "tour-de-controle",
+  "private": true,
+  "description": "Monorepo — pre-commit hooks pour backend + frontend",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "backend/src/**/*.ts": [
+      "npx --prefix backend biome check --no-errors-on-unmatched"
+    ],
+    "frontend/src/**/*.{ts,tsx}": [
+      "npx --prefix frontend eslint --no-error-on-unmatched-pattern"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
+  },
+  "license": "MIT"
+}
