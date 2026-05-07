@@ -25,6 +25,32 @@ export default class AuthenticationService {
 		}
 	}
 
+	static async forgotPassword(email: string): Promise<boolean> {
+		try {
+			await axios.post(
+				`${BASE_URL}/auth/forgot-password`,
+				{ email },
+				{ withCredentials: true },
+			);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	static async resetPassword(token: string, password: string): Promise<boolean> {
+		try {
+			await axios.post(
+				`${BASE_URL}/auth/reset-password`,
+				{ token, password },
+				{ withCredentials: true },
+			);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
 	static async getCurrentUser(): Promise<AuthUser | null> {
 		try {
 			const response = await axios.get<AuthUser>(`${BASE_URL}/auth/me`, {

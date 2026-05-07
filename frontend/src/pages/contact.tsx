@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import ContactService from "../services/contact_service";
 
 const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
 
@@ -16,12 +16,12 @@ const ContactPage = () => {
 		setError("");
 
 		try {
-			await axios.post(
-				`${import.meta.env.VITE_API_BASE_URL}/contact`,
-				formData,
-				{ withCredentials: true },
-			);
-			setSuccess(true);
+			const success = await ContactService.send(formData);
+			if (success) {
+				setSuccess(true);
+			} else {
+				setError("Erreur lors de l'envoi du message. Veuillez reessayer.");
+			}
 		} catch {
 			setError("Erreur lors de l'envoi du message. Veuillez reessayer.");
 		} finally {

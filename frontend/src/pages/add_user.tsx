@@ -1,29 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { z } from "zod";
 import { useToast } from "../components/toast";
 import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatTodayDate } from "../constants";
-
-const userSchema = z.object({
-	first_name: z.string().min(2, "Le prenom doit contenir au moins 2 caracteres"),
-	last_name: z.string().min(2, "Le nom doit contenir au moins 2 caracteres"),
-	email: z.string().email("Email invalide"),
-	password: z
-		.string()
-		.min(8, "Le mot de passe doit contenir au moins 8 caracteres")
-		.regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
-		.regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre"),
-	postal_address: z.string().optional(),
-	phone_number: z
-		.string()
-		.regex(/^(\+33|0)[1-9](\d{2}){4}$/, "Format de telephone francais invalide")
-		.optional()
-		.or(z.literal("")),
-	hire_date: z.string().min(1, "La date d'embauche est requise"),
-	id_role: z.number().positive("Le role est requis"),
-});
+import { createUserSchema } from "../schemas/user_schema";
 
 interface UserFormData {
 	first_name: string;
@@ -61,7 +42,7 @@ const AddUser: React.FC = () => {
 		e.preventDefault();
 		setErrors({});
 
-		const result = userSchema.safeParse(formData);
+		const result = createUserSchema.safeParse(formData);
 		if (!result.success) {
 			const fieldErrors: Record<string, string> = {};
 			for (const err of result.error.errors) {

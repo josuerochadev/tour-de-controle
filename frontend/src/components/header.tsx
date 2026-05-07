@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AuthenticationService from "../services/authentification_service";
-import type { AuthUser } from "../types/user";
+import { useAuth } from "../contexts/auth_context";
 import ProfileModal from "./profile_modal";
 
 interface HeaderProps {
@@ -30,16 +29,10 @@ const Logo = ({ size = 32 }: { size?: number }) => (
 );
 
 const Header: React.FC<HeaderProps> = ({ onLogout }) => {
-	const [user, setUser] = useState<AuthUser | null>(null);
+	const { user } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const location = useLocation();
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		AuthenticationService.getCurrentUser().then((userData) => {
-			if (userData) setUser(userData);
-		});
-	}, []);
 
 	const currentPath = location.pathname;
 

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import AuthenticationService from "../services/authentification_service";
+import { resetPasswordSchema } from "../schemas/user_schema";
 
 const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
 
@@ -40,36 +41,22 @@ const ResetPassword = () => {
 		e.preventDefault();
 		setError("");
 
-		if (newPassword !== confirmPassword) {
-			setError("Les mots de passe ne correspondent pas");
-			return;
-		}
-
-		if (newPassword.length < 8) {
-			setError("Le mot de passe doit contenir au moins 8 caracteres");
-			return;
-		}
-
-		if (!/[A-Z]/.test(newPassword)) {
-			setError("Le mot de passe doit contenir au moins une majuscule");
-			return;
-		}
-
-		if (!/[0-9]/.test(newPassword)) {
-			setError("Le mot de passe doit contenir au moins un chiffre");
+		const result = resetPasswordSchema.safeParse({ password: newPassword, confirmPassword });
+		if (!result.success) {
+			setError(result.error.errors[0].message);
 			return;
 		}
 
 		setLoading(true);
 		try {
-			await axios.post(
-				`${import.meta.env.VITE_API_BASE_URL}/auth/reset-password`,
-				{ token, password: newPassword },
-				{ withCredentials: true },
-			);
-			navigate("/login", {
-				state: { message: "Mot de passe reinitialise avec succes" },
-			});
+			const success = await AuthenticationService.resetPassword(token, newPassword);
+			if (success) {
+				navigate("/login", {
+					state: { message: "Mot de passe reinitialise avec succes" },
+				});
+			} else {
+				setError("Token invalide ou expire. Veuillez refaire la demande.");
+			}
 		} catch {
 			setError("Token invalide ou expire. Veuillez refaire la demande.");
 		} finally {

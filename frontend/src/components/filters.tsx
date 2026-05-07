@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import AuthenticationService from "../services/authentification_service";
+import React, { useState } from "react";
+import { useAuth } from "../contexts/auth_context";
 import { ADMIN_ROLES, formatTodayDate } from "../constants";
 
 interface FiltersProps {
@@ -7,26 +7,9 @@ interface FiltersProps {
 }
 
 const Filters: React.FC<FiltersProps> = ({ onDateChange }) => {
+	const { user } = useAuth();
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
-	const [isAdmin, setIsAdmin] = useState<boolean>(false);
-	const [error, setError] = useState<string>("");
-
-	useEffect(() => {
-		const checkUserRole = async () => {
-			try {
-				const user = await AuthenticationService.getCurrentUser();
-				if (!user) {
-					setError("User not authenticated");
-					return;
-				}
-				setIsAdmin(ADMIN_ROLES.includes(user.role));
-			} catch {
-				setError("Error checking user role");
-			}
-		};
-
-		checkUserRole();
-	}, []);
+	const isAdmin = user ? ADMIN_ROLES.includes(user.role) : false;
 
 	const handleDateChange = (date: string) => {
 		setSelectedDate(date);
@@ -35,7 +18,6 @@ const Filters: React.FC<FiltersProps> = ({ onDateChange }) => {
 
 	return (
 		<div className="p-5 bg-paper-soft border border-sand rounded-3xl">
-			{error && <div className="text-signal text-sm mb-3">{error}</div>}
 			<div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
 				<label htmlFor="date-input" className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4 whitespace-nowrap">Date :</label>
 				<input

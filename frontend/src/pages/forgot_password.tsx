@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import AuthenticationService from "../services/authentification_service";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
@@ -14,12 +14,12 @@ const ForgotPasswordPage = () => {
 		setError("");
 
 		try {
-			await axios.post(
-				`${import.meta.env.VITE_API_BASE_URL}/auth/forgot-password`,
-				{ email },
-				{ withCredentials: true },
-			);
-			setSubmitted(true);
+			const success = await AuthenticationService.forgotPassword(email);
+			if (success) {
+				setSubmitted(true);
+			} else {
+				setError("Une erreur est survenue. Veuillez reessayer.");
+			}
 		} catch {
 			setError("Une erreur est survenue. Veuillez reessayer.");
 		} finally {

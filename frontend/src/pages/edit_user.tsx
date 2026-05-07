@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../components/toast";
 import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatDateToISO } from "../constants";
+import { updateUserSchema } from "../schemas/user_schema";
 
 interface UserFormData {
 	first_name: string;
@@ -22,6 +23,7 @@ const EditUser: React.FC = () => {
 	const navigate = useNavigate();
 	const { showToast } = useToast();
 	const [loading, setLoading] = useState(false);
+	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [formData, setFormData] = useState<UserFormData>({
 		first_name: "",
 		last_name: "",
@@ -50,8 +52,24 @@ const EditUser: React.FC = () => {
 		fetchUser();
 	}, [id, navigate]);
 
+	const fieldError = (field: string) =>
+		errors[field] ? <p className="text-signal text-xs mt-1">{errors[field]}</p> : null;
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErrors({});
+
+		const result = updateUserSchema.safeParse(formData);
+		if (!result.success) {
+			const fieldErrors: Record<string, string> = {};
+			for (const err of result.error.errors) {
+				const field = err.path[0] as string;
+				fieldErrors[field] = err.message;
+			}
+			setErrors(fieldErrors);
+			return;
+		}
+
 		setLoading(true);
 		try {
 			await userService.update(Number(id), formData);
@@ -73,14 +91,17 @@ const EditUser: React.FC = () => {
 				<div>
 					<label htmlFor="last_name" className={labelClass}>Nom</label>
 					<input id="last_name" type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} className={inputClass} required />
+					{fieldError("last_name")}
 				</div>
 				<div>
 					<label htmlFor="first_name" className={labelClass}>Prenom</label>
 					<input id="first_name" type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} className={inputClass} required />
+					{fieldError("first_name")}
 				</div>
 				<div>
 					<label htmlFor="email" className={labelClass}>Email</label>
 					<input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={inputClass} required />
+					{fieldError("email")}
 				</div>
 				<div>
 					<label htmlFor="postal_address" className={labelClass}>Adresse</label>
@@ -89,10 +110,12 @@ const EditUser: React.FC = () => {
 				<div>
 					<label htmlFor="phone_number" className={labelClass}>Telephone</label>
 					<input id="phone_number" type="tel" value={formData.phone_number} onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })} className={inputClass} />
+					{fieldError("phone_number")}
 				</div>
 				<div>
 					<label htmlFor="hire_date" className={labelClass}>Date d'embauche</label>
 					<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })} className={inputClass} required />
+					{fieldError("hire_date")}
 				</div>
 				<div>
 					<label htmlFor="id_role" className={labelClass}>Role</label>

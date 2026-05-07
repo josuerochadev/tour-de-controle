@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Header from "../components/header";
-import AuthenticationService from "../services/authentification_service";
-import type { AuthUser } from "../types/user";
+import { AuthProvider, useAuth } from "../contexts/auth_context";
 
-const AuthenticationLayout = () => {
-	const [user, setUser] = useState<AuthUser | null>(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		AuthenticationService.getCurrentUser().then((fetchedUser) => {
-			setUser(fetchedUser);
-			setLoading(false);
-		});
-	}, []);
+const AuthenticationLayoutInner = () => {
+	const { user, loading, logout } = useAuth();
+	const navigate = useNavigate();
 
 	if (loading) {
 		return (
@@ -27,8 +19,9 @@ const AuthenticationLayout = () => {
 		return <Navigate to="/login" />;
 	}
 
-	const handleLogout = () => {
-		AuthenticationService.logout();
+	const handleLogout = async () => {
+		await logout();
+		navigate("/login");
 	};
 
 	return (
@@ -40,5 +33,11 @@ const AuthenticationLayout = () => {
 		</div>
 	);
 };
+
+const AuthenticationLayout = () => (
+	<AuthProvider>
+		<AuthenticationLayoutInner />
+	</AuthProvider>
+);
 
 export default AuthenticationLayout;
