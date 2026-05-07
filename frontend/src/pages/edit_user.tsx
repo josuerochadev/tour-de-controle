@@ -4,16 +4,7 @@ import { useToast } from "../components/toast";
 import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatDateToISO } from "../constants";
 import { updateUserSchema } from "../schemas/user_schema";
-
-interface UserFormData {
-	first_name: string;
-	last_name: string;
-	email: string;
-	postal_address: string;
-	phone_number: string;
-	hire_date: string;
-	id_role: number;
-}
+import type { UserFormData } from "../types/user";
 
 const inputClass = "w-full py-3 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
 const labelClass = "font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5";

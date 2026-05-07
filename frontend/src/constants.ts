@@ -23,6 +23,15 @@ export const PAYMENT_TYPE_FALLBACK: Record<number, string> = {
 	6: "American Express",
 };
 
+export const PAYMENT_TYPES = {
+	CASH: 1,
+	CB: 2,
+	TICKET_RESTAURANT: 3,
+	CHEQUE: 4,
+	CHEQUES_VACANCES: 5,
+	AMERICAN_EXPRESS: 6,
+} as const;
+
 export const TOAST_DURATION_MS = 4000;
 export const DASHBOARD_RECENT_LIMIT = 10;
 

@@ -35,7 +35,7 @@ jobs:
         run: npm test
 
   frontend:
-    name: Frontend — Lint & Type Check
+    name: Frontend — Lint, Type Check & Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -57,6 +57,9 @@ jobs:
 
       - name: Lint
         run: npx eslint .
+
+      - name: Tests
+        run: npm test
 
       - name: Build
         run: npm run build

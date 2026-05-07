@@ -1,5 +1,4 @@
 import pool from "../config/db";
-import { ApiError } from "../middlewares/error_middleware";
 import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 
 export interface User {
@@ -32,14 +31,10 @@ export const findAll = async (
 };
 
 export const findById = async (id: number): Promise<User | null> => {
-	try {
-		const result = await pool.query("SELECT * FROM users WHERE id_user = $1", [
-			id,
-		]);
-		return result.rows[0] || null;
-	} catch (error) {
-		throw new ApiError("Database error during user lookup", 500);
-	}
+	const result = await pool.query("SELECT * FROM users WHERE id_user = $1", [
+		id,
+	]);
+	return result.rows[0] || null;
 };
 
 export const create = async (user: Partial<User>): Promise<User> => {

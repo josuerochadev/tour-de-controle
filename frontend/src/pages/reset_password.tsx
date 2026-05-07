@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
 import AuthenticationService from "../services/authentification_service";
+import PasswordInput from "../components/password_input";
 import { resetPasswordSchema } from "../schemas/user_schema";
 
 const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
@@ -11,7 +11,6 @@ const ResetPassword = () => {
 	const [searchParams] = useSearchParams();
 	const token = searchParams.get("token");
 
-	const [showPassword, setShowPassword] = useState(false);
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
@@ -89,24 +88,13 @@ const ResetPassword = () => {
 						<label htmlFor="new-password" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">
 							Nouveau mot de passe
 						</label>
-						<div className="relative">
-							<input
-								id="new-password"
-								type={showPassword ? "text" : "password"}
-								value={newPassword}
-								onChange={(e) => setNewPassword(e.target.value)}
-								className={`${inputClass} pr-12`}
-								required
-							/>
-							<button
-								type="button"
-								aria-label="Afficher le mot de passe"
-								onClick={() => setShowPassword(!showPassword)}
-								className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink bg-transparent border-none cursor-pointer"
-							>
-								{showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
-							</button>
-						</div>
+						<PasswordInput
+							id="new-password"
+							value={newPassword}
+							onChange={(e) => setNewPassword(e.target.value)}
+							className={inputClass}
+							required
+						/>
 						<p className="mt-1 text-xs text-ink-4">
 							Min. 8 caracteres, 1 majuscule, 1 chiffre
 						</p>
@@ -116,9 +104,8 @@ const ResetPassword = () => {
 						<label htmlFor="confirm-password" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">
 							Confirmer le mot de passe
 						</label>
-						<input
+						<PasswordInput
 							id="confirm-password"
-							type={showPassword ? "text" : "password"}
 							value={confirmPassword}
 							onChange={(e) => setConfirmPassword(e.target.value)}
 							className={inputClass}

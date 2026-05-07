@@ -2,10 +2,13 @@
 
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+/** Matches backend CashRegister — dates are ISO strings over JSON */
 export interface CashRegister {
 	id_cash_register: number;
-	date_opened: Date;
-	date_closed?: Date;
+	date_opened: string;
+	date_closed?: string;
 	has_gap: boolean;
 	physical_amount: number;
 	theoretical_amount: number;
@@ -14,10 +17,11 @@ export interface CashRegister {
 	closed_by?: number;
 }
 
+/** Matches backend Transaction — tip defaults to 0, amounts may arrive as strings from PostgreSQL DECIMAL */
 export interface Transaction {
 	id_transaction: number;
 	amount: number;
-	tip?: number;
+	tip: number;
 	created_at: string;
 	id_payment_type: number;
 	id_cash_register: number;
@@ -30,11 +34,10 @@ export interface Funds {
 }
 
 class CashRegisterService {
-	private static BASE_URL = `${import.meta.env.VITE_API_BASE_URL}`;
 
 	async getCurrentRegister() {
 		const response = await axios.get<CashRegister[]>(
-			`${CashRegisterService.BASE_URL}/cash-registers/current`,
+			`${BASE_URL}/cash-registers/current`,
 			{ withCredentials: true },
 		);
 		return response.data;
@@ -42,7 +45,7 @@ class CashRegisterService {
 
 	async openRegister(physical_amount: number) {
 		const response = await axios.post<CashRegister>(
-			`${CashRegisterService.BASE_URL}/cash-registers`,
+			`${BASE_URL}/cash-registers`,
 			{ physical_amount },
 			{ withCredentials: true },
 		);
@@ -51,7 +54,7 @@ class CashRegisterService {
 
 	async closeRegister(id: number, funds: Funds[]) {
 		const response = await axios.put<CashRegister>(
-			`${CashRegisterService.BASE_URL}/cash-registers/${id}/close`,
+			`${BASE_URL}/cash-registers/${id}/close`,
 			{ funds },
 			{ withCredentials: true },
 		);
@@ -67,7 +70,7 @@ class CashRegisterService {
 		user_id?: number;
 	}) {
 		const response = await axios.get(
-			`${CashRegisterService.BASE_URL}/transactions`,
+			`${BASE_URL}/transactions`,
 			{ withCredentials: true, params: query },
 		);
 		return response.data;
@@ -75,7 +78,7 @@ class CashRegisterService {
 
 	async getPaymentTypes() {
 		const response = await axios.get(
-			`${CashRegisterService.BASE_URL}/payment-types`,
+			`${BASE_URL}/payment-types`,
 			{ withCredentials: true },
 		);
 		return response.data;
@@ -83,7 +86,7 @@ class CashRegisterService {
 
 	async createTransaction(transaction: Partial<Transaction>) {
 		const response = await axios.post<Transaction>(
-			`${CashRegisterService.BASE_URL}/transactions`,
+			`${BASE_URL}/transactions`,
 			transaction,
 			{ withCredentials: true },
 		);
@@ -92,7 +95,7 @@ class CashRegisterService {
 
 	async updateTransaction(id: number, transaction: Partial<Transaction>) {
 		const response = await axios.patch<Transaction>(
-			`${CashRegisterService.BASE_URL}/transactions/${id}`,
+			`${BASE_URL}/transactions/${id}`,
 			transaction,
 			{ withCredentials: true },
 		);
@@ -100,7 +103,7 @@ class CashRegisterService {
 	}
 
 	async deleteTransaction(id: number) {
-		await axios.delete(`${CashRegisterService.BASE_URL}/transactions/${id}`, {
+		await axios.delete(`${BASE_URL}/transactions/${id}`, {
 			withCredentials: true,
 		});
 	}

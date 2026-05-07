@@ -18,3 +18,17 @@ export interface AuthUser {
 	email: string;
 	role: number;
 }
+
+export interface UserFormData {
+	first_name: string;
+	last_name: string;
+	email: string;
+	postal_address: string;
+	phone_number: string;
+	hire_date: string;
+	id_role: number;
+}
+
+export interface CreateUserFormData extends UserFormData {
+	password: string;
+}

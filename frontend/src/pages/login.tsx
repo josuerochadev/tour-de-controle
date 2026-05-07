@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthenticationService from "../services/authentification_service";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import PasswordInput from "../components/password_input";
 
 const Logo = ({ size = 120 }: { size?: number }) => (
 	<svg width={size} height={size} viewBox="0 0 64 64" className="text-paper">
@@ -22,8 +22,6 @@ const Login: React.FC = () => {
 	const [formData, setFormData] = useState({ email: "", password: "" });
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
-
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
@@ -101,27 +99,16 @@ const Login: React.FC = () => {
 
 						<label className="block">
 							<div className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 mb-1.5">Mot de passe</div>
-							<div className="relative">
-								<input
-									name="password"
-									type={showPassword ? "text" : "password"}
-									required
-									placeholder="Votre mot de passe"
-									className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal pr-12"
-									value={formData.password}
-									onChange={handleChange}
-									disabled={loading}
-								/>
-								<button
-									type="button"
-									aria-label="Afficher le mot de passe"
-									onClick={() => setShowPassword(!showPassword)}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink bg-transparent border-none cursor-pointer"
-									tabIndex={-1}
-								>
-									{showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-								</button>
-							</div>
+							<PasswordInput
+								id="password"
+								name="password"
+								required
+								placeholder="Votre mot de passe"
+								className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal"
+								value={formData.password}
+								onChange={handleChange}
+								disabled={loading}
+							/>
 						</label>
 
 						<div className="text-left">

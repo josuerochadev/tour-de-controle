@@ -1,16 +1,11 @@
 // backend/src/models/auth.model.ts
 import pool from "../config/db";
-import { ApiError } from "../middlewares/error_middleware";
 
 export async function findByEmail(email: string) {
-	try {
-		const result = await pool.query("SELECT * FROM users WHERE email = $1", [
-			email,
-		]);
-		return result.rows[0];
-	} catch (error) {
-		throw new ApiError("Database error during user lookup", 500);
-	}
+	const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+		email,
+	]);
+	return result.rows[0];
 }
 
 export async function findById(id: number) {

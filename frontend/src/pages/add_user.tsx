@@ -1,21 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useToast } from "../components/toast";
+import PasswordInput from "../components/password_input";
 import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatTodayDate } from "../constants";
 import { createUserSchema } from "../schemas/user_schema";
-
-interface UserFormData {
-	first_name: string;
-	last_name: string;
-	email: string;
-	password: string;
-	postal_address: string;
-	phone_number: string;
-	hire_date: string;
-	id_role: number;
-}
+import type { CreateUserFormData } from "../types/user";
 
 const inputClass = "w-full py-3 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
 const labelClass = "font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5";
@@ -23,11 +13,10 @@ const labelClass = "font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 
 const AddUser: React.FC = () => {
 	const navigate = useNavigate();
 	const { showToast } = useToast();
-	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [loading, setLoading] = useState(false);
 
-	const [formData, setFormData] = useState<UserFormData>({
+	const [formData, setFormData] = useState<CreateUserFormData>({
 		first_name: "",
 		last_name: "",
 		email: "",
@@ -91,12 +80,13 @@ const AddUser: React.FC = () => {
 				</div>
 				<div>
 					<label htmlFor="password" className={labelClass}>Mot de passe *</label>
-					<div className="relative">
-						<input id="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className={`${inputClass} pr-12`} required />
-						<button type="button" aria-label="Afficher le mot de passe" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink bg-transparent border-none cursor-pointer">
-							{showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
-						</button>
-					</div>
+					<PasswordInput
+						id="password"
+						value={formData.password}
+						onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+						className={inputClass}
+						required
+					/>
 					<p className="text-xs text-ink-4 mt-1">Min. 8 caracteres, 1 majuscule, 1 chiffre</p>
 					{fieldError("password")}
 				</div>

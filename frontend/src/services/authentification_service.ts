@@ -3,8 +3,8 @@ import type { AuthUser } from "../types/user";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export default class AuthenticationService {
-	static async login(email: string, password: string): Promise<boolean> {
+class AuthenticationService {
+	async login(email: string, password: string): Promise<boolean> {
 		try {
 			const response = await axios.post(
 				`${BASE_URL}/auth/login`,
@@ -17,7 +17,7 @@ export default class AuthenticationService {
 		}
 	}
 
-	static async logout(): Promise<void> {
+	async logout(): Promise<void> {
 		try {
 			await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
 		} catch {
@@ -25,7 +25,7 @@ export default class AuthenticationService {
 		}
 	}
 
-	static async forgotPassword(email: string): Promise<boolean> {
+	async forgotPassword(email: string): Promise<boolean> {
 		try {
 			await axios.post(
 				`${BASE_URL}/auth/forgot-password`,
@@ -38,7 +38,7 @@ export default class AuthenticationService {
 		}
 	}
 
-	static async resetPassword(token: string, password: string): Promise<boolean> {
+	async resetPassword(token: string, password: string): Promise<boolean> {
 		try {
 			await axios.post(
 				`${BASE_URL}/auth/reset-password`,
@@ -51,7 +51,7 @@ export default class AuthenticationService {
 		}
 	}
 
-	static async getCurrentUser(): Promise<AuthUser | null> {
+	async getCurrentUser(): Promise<AuthUser | null> {
 		try {
 			const response = await axios.get<AuthUser>(`${BASE_URL}/auth/me`, {
 				withCredentials: true,
@@ -62,3 +62,5 @@ export default class AuthenticationService {
 		}
 	}
 }
+
+export default new AuthenticationService();

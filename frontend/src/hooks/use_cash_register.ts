@@ -4,7 +4,7 @@ import CashRegisterService, {
 	type Transaction,
 	type Funds,
 } from "../services/cash_register_service";
-import { PAYMENT_TYPE_FALLBACK } from "../constants";
+import { PAYMENT_TYPE_FALLBACK, PAYMENT_TYPES } from "../constants";
 
 export const useCashRegister = () => {
 	const [currentRegister, setCurrentRegister] = useState<CashRegister | null>(
@@ -85,7 +85,7 @@ export const useCashRegister = () => {
 			// Création de la structure de fonds attendue par l'API
 			const funds: Funds[] = [
 				{
-					id_payment_type: 1, // ID pour les espèces
+					id_payment_type: PAYMENT_TYPES.CASH,
 					physical_amount: amount,
 				},
 			];

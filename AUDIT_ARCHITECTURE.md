@@ -313,22 +313,22 @@ L'arborescence est claire (MVC backend, pages/components/services frontend) et a
 | C4 | Extraire schemas Zod frontend dans `src/schemas/user_schema.ts`, appliquer validation sur EditUser et ResetPassword | FAIT |
 | C5 | Deplacer `@types/cookie-parser` vers devDependencies | FAIT |
 
-### Phase 2 — Important (I1-I12)
+### Phase 2 — Important (FAIT)
 
 | ID | Action | Statut |
 |----|--------|--------|
-| I1 | Unifier pattern services frontend (toutes instances ou toutes statiques) | A faire |
-| I2 | Extraire composant `PasswordInput` reutilisable | A faire |
-| I3 | Centraliser `UserFormData` dans `src/types/user.ts` | A faire |
-| I4 | Documenter contrat types front/back, aligner differences `tip`, `created_at` | A faire |
-| I5 | Extraire magic number `id_payment_type: 1` en constante | A faire |
-| I6 | Corriger `handleLogout` : await + navigate("/login") | A faire |
-| I7 | Mettre a jour `@types/jest` vers ^29.x | A faire |
-| I8 | Supprimer `@types/bcryptjs` et `@types/recharts` du frontend | A faire |
-| I9 | Standardiser sur une seule librairie d'icones (lucide-react), supprimer les autres | A faire |
-| I10 | Aligner version Zod backend sur ^3.24.x | A faire |
-| I11 | Ajouter `npm test` dans le job CI frontend | A faire |
-| I12 | Supprimer import `ApiError` des models, lancer des erreurs standard | A faire |
+| I1 | Unifier pattern services frontend (toutes instances, BASE_URL module-level) | FAIT |
+| I2 | Extraire composant `PasswordInput` reutilisable (login, add_user, reset_password) | FAIT |
+| I3 | Centraliser `UserFormData` et `CreateUserFormData` dans `src/types/user.ts` | FAIT |
+| I4 | Aligner types front/back : `date_opened` string, `tip` non-optional, commentaires contrat | FAIT |
+| I5 | Extraire magic number `id_payment_type: 1` en constante `PAYMENT_TYPES.CASH` | FAIT |
+| I6 | Corriger `handleLogout` : await + navigate("/login") | FAIT (inclus dans C3) |
+| I7 | Mettre a jour `@types/jest` vers ^29.5.14 | FAIT |
+| I8 | Supprimer `@types/bcryptjs` et `@types/recharts` du frontend | FAIT |
+| I9 | Supprimer `react-icons`, `@heroicons/react`, `@headlessui/react`, `@radix-ui/*`, `tailwind-merge` (non utilises) | FAIT |
+| I10 | Aligner version Zod backend sur ^3.24.1 | FAIT |
+| I11 | Ajouter `npm test` dans le job CI frontend | FAIT |
+| I12 | Supprimer import `ApiError` des models, laisser les erreurs remonter naturellement | FAIT |
 
 ### Phase 3 — Mineurs (M1-M8)
 
