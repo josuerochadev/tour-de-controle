@@ -1,3 +1,4 @@
+/** Mirrored from backend/src/config/constants.ts — keep in sync */
 export const ROLES = {
 	DEVELOPER: 1,
 	MANAGER: 2,

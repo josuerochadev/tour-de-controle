@@ -12,6 +12,7 @@ export const RATE_LIMIT = {
 	AUTH_MAX_ATTEMPTS: 5,
 } as const;
 
+/** Mirrored in frontend/src/constants.ts — keep in sync */
 export const ROLES = {
 	DEVELOPER: 1,
 	MANAGER: 2,

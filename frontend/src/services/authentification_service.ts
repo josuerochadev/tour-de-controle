@@ -3,6 +3,10 @@ import type { AuthUser } from "../types/user";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const logError = (context: string, error: unknown) => {
+	if (import.meta.env.DEV) console.error(`[AuthService] ${context}`, error);
+};
+
 class AuthenticationService {
 	async login(email: string, password: string): Promise<boolean> {
 		try {
@@ -12,7 +16,8 @@ class AuthenticationService {
 				{ withCredentials: true },
 			);
 			return response.status === 200;
-		} catch {
+		} catch (error) {
+			logError("login", error);
 			return false;
 		}
 	}
@@ -20,8 +25,8 @@ class AuthenticationService {
 	async logout(): Promise<void> {
 		try {
 			await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
-		} catch {
-			// Silent fail — cookie will be cleared server-side
+		} catch (error) {
+			logError("logout", error);
 		}
 	}
 
@@ -33,7 +38,8 @@ class AuthenticationService {
 				{ withCredentials: true },
 			);
 			return true;
-		} catch {
+		} catch (error) {
+			logError("forgotPassword", error);
 			return false;
 		}
 	}
@@ -46,7 +52,8 @@ class AuthenticationService {
 				{ withCredentials: true },
 			);
 			return true;
-		} catch {
+		} catch (error) {
+			logError("resetPassword", error);
 			return false;
 		}
 	}
@@ -57,7 +64,8 @@ class AuthenticationService {
 				withCredentials: true,
 			});
 			return response.data;
-		} catch {
+		} catch (error) {
+			logError("getCurrentUser", error);
 			return null;
 		}
 	}

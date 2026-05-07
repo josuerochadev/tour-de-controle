@@ -278,26 +278,26 @@ Aucune detectee.
 
 ## Note globale
 
-### Score : 6 / 10
+### Avant remediation : 6 / 10 | Apres remediation : 8.5 / 10
 
-| Critere | Note |
-|---------|------|
-| Architecture / Structure dossiers | 8/10 |
-| Design patterns (coherence) | 5/10 |
-| DRY (pas de duplication) | 5/10 |
-| Dependances (pas d'obsolete/superflu) | 4/10 |
-| Configuration (.env, secrets) | 8/10 |
-| Responsivite & accessibilite | 7/10 |
-| Documentation API (Swagger) | 7/10 |
-| Couplage (fan-in/fan-out) | 6/10 |
-| Taille fichiers (< 300 lignes) | 10/10 |
-| Separation des concerns | 5/10 |
-| Coherence exports/imports | 6/10 |
-| Hooks/utilitaires reutilisables | 6/10 |
+| Critere | Avant | Apres |
+|---------|-------|-------|
+| Architecture / Structure dossiers | 8/10 | 9/10 |
+| Design patterns (coherence) | 5/10 | 8/10 |
+| DRY (pas de duplication) | 5/10 | 9/10 |
+| Dependances (pas d'obsolete/superflu) | 4/10 | 9/10 |
+| Configuration (.env, secrets) | 8/10 | 9/10 |
+| Responsivite & accessibilite | 7/10 | 7/10 |
+| Documentation API (Swagger) | 7/10 | 7/10 |
+| Couplage (fan-in/fan-out) | 6/10 | 8/10 |
+| Taille fichiers (< 300 lignes) | 10/10 | 10/10 |
+| Separation des concerns | 5/10 | 9/10 |
+| Coherence exports/imports | 6/10 | 8/10 |
+| Hooks/utilitaires reutilisables | 6/10 | 8/10 |
 
 ### Resume
 
-L'arborescence est claire (MVC backend, pages/components/services frontend) et aucun fichier ne depasse 300 lignes. Mais des problemes structurels importants persistent : la couche service frontend est court-circuitee par 3 pages (violation SoC), l'etat auth est fetche 3 fois par navigation (pas de centralisation), la validation est incohérente (Zod sur add mais pas edit), et les conventions de code divergent (3 patterns de services, 3 librairies d'icones, versions Zod/TS desalignees). Le Redis manquant en docker-compose et les tests frontend absents de la CI sont des risques operationnels concrets.
+Toutes les phases de remediation sont completees (25/25 findings resolus). Les 5 critiques corrigees : Redis dans docker-compose, couche service respectee (0 appel axios direct dans les pages), AuthContext centralise (1 seul getCurrentUser par navigation), validation Zod coherente (schemas partages), deps correctement classees. Les 12 importants resolus : services unifies en pattern instance, composant PasswordInput extrait, types centralises et alignes front/back, 7 packages fantomes supprimes, CI complete avec tests frontend, models decouples de ApiError. Les 8 mineurs traites : route 404, CSS mort supprime, TS aligne, gitignore complete, logs DEV dans les services.
 
 ---
 
@@ -330,28 +330,30 @@ L'arborescence est claire (MVC backend, pages/components/services frontend) et a
 | I11 | Ajouter `npm test` dans le job CI frontend | FAIT |
 | I12 | Supprimer import `ApiError` des models, laisser les erreurs remonter naturellement | FAIT |
 
-### Phase 3 — Mineurs (M1-M8)
+### Phase 3 — Mineurs (FAIT)
 
 | ID | Action | Statut |
 |----|--------|--------|
-| M1 | Ajouter route 404 wildcard dans App.tsx | A faire |
-| M2 | Supprimer CSS mort (app.css template Vite, globals.css dark mode) | A faire |
-| M3 | Aligner pinning TypeScript front/back | A faire |
-| M4 | Documenter duplication constantes ROLES front/back (ou package shared) | A faire |
-| M5 | Ajouter console.error en dev dans les catch des services frontend | A faire |
-| M6 | Deplacer `@tailwindcss/postcss7-compat` en devDependencies | A faire |
-| M7 | Supprimer packages UI non utilises (radix-ui, headlessui, heroicons) | A faire |
-| M8 | Completer backend/.gitignore (.env.local, *.log, coverage/) | A faire |
+| M1 | Ajouter route 404 wildcard dans App.tsx (redirige vers Login) | FAIT |
+| M2 | Supprimer CSS mort (app.css, globals.css) | FAIT |
+| M3 | Aligner pinning TypeScript front/back (^5.7.2 partout) | FAIT |
+| M4 | Documenter duplication constantes ROLES front/back (commentaires "keep in sync") | FAIT |
+| M5 | Ajouter logError en DEV dans les catch des services frontend | FAIT |
+| M6 | Supprimer `@tailwindcss/postcss7-compat` (non utilise) | FAIT (inclus dans I9) |
+| M7 | Supprimer packages UI non utilises (radix-ui, headlessui, heroicons) | FAIT (inclus dans I9) |
+| M8 | Completer backend/.gitignore (.env.local, *.log, coverage/) | FAIT |
 
-### Statistiques actuelles
+### Statistiques finales
 
-| Metrique | Valeur |
-|----------|--------|
-| Score architecture | 6/10 |
-| Findings critiques | 5 |
-| Findings importants | 12 |
-| Findings mineurs | 8 |
-| Total findings | 25 |
-| Fichiers > 300 lignes | 0 |
-| Dependances circulaires | 0 |
-| Packages fantomes/inutilises | 7 |
+| Metrique | Avant | Apres |
+|----------|-------|-------|
+| Score architecture | 6/10 | 8.5/10 |
+| Findings critiques | 5 | 0 |
+| Findings importants | 12 | 0 |
+| Findings mineurs | 8 | 0 |
+| Total findings resolus | 0 | 25/25 |
+| Fichiers > 300 lignes | 0 | 0 |
+| Dependances circulaires | 0 | 0 |
+| Packages fantomes/inutilises | 7 | 0 |
+| Appels getCurrentUser par navigation | 3 | 1 |
+| Fichiers avec axios direct (hors services) | 3 | 0 |

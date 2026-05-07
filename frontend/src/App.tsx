@@ -42,6 +42,7 @@ const App: React.FC = () => {
 								<Route path="/cash-register" element={<CashierPage />} />
 								<Route path="/transactions" element={<Transactions />} />
 							</Route>
+						<Route path="*" element={<Login />} />
 						</Routes>
 					</Router>
 				</DialogProvider>
