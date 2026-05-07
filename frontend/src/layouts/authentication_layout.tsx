@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "../components/header";
-import Footer from "../components/footer";
 import AuthenticationService from "../services/authentification_service";
 import type { AuthUser } from "../types/user";
 
@@ -17,7 +16,11 @@ const AuthenticationLayout = () => {
 	}, []);
 
 	if (loading) {
-		return <p className="p-6">Chargement...</p>;
+		return (
+			<div className="min-h-screen bg-paper flex items-center justify-center">
+				<p className="font-mono text-ink-4 text-sm tracking-wider uppercase">Chargement...</p>
+			</div>
+		);
 	}
 
 	if (!user) {
@@ -29,12 +32,11 @@ const AuthenticationLayout = () => {
 	};
 
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen bg-paper">
 			<Header onLogout={handleLogout} />
-			<main className="mt-16 mb-16 min-h-[calc(100vh-8rem)]">
+			<main className="px-8 py-8 pb-20 max-w-[1400px] mx-auto">
 				<Outlet />
 			</main>
-			<Footer />
 		</div>
 	);
 };

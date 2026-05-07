@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
+const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
+
 const ResetPassword = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
@@ -16,16 +18,16 @@ const ResetPassword = () => {
 
 	if (!token) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-				<div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md text-center">
-					<h1 className="text-2xl font-bold text-gray-900 mb-4">Lien invalide</h1>
-					<p className="text-gray-600 mb-6">
-						Ce lien de réinitialisation est invalide ou a expiré.
+			<div className="min-h-screen flex items-center justify-center bg-paper p-4">
+				<div className="bg-paper-soft border border-sand rounded-3xl p-8 w-full max-w-md text-center">
+					<h1 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink mb-4">Lien invalide</h1>
+					<p className="text-ink-3 mb-6">
+						Ce lien de reinitialisation est invalide ou a expire.
 					</p>
 					<button
 						type="button"
 						onClick={() => navigate("/forgot-password")}
-						className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
+						className="py-3 px-6 rounded-[14px] bg-ink text-paper border-none font-display text-[13px] font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors"
 					>
 						Demander un nouveau lien
 					</button>
@@ -44,7 +46,7 @@ const ResetPassword = () => {
 		}
 
 		if (newPassword.length < 8) {
-			setError("Le mot de passe doit contenir au moins 8 caractères");
+			setError("Le mot de passe doit contenir au moins 8 caracteres");
 			return;
 		}
 
@@ -66,83 +68,87 @@ const ResetPassword = () => {
 				{ withCredentials: true },
 			);
 			navigate("/login", {
-				state: { message: "Mot de passe réinitialisé avec succès" },
+				state: { message: "Mot de passe reinitialise avec succes" },
 			});
 		} catch {
-			setError("Token invalide ou expiré. Veuillez refaire la demande.");
+			setError("Token invalide ou expire. Veuillez refaire la demande.");
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-			<div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-				<div className="flex flex-col items-center mb-6">
-					<img
-						src="/LogoLaTourDeControle.png"
-						alt="La Tour de Contrôle"
-						className="h-24 w-24 mb-4"
-					/>
-					<h1 className="text-2xl font-bold text-gray-900">
-						Réinitialiser le mot de passe
+		<div className="min-h-screen flex items-center justify-center bg-paper p-4">
+			<div className="bg-paper-soft border border-sand rounded-3xl p-8 w-full max-w-md">
+				<div className="flex flex-col items-center mb-8">
+					<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4">
+						<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
+						<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
+						<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
+						<rect x="26" y="14" width="12" height="10" rx="1.5" fill="currentColor" />
+						<circle cx="32" cy="19" r="3" fill="#dc2626" />
+						<path d="M28 14 L36 14 L34 10 L30 10 Z" fill="currentColor" />
+						<circle cx="32" cy="9" r="1.5" fill="currentColor" />
+						<rect x="24" y="36" width="18" height="4" fill="#dc2626" />
+						<rect x="20" y="56" width="24" height="3" rx="1" fill="currentColor" />
+					</svg>
+					<h1 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink">
+						Reinitialiser le mot de passe
 					</h1>
 				</div>
 
-				<form onSubmit={handleSubmit} className="space-y-6">
+				<form onSubmit={handleSubmit} className="space-y-5">
 					<div>
-						<label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
+						<label htmlFor="new-password" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">
 							Nouveau mot de passe
 						</label>
-						<div className="relative mt-1">
+						<div className="relative">
 							<input
 								id="new-password"
 								type={showPassword ? "text" : "password"}
 								value={newPassword}
 								onChange={(e) => setNewPassword(e.target.value)}
-								className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500"
+								className={`${inputClass} pr-12`}
 								required
 							/>
 							<button
 								type="button"
 								aria-label="Afficher le mot de passe"
 								onClick={() => setShowPassword(!showPassword)}
-								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink bg-transparent border-none cursor-pointer"
 							>
 								{showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
 							</button>
 						</div>
-						<p className="mt-1 text-xs text-gray-500">
-							Min. 8 caractères, 1 majuscule, 1 chiffre
+						<p className="mt-1 text-xs text-ink-4">
+							Min. 8 caracteres, 1 majuscule, 1 chiffre
 						</p>
 					</div>
 
 					<div>
-						<label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+						<label htmlFor="confirm-password" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">
 							Confirmer le mot de passe
 						</label>
-						<div className="relative mt-1">
-							<input
-								id="confirm-password"
-								type={showPassword ? "text" : "password"}
-								value={confirmPassword}
-								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500"
-								required
-							/>
-						</div>
+						<input
+							id="confirm-password"
+							type={showPassword ? "text" : "password"}
+							value={confirmPassword}
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							className={inputClass}
+							required
+						/>
 					</div>
 
 					{error && (
-						<div className="bg-red-50 text-red-800 p-3 rounded-md">{error}</div>
+						<div className="bg-danger-soft text-signal p-3 rounded-2xl text-sm">{error}</div>
 					)}
 
 					<button
 						type="submit"
 						disabled={loading}
-						className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-full py-4 px-6 rounded-[14px] bg-ink text-paper border-none font-display text-[13px] font-semibold tracking-wider uppercase cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-ink-2 transition-colors duration-200"
 					>
-						{loading ? "Réinitialisation..." : "Réinitialiser le mot de passe"}
+						{loading ? "Reinitialisation..." : "Reinitialiser le mot de passe"}
 					</button>
 				</form>
 			</div>

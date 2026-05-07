@@ -19,40 +19,87 @@ const TransactionsPage = () => {
 		[transactions],
 	);
 
-	if (loading) return <div className="p-6">Chargement...</div>;
-	if (error) return <div className="p-6 text-red-500">{error}</div>;
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center py-20">
+				<p className="font-mono text-ink-4 text-sm tracking-wider uppercase">Chargement...</p>
+			</div>
+		);
+	}
+
+	if (error) return <div className="p-6 text-signal font-medium">{error}</div>;
+
+	const avgTransaction = transactions.length > 0
+		? (totalTransactions / transactions.length).toFixed(2)
+		: "0.00";
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-4">
-			<div className="mb-4">
+		<div className="max-w-[1200px] mx-auto">
+			{/* Page header */}
+			<div className="flex justify-between items-end flex-wrap gap-6 mb-12">
+				<div>
+					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
+						// Journal &middot; {new Date(selectedDate).toLocaleDateString("fr-FR")}
+					</div>
+					<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase whitespace-nowrap">
+						Le flux
+					</h1>
+				</div>
 				<Filters onDateChange={handleDateChange} />
 			</div>
 
-			<div className="bg-white rounded-lg shadow p-4">
-				<h2 className="text-xl font-bold mb-4">Transactions du {selectedDate}</h2>
-				{transactions.length === 0 ? (
-					<p className="text-gray-500">Aucune transaction pour cette date</p>
-				) : (
-					<div className="space-y-2">
-						<div className="grid grid-cols-3 gap-4 font-semibold text-gray-600 p-2">
-							<div>Heure</div>
-							<div>Type</div>
-							<div className="text-right">Montant</div>
-						</div>
-						{transactions.map((transaction) => (
-							<div key={transaction.id_transaction} className="grid grid-cols-3 gap-4 p-2 bg-gray-50 rounded items-center">
-								<div className="font-medium">{new Date(transaction.created_at).toLocaleTimeString()}</div>
-								<div>{getPaymentTypeName(transaction.id_payment_type)}</div>
-								<div className="text-right font-bold">{transaction.amount} EUR</div>
-							</div>
-						))}
-						<div className="border-t pt-4 mt-4">
-							<div className="flex justify-between font-bold text-lg">
-								<span>Total des transactions:</span>
-								<span>{totalTransactions} EUR</span>
-							</div>
+			{/* KPI cards */}
+			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+				{[
+					{ label: "Total encaisse", value: totalTransactions.toFixed(2), suffix: "\u20AC" },
+					{ label: "Transactions", value: String(transactions.length), suffix: "" },
+					{ label: "Panier moyen", value: avgTransaction, suffix: "\u20AC" },
+				].map((kpi) => (
+					<div key={kpi.label} className="p-6 bg-paper-soft border border-sand rounded-3xl">
+						<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">{kpi.label}</div>
+						<div className="mt-3">
+							<span className="font-display text-[48px] font-semibold leading-none tracking-tight tabular-nums">{kpi.value}</span>
+							{kpi.suffix && <span className="font-display text-2xl text-ink-4 ml-1">{kpi.suffix}</span>}
 						</div>
 					</div>
+				))}
+			</div>
+
+			{/* Transaction list */}
+			<div className="bg-paper-soft border border-sand rounded-3xl overflow-hidden">
+				<div className="flex px-7 py-4 border-b border-sand font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
+					<div className="w-20">Heure</div>
+					<div className="flex-1">Moyen</div>
+					<div className="w-28 text-right">Reference</div>
+					<div className="w-36 text-right">Montant</div>
+				</div>
+
+				{transactions.length === 0 ? (
+					<p className="p-7 text-ink-4">Aucune transaction pour cette date</p>
+				) : (
+					<>
+						{transactions.map((transaction) => (
+							<div
+								key={transaction.id_transaction}
+								className="flex items-center px-7 py-4 border-t border-sand hover:bg-paper-2 transition-colors duration-150"
+							>
+								<div className="w-20 font-mono text-[13px] text-ink-3 tabular-nums">
+									{new Date(transaction.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+								</div>
+								<div className="flex-1 text-[15px]">{getPaymentTypeName(transaction.id_payment_type)}</div>
+								<div className="w-28 text-right font-mono text-xs text-ink-4">
+									#{String(1000 + transaction.id_transaction).padStart(5, "0")}
+								</div>
+								<div className="w-36 text-right font-display text-lg font-medium tabular-nums">
+									{transaction.amount.toFixed(2)}&nbsp;&euro;
+								</div>
+							</div>
+						))}
+						<div className="flex justify-between items-baseline px-7 py-5 border-t-2 border-ink">
+							<span className="font-display text-[13px] tracking-wider uppercase font-semibold">Total des transactions</span>
+							<span className="font-display text-2xl font-semibold text-signal tabular-nums">{totalTransactions.toFixed(2)}&nbsp;&euro;</span>
+						</div>
+					</>
 				)}
 			</div>
 		</div>

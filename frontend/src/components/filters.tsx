@@ -34,27 +34,24 @@ const Filters: React.FC<FiltersProps> = ({ onDateChange }) => {
 	};
 
 	return (
-		<div className="bg-white p-4 shadow-md rounded-md">
-			{error && <div className="text-red-500 mb-4">{error}</div>}
-			<div className="flex flex-col md:flex-row gap-4">
-				<div className="w-full">
-					<label htmlFor="date-input" className="block text-gray-700 mb-2">Date :</label>
-					<input
-						id="date-input"
-						type="date"
-						value={selectedDate}
-						max={formatTodayDate()}
-						disabled={!isAdmin}
-						className="w-full p-2 border rounded-md"
-						onChange={(e) => handleDateChange(e.target.value)}
-					/>
-					{!isAdmin && (
-						<p className="text-sm text-gray-500 mt-1">
-							Seuls les développeurs et gérants peuvent sélectionner des dates
-							antérieures
-						</p>
-					)}
-				</div>
+		<div className="p-5 bg-paper-soft border border-sand rounded-3xl">
+			{error && <div className="text-signal text-sm mb-3">{error}</div>}
+			<div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
+				<label htmlFor="date-input" className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4 whitespace-nowrap">Date :</label>
+				<input
+					id="date-input"
+					type="date"
+					value={selectedDate}
+					max={formatTodayDate()}
+					disabled={!isAdmin}
+					className="py-2.5 px-4 border border-sand rounded-[14px] bg-paper font-mono text-sm text-ink outline-none focus:ring-2 focus:ring-signal tabular-nums disabled:opacity-50"
+					onChange={(e) => handleDateChange(e.target.value)}
+				/>
+				{!isAdmin && (
+					<p className="text-xs text-ink-4">
+						Seuls les developpeurs et gerants peuvent selectionner des dates anterieures
+					</p>
+				)}
 			</div>
 		</div>
 	);

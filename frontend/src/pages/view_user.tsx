@@ -30,42 +30,48 @@ const ViewUser = () => {
 	const getRoleName = (roleId: number) => ROLE_LABELS[roleId] || "Inconnu";
 
 	return (
-		<div className="min-h-screen flex flex-col p-4">
-			<div className="flex-grow p-2 md:p-6">
-				<div className="bg-white rounded-lg shadow-md p-6">
-					<div className="mb-6">
-						<h1 className="text-2xl font-bold">
-							Fiche de {user.first_name} {user.last_name}
+		<div className="max-w-[720px] mx-auto">
+			<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Equipage &middot; fiche membre</div>
+
+			<div className="mt-4 bg-paper-soft border border-sand rounded-3xl p-8">
+				{/* Avatar + Name */}
+				<div className="flex items-center gap-5 mb-8">
+					<div className="w-16 h-16 rounded-full bg-ink text-paper flex items-center justify-center font-display text-xl font-semibold">
+						{user.first_name[0]}{user.last_name[0]}
+					</div>
+					<div>
+						<h1 className="font-display text-2xl font-semibold uppercase tracking-tight leading-tight">
+							{user.first_name} {user.last_name}
 						</h1>
-						<p className="text-md text-gray-600">Identifiant: {user.id_user}</p>
+						<div className="font-mono text-[11px] text-ink-4 tracking-wider mt-1">ID #{user.id_user}</div>
 					</div>
+				</div>
 
-					<div className="space-y-4">
-						<InfoField label="Nom" value={user.last_name} />
-						<InfoField label="Prénom" value={user.first_name} />
-						<InfoField label="Rôle" value={getRoleName(user.id_role)} />
-						<InfoField label="Email" value={user.email} />
-						<InfoField label="Adresse" value={user.postal_address} />
-						<InfoField label="Téléphone" value={user.phone_number} />
-						<InfoField
-							label="Date d'embauche"
-							value={user.hire_date && new Date(user.hire_date).toLocaleDateString()}
-						/>
-						<InfoField
-							label="Actif"
-							value={user.is_active ? "Oui" : "Non"}
-							className={user.is_active ? "text-green-600" : "text-red-600"}
-						/>
-					</div>
+				<div className="space-y-4">
+					<InfoField label="Nom" value={user.last_name} />
+					<InfoField label="Prenom" value={user.first_name} />
+					<InfoField label="Role" value={getRoleName(user.id_role)} />
+					<InfoField label="Email" value={user.email} />
+					<InfoField label="Adresse" value={user.postal_address} />
+					<InfoField label="Telephone" value={user.phone_number} />
+					<InfoField
+						label="Date d'embauche"
+						value={user.hire_date && new Date(user.hire_date).toLocaleDateString("fr-FR")}
+					/>
+					<InfoField
+						label="Actif"
+						value={user.is_active ? "Oui" : "Non"}
+						className={user.is_active ? "text-ok" : "text-signal"}
+					/>
+				</div>
 
-					<div className="mt-8 flex justify-end space-x-4">
-						<button aria-label="Retour" type="button" onClick={() => navigate("/users")} className="px-4 py-2 border rounded-md hover:bg-gray-100">
-							Retour
-						</button>
-						<button aria-label="Modifier" type="button" onClick={() => navigate(`/users/edit/${user.id_user}`)} className="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700">
-							Modifier
-						</button>
-					</div>
+				<div className="mt-8 flex justify-end gap-3">
+					<button aria-label="Retour" type="button" onClick={() => navigate("/users")} className="px-5 py-3 border border-sand rounded-2xl font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-paper-2 transition-colors bg-transparent">
+						Retour
+					</button>
+					<button aria-label="Modifier" type="button" onClick={() => navigate(`/users/edit/${user.id_user}`)} className="px-5 py-3 bg-ink text-paper rounded-2xl border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors">
+						Modifier
+					</button>
 				</div>
 			</div>
 		</div>

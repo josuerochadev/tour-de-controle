@@ -42,17 +42,17 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 			{children}
 			{dialog && (
 				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+					className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60"
 					role="dialog"
 					aria-modal="true"
 					aria-labelledby="dialog-title"
 				>
-					<div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-						<h2 id="dialog-title" className="text-xl font-bold text-gray-900 mb-4">
+					<div className="bg-paper-soft rounded-3xl p-8 max-w-sm w-full mx-4 border border-sand">
+						<h2 id="dialog-title" className="font-display text-xl font-semibold uppercase tracking-tight text-ink mb-4">
 							{dialog.title}
 						</h2>
-						<p className="text-gray-700 mb-6">{dialog.message}</p>
-						<div className="flex justify-end space-x-4">
+						<p className="text-ink-3 mb-6">{dialog.message}</p>
+						<div className="flex justify-end gap-3">
 							{dialog.buttons.map((button, index) => (
 								<button
 									key={button.label}

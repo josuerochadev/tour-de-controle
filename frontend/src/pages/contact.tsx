@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
+
 const ContactPage = () => {
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 	const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const ContactPage = () => {
 			);
 			setSuccess(true);
 		} catch {
-			setError("Erreur lors de l'envoi du message. Veuillez réessayer.");
+			setError("Erreur lors de l'envoi du message. Veuillez reessayer.");
 		} finally {
 			setLoading(false);
 		}
@@ -33,47 +35,59 @@ const ContactPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-100 p-4">
+		<div className="min-h-screen bg-paper p-4">
 			<div className="min-h-screen flex flex-col items-center justify-center px-4">
-				<div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+				<div className="bg-paper-soft border border-sand rounded-3xl p-8 w-full max-w-md">
 					<div className="flex flex-col items-center mb-8">
-						<img src="/LogoLaTourDeControle.png" alt="La Tour de Contrôle" className="h-24 w-24 mb-4" />
-						<h2 className="text-2xl font-semibold">Contactez-nous</h2>
+						<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4">
+							<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
+							<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
+							<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
+							<rect x="26" y="14" width="12" height="10" rx="1.5" fill="currentColor" />
+							<circle cx="32" cy="19" r="3" fill="#dc2626" />
+							<path d="M28 14 L36 14 L34 10 L30 10 Z" fill="currentColor" />
+							<circle cx="32" cy="9" r="1.5" fill="currentColor" />
+							<rect x="24" y="36" width="18" height="4" fill="#dc2626" />
+							<rect x="20" y="56" width="24" height="3" rx="1" fill="currentColor" />
+						</svg>
+						<h2 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink">Contactez-nous</h2>
 					</div>
 
-					<form onSubmit={handleSubmit} className="space-y-6">
+					<form onSubmit={handleSubmit} className="space-y-5">
 						<div>
-							<label htmlFor="name" className="block text-sm font-medium text-gray-700">Nom</label>
-							<input type="text" id="name" name="name" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" value={formData.name} onChange={handleChange} disabled={loading} />
+							<label htmlFor="name" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Nom</label>
+							<input type="text" id="name" name="name" required className={inputClass} value={formData.name} onChange={handleChange} disabled={loading} />
 						</div>
 						<div>
-							<label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-							<input type="email" id="email" name="email" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" value={formData.email} onChange={handleChange} disabled={loading} />
+							<label htmlFor="email" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Email</label>
+							<input type="email" id="email" name="email" required className={inputClass} value={formData.email} onChange={handleChange} disabled={loading} />
 						</div>
 						<div>
-							<label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
-							<textarea id="message" name="message" required rows={4} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" value={formData.message} onChange={handleChange} disabled={loading} />
+							<label htmlFor="message" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Message</label>
+							<textarea id="message" name="message" required rows={4} className={`${inputClass} resize-none`} value={formData.message} onChange={handleChange} disabled={loading} />
 						</div>
 
 						{success && (
-							<div className="bg-green-50 p-4 rounded-md">
-								<p className="text-green-800">Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.</p>
+							<div className="bg-ok-soft p-4 rounded-2xl">
+								<p className="text-ok-deep text-sm">Message envoye avec succes ! Nous vous repondrons dans les plus brefs delais.</p>
 							</div>
 						)}
 
 						{error && (
-							<div className="bg-red-50 p-4 rounded-md">
-								<p className="text-red-800">{error}</p>
+							<div className="bg-danger-soft p-4 rounded-2xl">
+								<p className="text-signal text-sm">{error}</p>
 							</div>
 						)}
 
-						<button type="submit" aria-label="Envoyer" disabled={loading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+						<button type="submit" aria-label="Envoyer" disabled={loading} className="w-full py-4 px-6 rounded-[14px] bg-ink text-paper border-none font-display text-[13px] font-semibold tracking-wider uppercase cursor-pointer disabled:opacity-50 hover:bg-ink-2 transition-colors duration-200">
 							{loading ? "Envoi en cours..." : "Envoyer"}
 						</button>
 					</form>
 
 					<div className="mt-6">
-						<Link to="/login" className="text-cyan-600 hover:text-cyan-500">Retour à la connexion</Link>
+						<Link to="/login" className="text-ink underline underline-offset-4 decoration-ink-4 hover:text-signal hover:decoration-signal font-mono text-sm tracking-wide">
+							Retour a la connexion
+						</Link>
 					</div>
 				</div>
 			</div>

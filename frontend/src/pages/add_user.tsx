@@ -7,22 +7,22 @@ import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatTodayDate } from "../constants";
 
 const userSchema = z.object({
-	first_name: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-	last_name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+	first_name: z.string().min(2, "Le prenom doit contenir au moins 2 caracteres"),
+	last_name: z.string().min(2, "Le nom doit contenir au moins 2 caracteres"),
 	email: z.string().email("Email invalide"),
 	password: z
 		.string()
-		.min(8, "Le mot de passe doit contenir au moins 8 caractères")
+		.min(8, "Le mot de passe doit contenir au moins 8 caracteres")
 		.regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
 		.regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre"),
 	postal_address: z.string().optional(),
 	phone_number: z
 		.string()
-		.regex(/^(\+33|0)[1-9](\d{2}){4}$/, "Format de téléphone français invalide")
+		.regex(/^(\+33|0)[1-9](\d{2}){4}$/, "Format de telephone francais invalide")
 		.optional()
 		.or(z.literal("")),
 	hire_date: z.string().min(1, "La date d'embauche est requise"),
-	id_role: z.number().positive("Le rôle est requis"),
+	id_role: z.number().positive("Le role est requis"),
 });
 
 interface UserFormData {
@@ -35,6 +35,9 @@ interface UserFormData {
 	hire_date: string;
 	id_role: number;
 }
+
+const inputClass = "w-full py-3 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
+const labelClass = "font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5";
 
 const AddUser: React.FC = () => {
 	const navigate = useNavigate();
@@ -72,80 +75,82 @@ const AddUser: React.FC = () => {
 		setLoading(true);
 		try {
 			await userService.create(formData);
-			showToast("Utilisateur créé avec succès", "success");
+			showToast("Membre embarque avec succes", "success");
 			navigate("/users");
 		} catch {
-			showToast("Erreur lors de la création de l'utilisateur", "error");
+			showToast("Erreur lors de la creation", "error");
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	const fieldError = (field: string) =>
-		errors[field] ? <p className="text-red-500 text-xs mt-1">{errors[field]}</p> : null;
+		errors[field] ? <p className="text-signal text-xs mt-1">{errors[field]}</p> : null;
 
 	return (
-		<div className="min-h-screen flex flex-col p-4">
-			<div className="flex-grow p-2 md:p-6">
-				<h1 className="text-2xl font-bold mb-6">Ajouter un employé</h1>
-				<form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-4">
-					<div>
-						<label htmlFor="last_name" className="block text-sm font-medium mb-1">Nom *</label>
-						<input id="last_name" type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} className="w-full p-2 border rounded-md" required />
-						{fieldError("last_name")}
-					</div>
-					<div>
-						<label htmlFor="first_name" className="block text-sm font-medium mb-1">Prénom *</label>
-						<input id="first_name" type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} className="w-full p-2 border rounded-md" required />
-						{fieldError("first_name")}
-					</div>
-					<div>
-						<label htmlFor="email" className="block text-sm font-medium mb-1">Email *</label>
-						<input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full p-2 border rounded-md" required />
-						{fieldError("email")}
-					</div>
-					<div>
-						<label htmlFor="password" className="block text-sm font-medium mb-1">Mot de passe *</label>
-						<div className="relative">
-							<input id="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full p-2 border rounded-md pr-10" required />
-							<button type="button" aria-label="Afficher le mot de passe" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-								{showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
-							</button>
-						</div>
-						<p className="text-xs text-gray-500 mt-1">Min. 8 caractères, 1 majuscule, 1 chiffre</p>
-						{fieldError("password")}
-					</div>
-					<div>
-						<label htmlFor="address" className="block text-sm font-medium mb-1">Adresse</label>
-						<input id="address" type="text" value={formData.postal_address} onChange={(e) => setFormData({ ...formData, postal_address: e.target.value })} className="w-full p-2 border rounded-md" />
-					</div>
-					<div>
-						<label htmlFor="telephone" className="block text-sm font-medium mb-1">Téléphone</label>
-						<input id="telephone" type="tel" value={formData.phone_number} onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })} className="w-full p-2 border rounded-md" placeholder="0612345678" />
-						{fieldError("phone_number")}
-					</div>
-					<div>
-						<label htmlFor="hire_date" className="block text-sm font-medium mb-1">Date d'embauche *</label>
-						<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })} className="w-full p-2 border rounded-md" required />
-						{fieldError("hire_date")}
-					</div>
-					<div>
-						<label htmlFor="role" className="block text-sm font-medium mb-1">Rôle *</label>
-						<select id="role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className="w-full p-2 border rounded-md" required>
-							<option value="">Sélectionner un rôle</option>
-							{Object.entries(ROLE_LABELS).map(([id, label]) => (
-								<option key={id} value={id}>{label}</option>
-							))}
-						</select>
-					</div>
-					<div className="flex justify-end space-x-4">
-						<button type="button" aria-label="Annuler" onClick={() => navigate("/users")} className="px-4 py-2 border rounded-md hover:bg-gray-100">Annuler</button>
-						<button type="submit" aria-label="Sauvegarder" disabled={loading} className="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 disabled:opacity-50">
-							{loading ? "Enregistrement..." : "Sauvegarder"}
+		<div className="max-w-[720px] mx-auto">
+			<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Equipage &middot; nouveau membre</div>
+			<h1 className="mt-2 mb-8 font-display text-[40px] font-semibold leading-none tracking-tight uppercase">Embaucher</h1>
+
+			<form onSubmit={handleSubmit} className="bg-paper-soft border border-sand rounded-3xl p-8 space-y-5">
+				<div>
+					<label htmlFor="last_name" className={labelClass}>Nom *</label>
+					<input id="last_name" type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} className={inputClass} required />
+					{fieldError("last_name")}
+				</div>
+				<div>
+					<label htmlFor="first_name" className={labelClass}>Prenom *</label>
+					<input id="first_name" type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} className={inputClass} required />
+					{fieldError("first_name")}
+				</div>
+				<div>
+					<label htmlFor="email" className={labelClass}>Email *</label>
+					<input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={inputClass} required />
+					{fieldError("email")}
+				</div>
+				<div>
+					<label htmlFor="password" className={labelClass}>Mot de passe *</label>
+					<div className="relative">
+						<input id="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className={`${inputClass} pr-12`} required />
+						<button type="button" aria-label="Afficher le mot de passe" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-4 hover:text-ink bg-transparent border-none cursor-pointer">
+							{showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
 						</button>
 					</div>
-				</form>
-			</div>
+					<p className="text-xs text-ink-4 mt-1">Min. 8 caracteres, 1 majuscule, 1 chiffre</p>
+					{fieldError("password")}
+				</div>
+				<div>
+					<label htmlFor="address" className={labelClass}>Adresse</label>
+					<input id="address" type="text" value={formData.postal_address} onChange={(e) => setFormData({ ...formData, postal_address: e.target.value })} className={inputClass} />
+				</div>
+				<div>
+					<label htmlFor="telephone" className={labelClass}>Telephone</label>
+					<input id="telephone" type="tel" value={formData.phone_number} onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })} className={inputClass} placeholder="0612345678" />
+					{fieldError("phone_number")}
+				</div>
+				<div>
+					<label htmlFor="hire_date" className={labelClass}>Date d'embauche *</label>
+					<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })} className={inputClass} required />
+					{fieldError("hire_date")}
+				</div>
+				<div>
+					<label htmlFor="role" className={labelClass}>Role *</label>
+					<select id="role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className={inputClass} required>
+						<option value="">Selectionner un role</option>
+						{Object.entries(ROLE_LABELS).map(([id, label]) => (
+							<option key={id} value={id}>{label}</option>
+						))}
+					</select>
+				</div>
+				<div className="flex justify-end gap-3 pt-4">
+					<button type="button" aria-label="Annuler" onClick={() => navigate("/users")} className="px-5 py-3 border border-sand rounded-2xl font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-paper-2 transition-colors bg-transparent">
+						Annuler
+					</button>
+					<button type="submit" aria-label="Sauvegarder" disabled={loading} className="px-5 py-3 bg-ink text-paper rounded-2xl border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors disabled:opacity-50">
+						{loading ? "Enregistrement..." : "Sauvegarder"}
+					</button>
+				</div>
+			</form>
 		</div>
 	);
 };

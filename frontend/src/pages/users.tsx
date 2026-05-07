@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../components/dialog";
 import { useToast } from "../components/toast";
@@ -32,16 +32,16 @@ const UsersList: React.FC = () => {
 	const handleDelete = async (userId: number) => {
 		const confirmed = await showDialog({
 			title: "Confirmation",
-			message: "Voulez-vous vraiment supprimer cet utilisateur ?",
+			message: "Voulez-vous vraiment supprimer ce membre ?",
 			buttons: [
-				{ label: "Annuler", className: "px-4 py-2 border rounded-md hover:bg-gray-100" },
-				{ label: "Supprimer", className: "px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700" },
+				{ label: "Annuler", className: "px-5 py-3 border border-sand rounded-2xl font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-paper-2 transition-colors" },
+				{ label: "Supprimer", className: "px-5 py-3 bg-signal text-paper rounded-2xl border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-signal-deep transition-colors" },
 			],
 		});
 		if (confirmed) {
 			try {
 				await userService.remove(userId);
-				showToast("Utilisateur supprimé", "success");
+				showToast("Membre supprime", "success");
 				fetchUsers();
 			} catch {
 				showToast("Erreur lors de la suppression", "error");
@@ -60,73 +60,93 @@ const UsersList: React.FC = () => {
 		);
 	}, [users, search]);
 
-	if (loading) return <div className="p-6">Chargement...</div>;
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center py-20">
+				<p className="font-mono text-ink-4 text-sm tracking-wider uppercase">Chargement...</p>
+			</div>
+		);
+	}
 
 	return (
-		<div className="p-4 md:p-6 mb-16">
-			<div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-				<h1 className="text-xl md:text-2xl font-bold">Liste des utilisateurs</h1>
+		<div className="max-w-[1200px] mx-auto">
+			{/* Page header */}
+			<div className="mb-8">
+				<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Personnel &middot; {users.length} membres</div>
+				<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase">L'equipage</h1>
+			</div>
+
+			{/* Search + Add */}
+			<div className="flex justify-between items-center mb-6 gap-4 flex-wrap">
+				<input
+					type="text"
+					placeholder="Rechercher un membre..."
+					className="flex-1 min-w-[280px] py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal"
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+				/>
 				<button
 					type="button"
-					aria-label="Ajouter un utilisateur"
+					aria-label="Embaucher"
 					onClick={() => navigate("/users/add")}
-					className="w-full md:w-auto bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700"
+					className="py-3.5 px-6 rounded-[14px] bg-ink text-paper border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors duration-200"
 				>
-					Ajouter un utilisateur
+					+ Embaucher
 				</button>
 			</div>
 
-			<input
-				type="text"
-				placeholder="Rechercher par nom, prénom, email, téléphone ou date d'embauche..."
-				className="w-full p-2 border rounded-md mb-4"
-				value={search}
-				onChange={(e) => setSearch(e.target.value)}
-			/>
-
-			<div className="overflow-x-auto bg-white rounded-lg shadow">
-				<table className="min-w-full border-collapse">
-					<thead className="text-center border-b bg-gray-100">
-						<tr className="bg-gray-50 border-b">
-							<th className="p-2 md:p-4 text-center">Nom</th>
-							<th className="p-2 md:p-4 text-center">Prénom</th>
-							<th className="p-2 md:p-4 text-center hidden md:table-cell">Email</th>
-							<th className="p-2 md:p-4 text-center hidden md:table-cell">Date d'embauche</th>
-							<th className="p-2 md:p-4 text-center">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{filteredUsers.map((user) => (
-							<tr key={user.id_user} className="border-t hover:bg-gray-50">
-								<td className="p-2 md:p-4 text-center">{user.last_name}</td>
-								<td className="p-2 md:p-4 text-center">{user.first_name}</td>
-								<td className="hidden md:table-cell p-2 md:p-4 text-center">{user.email}</td>
-								<td className="hidden md:table-cell p-2 md:p-4 text-center">
-									{new Date(user.hire_date).toLocaleDateString()}
-								</td>
-								<td className="p-2 md:p-4">
-									<div className="md:hidden mb-2">
-										<div className="text-sm text-gray-600">{user.email}</div>
-										<div className="text-sm text-gray-600">
-											{new Date(user.hire_date).toLocaleDateString()}
-										</div>
-									</div>
-									<div className="flex justify-center space-x-2">
-										<button aria-label="Voir détails" type="button" onClick={() => navigate(`/users/view/${user.id_user}`)} className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md" title="Voir détails">
-											<FaEye className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
-										</button>
-										<button aria-label="Modifier" type="button" onClick={() => navigate(`/users/edit/${user.id_user}`)} className="p-1 md:p-2 text-cyan-600 hover:text-cyan-700 border border-cyan-600 rounded-md" title="Modifier">
-											<FaEdit className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
-										</button>
-										<button aria-label="Supprimer" type="button" onClick={() => handleDelete(user.id_user)} className="p-1 md:p-2 text-red-600 hover:text-red-700 border border-red-600 rounded-md" title="Supprimer">
-											<FaTrash className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
-										</button>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+			{/* User cards grid */}
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+				{filteredUsers.map((user) => (
+					<div key={user.id_user} className="p-6 bg-paper-soft border border-sand rounded-3xl relative">
+						{user.is_active && (
+							<span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-ok" />
+						)}
+						{/* Avatar */}
+						<div className="w-14 h-14 rounded-full bg-ink text-paper flex items-center justify-center font-display text-lg font-semibold">
+							{user.first_name[0]}{user.last_name[0]}
+						</div>
+						{/* Name */}
+						<div className="mt-4 font-display text-xl font-semibold leading-tight uppercase tracking-tight">
+							{user.first_name} {user.last_name}
+						</div>
+						{/* Email */}
+						<div className="mt-4 pt-4 border-t border-sand text-xs text-ink-3">{user.email}</div>
+						<div className="mt-1.5 font-mono text-[10px] text-ink-4 tracking-wide tabular-nums">
+							EMBAUCHE LE {new Date(user.hire_date).toLocaleDateString("fr-FR")}
+						</div>
+						{/* Actions */}
+						<div className="mt-4 flex gap-2">
+							<button
+								aria-label="Voir details"
+								type="button"
+								onClick={() => navigate(`/users/view/${user.id_user}`)}
+								className="p-2.5 rounded-xl border border-sand bg-transparent text-ink-3 hover:text-ink hover:border-ink cursor-pointer transition-colors"
+								title="Voir"
+							>
+								<Eye className="w-4 h-4" />
+							</button>
+							<button
+								aria-label="Modifier"
+								type="button"
+								onClick={() => navigate(`/users/edit/${user.id_user}`)}
+								className="p-2.5 rounded-xl border border-sand bg-transparent text-ink-3 hover:text-ink hover:border-ink cursor-pointer transition-colors"
+								title="Modifier"
+							>
+								<Pencil className="w-4 h-4" />
+							</button>
+							<button
+								aria-label="Supprimer"
+								type="button"
+								onClick={() => handleDelete(user.id_user)}
+								className="p-2.5 rounded-xl border border-sand bg-transparent text-signal hover:bg-danger-soft cursor-pointer transition-colors"
+								title="Supprimer"
+							>
+								<Trash2 className="w-4 h-4" />
+							</button>
+						</div>
+					</div>
+				))}
 			</div>
 		</div>
 	);

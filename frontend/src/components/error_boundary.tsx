@@ -22,18 +22,18 @@ class ErrorBoundary extends React.Component<Props, State> {
 	render() {
 		if (this.state.hasError) {
 			return (
-				<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-					<div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-						<h1 className="text-2xl font-bold text-gray-900 mb-4">
+				<div className="min-h-screen flex items-center justify-center bg-paper p-4">
+					<div className="bg-paper-soft border border-sand rounded-3xl p-8 max-w-md w-full text-center">
+						<h1 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink mb-4">
 							Une erreur est survenue
 						</h1>
-						<p className="text-gray-600 mb-6">
-							L'application a rencontré un problème inattendu.
+						<p className="text-ink-3 mb-6">
+							L'application a rencontre un probleme inattendu.
 						</p>
 						<button
 							type="button"
 							onClick={() => window.location.reload()}
-							className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
+							className="py-3 px-6 rounded-[14px] bg-ink text-paper border-none font-display text-[13px] font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors"
 						>
 							Recharger la page
 						</button>

@@ -34,7 +34,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	return (
 		<ToastContext.Provider value={{ showToast }}>
 			{children}
-			<div className="fixed top-20 right-4 z-50 space-y-2">
+			<div className="fixed top-24 right-4 z-50 space-y-2">
 				{toasts.map((toast) => (
 					<ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
 				))}
@@ -44,9 +44,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 };
 
 const bgColors: Record<ToastType, string> = {
-	success: "bg-green-500",
-	error: "bg-red-500",
-	info: "bg-cyan-600",
+	success: "bg-ink text-paper",
+	error: "bg-signal text-paper",
+	info: "bg-ink text-paper",
 };
 
 const ToastItem: React.FC<{ toast: Toast; onClose: () => void }> = ({ toast, onClose }) => {
@@ -57,17 +57,17 @@ const ToastItem: React.FC<{ toast: Toast; onClose: () => void }> = ({ toast, onC
 
 	return (
 		<div
-			className={`${bgColors[toast.type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between min-w-72 animate-slide-in`}
+			className={`${bgColors[toast.type]} px-5 py-3.5 rounded-2xl flex items-center justify-between min-w-72 animate-slide-in font-display text-sm tracking-wide`}
 			role="alert"
 		>
 			<span>{toast.message}</span>
 			<button
 				type="button"
 				onClick={onClose}
-				className="ml-4 text-white hover:text-gray-200"
+				className="ml-4 text-paper hover:text-paper-3 bg-transparent border-none cursor-pointer"
 				aria-label="Fermer"
 			>
-				✕
+				&#x2715;
 			</button>
 		</div>
 	);
