@@ -2,6 +2,13 @@ import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/cash_register_model";
 
+/**
+ * Opens a new cash register for the authenticated user.
+ * @param req - Express request with authenticated user context
+ * @param res - Express response
+ * @returns JSON with the newly created cash register (201)
+ * @throws {ApiError} 401 if user not authenticated
+ */
 export async function create(req: Request, res: Response) {
 	const userId = req.user?.userId;
 	if (!userId) {
@@ -12,6 +19,13 @@ export async function create(req: Request, res: Response) {
 	return res.status(201).json(newRegister);
 }
 
+/**
+ * Closes a cash register, comparing physical and theoretical amounts.
+ * @param req - Express request with id route param and closing funds in body
+ * @param res - Express response
+ * @returns JSON with closed cash register and gap status
+ * @throws {ApiError} 401 if user not authenticated
+ */
 export async function close(req: Request, res: Response) {
 	const validatedData = req.body;
 	const { id } = req.params;
@@ -38,6 +52,12 @@ export async function close(req: Request, res: Response) {
 	});
 }
 
+/**
+ * Retrieves all currently open cash registers.
+ * @param req - Express request
+ * @param res - Express response
+ * @returns JSON array of open cash registers
+ */
 export async function current(req: Request, res: Response) {
 	const cashRegisters = await model.current();
 	return res.json(cashRegisters);

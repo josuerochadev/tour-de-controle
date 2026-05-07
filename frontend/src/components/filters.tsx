@@ -6,6 +6,7 @@ interface FiltersProps {
 	onDateChange: (date: string) => void;
 }
 
+/** Date filter component. Only admin roles can select past dates. */
 const Filters: React.FC<FiltersProps> = ({ onDateChange }) => {
 	const { user } = useAuth();
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());

@@ -15,10 +15,12 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType>({ showToast: () => {} });
 
+/** Returns the toast context, providing the showToast method. */
 export const useToast = () => useContext(ToastContext);
 
 let toastId = 0;
 
+/** Context provider that manages toast notifications and renders them in a fixed overlay. */
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [toasts, setToasts] = useState<Toast[]>([]);
 

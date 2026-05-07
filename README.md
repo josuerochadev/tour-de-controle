@@ -12,7 +12,7 @@
 | **Backend** | Express.js, TypeScript, Zod, Winston, JWT |
 | **Base de données** | PostgreSQL 15, Sqitch (migrations) |
 | **Infrastructure** | Docker Compose, GitHub Actions CI |
-| **Tests** | Jest, Supertest (48 tests d'intégration) |
+| **Tests** | Jest, Supertest, Vitest (96 tests — 78 backend + 18 frontend) |
 
 ## Fonctionnalités
 
@@ -32,7 +32,9 @@ tour-de-controle/
 ├── conception/       # Diagrammes UML, wireframes, maquettes
 ├── .github/          # CI GitHub Actions
 ├── docker-compose.yml
-└── SPRINTS.md        # Suivi des sprints
+├── SPRINTS.md        # Suivi des sprints
+├── CHANGELOG.md      # Historique des versions
+└── CONTRIBUTING.md   # Guide de contribution
 ```
 
 ## Démarrage rapide
@@ -96,8 +98,13 @@ Après le seeding, ces comptes sont disponibles (mot de passe : `Password1`) :
 ## Tests
 
 ```bash
+# Backend — 78 tests d'intégration (Jest + Supertest)
 cd backend
-npm test           # 48 tests d'intégration
+npm test
+
+# Frontend — 18 tests unitaires (Vitest + Testing Library)
+cd frontend
+npm test
 ```
 
 ## API Documentation

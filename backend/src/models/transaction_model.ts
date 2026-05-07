@@ -23,6 +23,11 @@ export interface TransactionQuery {
 	limit?: number;
 }
 
+/**
+ * Retrieves a paginated and filtered list of transactions.
+ * @param query - Optional filters (date range, payment type, amount range, user, pagination)
+ * @returns Paginated result with transaction data and total count
+ */
 export const findAll = async (
 	query?: TransactionQuery,
 ): Promise<{ data: Transaction[]; total: number; page: number; limit: number }> => {
@@ -86,6 +91,11 @@ export const findAll = async (
 	return { data: result.rows, total, page, limit };
 };
 
+/**
+ * Finds a transaction by its ID.
+ * @param id - The transaction ID
+ * @returns The transaction object, or null if not found
+ */
 export const findById = async (id: number): Promise<Transaction | null> => {
 	const result = await pool.query(
 		"SELECT * FROM transactions WHERE id_transaction = $1",
@@ -94,6 +104,11 @@ export const findById = async (id: number): Promise<Transaction | null> => {
 	return result.rows[0] || null;
 };
 
+/**
+ * Inserts a new transaction into the database with the current timestamp.
+ * @param transaction - Partial transaction object with required fields
+ * @returns The newly created transaction
+ */
 export const create = async (
 	transaction: Partial<Transaction>,
 ): Promise<Transaction> => {
@@ -112,6 +127,12 @@ export const create = async (
 	return result.rows[0];
 };
 
+/**
+ * Updates an existing transaction and sets updated_at to the current timestamp.
+ * @param id - The transaction ID to update
+ * @param transaction - Partial transaction object with fields to update
+ * @returns The updated transaction
+ */
 export const update = async (
 	id: number,
 	transaction: Partial<Transaction>,
@@ -139,6 +160,10 @@ export const update = async (
 	return result.rows[0];
 };
 
+/**
+ * Deletes a transaction from the database.
+ * @param id - The transaction ID to delete
+ */
 export const remove = async (id: number): Promise<void> => {
 	await pool.query("DELETE FROM transactions WHERE id_transaction = $1", [id]);
 };

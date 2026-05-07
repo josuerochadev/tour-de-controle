@@ -7,6 +7,13 @@ import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE } from "../config/constants"
 import { blacklistToken } from "../utils/token_blacklist_utils";
 import { sendResetPasswordEmail } from "../config/mailer";
 
+/**
+ * Authenticates a user with email and password, sets a JWT cookie on success.
+ * @param req - Express request containing email and password in body
+ * @param res - Express response
+ * @returns JSON success message with auth cookie
+ * @throws {ApiError} 400 if credentials missing, 401 if invalid
+ */
 export async function login(req: Request, res: Response) {
 	const { email, password } = req.body;
 
@@ -41,6 +48,13 @@ export async function login(req: Request, res: Response) {
 		.json({ message: "Connexion réussie" });
 }
 
+/**
+ * Returns the currently authenticated user's profile.
+ * @param req - Express request with authenticated user context
+ * @param res - Express response
+ * @returns JSON with user id, name, email, and role
+ * @throws {ApiError} 401 if not authenticated, 404 if user not found
+ */
 export async function getMe(req: Request, res: Response) {
 	const userId = req.user?.userId;
 	if (!userId) {
@@ -67,6 +81,12 @@ export async function getMe(req: Request, res: Response) {
 	});
 }
 
+/**
+ * Logs out the user by blacklisting the JWT token and clearing the auth cookie.
+ * @param req - Express request with auth cookie
+ * @param res - Express response
+ * @returns JSON success message
+ */
 export async function logout(req: Request, res: Response) {
 	const token = req.cookies.authenticationToken;
 	if (token) {
@@ -76,6 +96,12 @@ export async function logout(req: Request, res: Response) {
 	return res.status(200).json({ message: "Déconnexion réussie" });
 }
 
+/**
+ * Initiates the password reset flow by sending a reset email if the user exists.
+ * @param req - Express request containing email in body
+ * @param res - Express response
+ * @returns Generic JSON message (does not reveal whether the email exists)
+ */
 export async function forgotPassword(req: Request, res: Response) {
 	const { email } = req.body;
 	const genericMessage = "Si cet email existe, un lien de réinitialisation a été envoyé.";
@@ -92,6 +118,13 @@ export async function forgotPassword(req: Request, res: Response) {
 	return res.json({ message: genericMessage });
 }
 
+/**
+ * Resets a user's password using a valid reset token.
+ * @param req - Express request containing token and new password in body
+ * @param res - Express response
+ * @returns JSON success message
+ * @throws {ApiError} 400 if token/password missing or token invalid/expired
+ */
 export async function resetPassword(req: Request, res: Response) {
 	const { token, password } = req.body;
 

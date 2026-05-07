@@ -7,10 +7,10 @@
   },
   "lint-staged": {
     "backend/src/**/*.ts": [
-      "npx --prefix backend biome check --no-errors-on-unmatched"
+      "bash -c 'cd backend && npx biome check --no-errors-on-unmatched \"$@\"' --"
     ],
     "frontend/src/**/*.{ts,tsx}": [
-      "npx --prefix frontend eslint --no-error-on-unmatched-pattern"
+      "bash -c 'cd frontend && npx eslint --no-error-on-unmatched-pattern \"$@\"' --"
     ]
   },
   "devDependencies": {

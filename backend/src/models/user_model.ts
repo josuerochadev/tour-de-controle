@@ -14,6 +14,12 @@ export interface User {
 	id_role: number;
 }
 
+/**
+ * Retrieves a paginated list of all users.
+ * @param page - Page number (1-based)
+ * @param limit - Maximum number of users per page
+ * @returns Paginated result with user data and total count
+ */
 export const findAll = async (
 	page = 1,
 	limit = DEFAULT_PAGE_LIMIT,
@@ -30,6 +36,11 @@ export const findAll = async (
 	return { data: result.rows, total, page, limit };
 };
 
+/**
+ * Finds a user by their ID.
+ * @param id - The user ID
+ * @returns The user object, or null if not found
+ */
 export const findById = async (id: number): Promise<User | null> => {
 	const result = await pool.query("SELECT * FROM users WHERE id_user = $1", [
 		id,
@@ -37,6 +48,11 @@ export const findById = async (id: number): Promise<User | null> => {
 	return result.rows[0] || null;
 };
 
+/**
+ * Inserts a new user into the database.
+ * @param user - Partial user object with required fields
+ * @returns The newly created user
+ */
 export const create = async (user: Partial<User>): Promise<User> => {
 	const {
 		first_name,
@@ -65,6 +81,12 @@ export const create = async (user: Partial<User>): Promise<User> => {
 	return result.rows[0];
 };
 
+/**
+ * Updates an existing user using COALESCE to preserve unchanged fields.
+ * @param id - The user ID to update
+ * @param user - Partial user object with fields to update
+ * @returns The updated user
+ */
 export const update = async (
 	id: number,
 	user: Partial<User>,
@@ -107,6 +129,10 @@ export const update = async (
 	return result.rows[0];
 };
 
+/**
+ * Deletes a user from the database.
+ * @param id - The user ID to delete
+ */
 export const remove = async (id: number): Promise<void> => {
 	await pool.query("DELETE FROM users WHERE id_user = $1", [id]);
 };

@@ -28,6 +28,7 @@ const Logo = ({ size = 32 }: { size?: number }) => (
 	</svg>
 );
 
+/** Main application header with navigation, user info, and logout action. */
 const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 	const { user } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);

@@ -10,6 +10,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/** Provides authentication state (user, loading, logout) to the component tree. */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [user, setUser] = useState<AuthUser | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -33,6 +34,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	);
 };
 
+/**
+ * Returns the current authentication context.
+ * @throws If used outside of an AuthProvider.
+ */
 export const useAuth = (): AuthContextValue => {
 	const context = useContext(AuthContext);
 	if (!context) {

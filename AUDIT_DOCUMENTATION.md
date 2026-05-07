@@ -201,13 +201,13 @@ Le projet a une **excellente base documentaire macro** (README structure, CDC co
 
 | ID | Action | Statut |
 |----|--------|--------|
-| I1 | Ajouter JSDoc sur les fonctions exportees des controllers, models, middlewares backend + services, hooks frontend | TODO |
-| I2 | Creer CONTRIBUTING.md (conventions, workflow Git, PR process, setup dev) | TODO |
-| I3 | Creer CHANGELOG.md initial recapitulant les versions depuis le debut du projet | TODO |
-| I4 | Ajouter descriptions inline dans .env.example pour chaque variable | TODO |
-| I5 | Corriger README : mettre a jour le nombre de tests (96), mentionner Vitest frontend | TODO |
-| I6 | Creer un fichier ADR initial documentant les 5 decisions architecturales cles | TODO |
-| I7 | Ajouter service PostgreSQL dans la CI pour valider les tests d'integration reellement | TODO |
+| I1 | Ajouter JSDoc sur les fonctions exportees des controllers, models, middlewares backend + services, hooks frontend | FAIT |
+| I2 | Creer CONTRIBUTING.md (conventions, workflow Git, PR process, setup dev) | FAIT |
+| I3 | Creer CHANGELOG.md initial recapitulant les versions depuis le debut du projet | FAIT |
+| I4 | Ajouter descriptions inline dans .env.example pour chaque variable | FAIT |
+| I5 | Corriger README : mettre a jour le nombre de tests (96), mentionner Vitest frontend | FAIT |
+| I6 | Creer un fichier ADR initial documentant les 5 decisions architecturales cles | FAIT |
+| I7 | Ajouter service PostgreSQL dans la CI pour valider les tests d'integration reellement | FAIT |
 
 ### Phase 3 — Mineurs
 

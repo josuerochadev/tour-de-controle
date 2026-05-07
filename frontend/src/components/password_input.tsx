@@ -12,6 +12,7 @@ interface PasswordInputProps {
 	name?: string;
 }
 
+/** Password input field with a toggle button to show or hide the value. */
 const PasswordInput: React.FC<PasswordInputProps> = ({
 	id,
 	value,

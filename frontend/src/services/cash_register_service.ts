@@ -33,8 +33,13 @@ export interface Funds {
 	physical_amount: number;
 }
 
+/** Handles cash register and transaction API calls. */
 class CashRegisterService {
 
+	/**
+	 * Fetches all currently open cash registers.
+	 * @returns An array of open cash registers.
+	 */
 	async getCurrentRegister() {
 		const response = await axios.get<CashRegister[]>(
 			`${BASE_URL}/cash-registers/current`,
@@ -43,6 +48,11 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Opens a new cash register with an initial amount.
+	 * @param physical_amount - The starting physical cash amount.
+	 * @returns The newly created cash register.
+	 */
 	async openRegister(physical_amount: number) {
 		const response = await axios.post<CashRegister>(
 			`${BASE_URL}/cash-registers`,
@@ -52,6 +62,12 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Closes a cash register with the counted funds.
+	 * @param id - The cash register ID.
+	 * @param funds - Physical amounts per payment type.
+	 * @returns The closed cash register.
+	 */
 	async closeRegister(id: number, funds: Funds[]) {
 		const response = await axios.put<CashRegister>(
 			`${BASE_URL}/cash-registers/${id}/close`,
@@ -61,6 +77,11 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Fetches transactions with optional filters.
+	 * @param query - Optional filter criteria (date range, payment type, amount, user).
+	 * @returns The matching transactions.
+	 */
 	async getTransactions(query?: {
 		date_from?: string;
 		date_to?: string;
@@ -76,6 +97,7 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/** Fetches all available payment types. */
 	async getPaymentTypes() {
 		const response = await axios.get(
 			`${BASE_URL}/payment-types`,
@@ -84,6 +106,11 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Creates a new transaction.
+	 * @param transaction - The transaction data.
+	 * @returns The created transaction.
+	 */
 	async createTransaction(transaction: Partial<Transaction>) {
 		const response = await axios.post<Transaction>(
 			`${BASE_URL}/transactions`,
@@ -93,6 +120,12 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Partially updates an existing transaction.
+	 * @param id - The transaction ID.
+	 * @param transaction - Fields to update.
+	 * @returns The updated transaction.
+	 */
 	async updateTransaction(id: number, transaction: Partial<Transaction>) {
 		const response = await axios.patch<Transaction>(
 			`${BASE_URL}/transactions/${id}`,
@@ -102,6 +135,10 @@ class CashRegisterService {
 		return response.data;
 	}
 
+	/**
+	 * Deletes a transaction by ID.
+	 * @param id - The transaction ID to delete.
+	 */
 	async deleteTransaction(id: number) {
 		await axios.delete(`${BASE_URL}/transactions/${id}`, {
 			withCredentials: true,

@@ -1,6 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import logger from "../config/logger";
 
+/**
+ * Custom error class for API errors with an HTTP status code and optional error code.
+ */
 export class ApiError extends Error {
 	public statusCode: number;
 	public code?: string;
@@ -13,6 +16,13 @@ export class ApiError extends Error {
 	}
 }
 
+/**
+ * Global Express error handler. Returns structured JSON for ApiError instances and 500 for unexpected errors.
+ * @param err - The thrown error
+ * @param req - Express request
+ * @param res - Express response
+ * @param _next - Next function (unused, required by Express error handler signature)
+ */
 export function errorHandler(
 	err: unknown,
 	req: Request,

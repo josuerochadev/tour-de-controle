@@ -14,6 +14,13 @@ declare global {
 	}
 }
 
+/**
+ * Express middleware that verifies the JWT auth cookie and attaches user info to the request.
+ * @param req - Express request
+ * @param res - Express response
+ * @param next - Next middleware function
+ * @returns 403 if no token, 401 if blacklisted or invalid
+ */
 export const authenticateJWT = async (
 	req: Request,
 	res: Response,
@@ -41,6 +48,11 @@ export const authenticateJWT = async (
 	}
 };
 
+/**
+ * Returns an Express middleware that restricts access to the specified roles.
+ * @param roles - Array of allowed role IDs
+ * @returns Middleware that responds 403 if the user's role is not in the list
+ */
 export const authorizeRoles =
 	(roles: readonly number[]) => (req: Request, res: Response, next: NextFunction) => {
 		if (!req.user || !roles.includes(req.user.role)) {

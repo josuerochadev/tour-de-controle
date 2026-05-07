@@ -6,6 +6,10 @@ import CashRegisterService, {
 } from "../services/cash_register_service";
 import { PAYMENT_TYPE_FALLBACK, PAYMENT_TYPES } from "../constants";
 
+/**
+ * Hook that manages cash register state, transactions, and payment types.
+ * @returns Current register, transactions, totals, and mutation methods.
+ */
 export const useCashRegister = () => {
 	const [currentRegister, setCurrentRegister] = useState<CashRegister | null>(
 		null,

@@ -19,6 +19,11 @@ export interface CashRegisterClose {
 	}[];
 }
 
+/**
+ * Opens a new cash register with zero initial amounts.
+ * @param opened_by - The user ID who opens the register
+ * @returns The newly created cash register
+ */
 export const create = async (opened_by: number): Promise<CashRegister> => {
 	const initialAmount = 0;
 
@@ -33,6 +38,13 @@ export const create = async (opened_by: number): Promise<CashRegister> => {
 	return result.rows[0];
 };
 
+/**
+ * Closes a cash register by computing theoretical vs physical amounts and detecting gaps.
+ * @param id - The cash register ID to close
+ * @param obj - Object containing physical fund amounts per payment type
+ * @param closedBy - The user ID who closes the register
+ * @returns The closed cash register and whether a gap was detected
+ */
 export const close = async (
 	id: number,
 	obj: CashRegisterClose,
@@ -69,6 +81,10 @@ export const close = async (
 	return { cashRegister: result.rows[0], hasGap };
 };
 
+/**
+ * Retrieves all currently open cash registers.
+ * @returns Array of open cash registers
+ */
 export const current = async (): Promise<CashRegister[]> => {
 	const result = await pool.query(
 		"SELECT * FROM cash_registers WHERE status = $1",
