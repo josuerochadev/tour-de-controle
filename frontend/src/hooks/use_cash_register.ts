@@ -86,7 +86,7 @@ export const useCashRegister = () => {
 
 	const closeRegister = async (id: number, amount: number) => {
 		try {
-			// Création de la structure de fonds attendue par l'API
+			// Build the funds structure expected by the close API
 			const funds: Funds[] = [
 				{
 					id_payment_type: PAYMENT_TYPES.CASH,

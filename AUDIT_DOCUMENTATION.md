@@ -213,9 +213,9 @@ Le projet a une **excellente base documentaire macro** (README structure, CDC co
 
 | ID | Action | Statut |
 |----|--------|--------|
-| M1 | Choisir une langue pour les commentaires (FR ou EN) et harmoniser | TODO |
-| M2 | Supprimer `.github/ci.yml` (doublon non fonctionnel) | TODO |
-| M3 | Creer `backend/.env.example` et `frontend/.env.example` dedies | TODO |
-| M4 | Supprimer `conception/document_a_fournir.md` ou le deplacer hors du repo | TODO |
-| M5 | Ajouter un test CI qui verifie la coherence des constantes front/back | TODO |
-| M6 | Ajouter section troubleshooting dans le README | TODO |
+| M1 | Choisir une langue pour les commentaires (EN) et harmoniser | FAIT |
+| M2 | Supprimer `.github/ci.yml` (doublon non fonctionnel) | N/A (fichier inexistant) |
+| M3 | Creer `backend/.env.example` et `frontend/.env.example` dedies | FAIT |
+| M4 | Supprimer `conception/document_a_fournir.md` | FAIT |
+| M5 | Ajouter un test CI qui verifie la coherence des constantes front/back | FAIT |
+| M6 | Ajouter section troubleshooting dans le README | FAIT |

@@ -10,7 +10,7 @@ const redis = new Redis(REDIS_URL, {
 
 let redisAvailable = false;
 
-// Fallback en mémoire si Redis n'est pas disponible
+// In-memory fallback when Redis is unavailable
 const memoryBlacklist = new Set<string>();
 
 redis

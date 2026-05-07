@@ -58,6 +58,24 @@ jobs:
       - name: Tests
         run: npm test
 
+  constants-sync:
+    name: Verify shared constants are in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check ROLES match between backend and frontend
+        run: |
+          BACKEND_ROLES=$(grep -A5 'export const ROLES' backend/src/config/constants.ts | grep -oP '\w+:\s*\d+' | sort)
+          FRONTEND_ROLES=$(grep -A5 'export const ROLES' frontend/src/constants.ts | grep -oP '\w+:\s*\d+' | sort)
+          if [ "$BACKEND_ROLES" != "$FRONTEND_ROLES" ]; then
+            echo "ROLES mismatch between backend and frontend!"
+            echo "Backend: $BACKEND_ROLES"
+            echo "Frontend: $FRONTEND_ROLES"
+            exit 1
+          fi
+          echo "ROLES are in sync."
+
   frontend:
     name: Frontend — Lint, Type Check & Tests
     runs-on: ubuntu-latest

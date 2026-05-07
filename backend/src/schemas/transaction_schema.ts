@@ -1,7 +1,7 @@
 // schemas/transaction.schema.ts
 import { z } from "zod";
 
-// Schéma de base pour les champs communs
+// Base schema for shared fields
 const baseTransactionSchema = {
   amount: z.number().positive(),
   tip: z.number().min(0).optional(),
@@ -9,19 +9,19 @@ const baseTransactionSchema = {
   id_cash_register: z.number().positive(),
 };
 
-// Schéma pour la création
+// Create schema
 export const createSchema = z.object({
   ...baseTransactionSchema,
   created_by: z.number().positive()
 });
 
-// Schéma pour la mise à jour
+// Update schema
 export const updateSchema = z.object({
   ...baseTransactionSchema,
   updated_at: z.date().optional()
 }).partial();
 
-// Schéma pour le filtrage
+// Filter schema
 export const filterSchema = z.object({
   date_from: z.string().optional().transform(val => val ? new Date(val) : undefined),
   date_to: z.string().optional().transform(val => val ? new Date(val) : undefined),

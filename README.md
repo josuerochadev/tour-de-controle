@@ -111,6 +111,17 @@ npm test
 
 Swagger UI disponible sur `http://localhost:8080` (Docker) ou `http://localhost:4000/api-docs` (local).
 
+## Problèmes courants
+
+| Problème | Cause probable | Solution |
+|----------|---------------|----------|
+| `ECONNREFUSED 5432` | PostgreSQL non démarré | `brew services start postgresql@15` ou `docker compose up db` |
+| `ECONNREFUSED 6379` | Redis non démarré | Le backend fonctionne sans (fallback mémoire). Pour Redis : `brew services start redis` |
+| `Error: listen EADDRINUSE :4000` | Port déjà utilisé | `lsof -i :4000` puis `kill <PID>`, ou changer `PORT` dans `.env` |
+| `sqitch: command not found` | Sqitch non installé | `brew install sqitch` (macOS) ou [sqitch.org](https://sqitch.org) |
+| Reset password ne fonctionne pas | Variables SMTP vides | Créer un compte sur [ethereal.email](https://ethereal.email) et renseigner `SMTP_USER` / `SMTP_PASS` |
+| Pre-commit hook échoue | Lint errors | Corriger les erreurs signalées, ne pas utiliser `--no-verify` |
+
 ## Licence
 
 MIT

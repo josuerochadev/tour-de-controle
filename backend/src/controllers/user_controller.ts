@@ -107,7 +107,7 @@ export async function remove(req: Request, res: Response) {
  * @throws {ApiError} 400 if not authenticated, 404 if user not found
  */
 export async function getProfile(req: Request, res: Response) {
-	const userId = req.user?.userId; // Récupérer l'ID utilisateur depuis le token JWT
+	const userId = req.user?.userId;
 
 	if (!userId) {
 		throw new ApiError("Not authenticated", 400);
