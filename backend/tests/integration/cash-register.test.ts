@@ -97,6 +97,14 @@ describe("Cash Register Endpoints", () => {
 		};
 
 		it("should close register without gap", async () => {
+			// findById query (ownership check)
+			mockQuery.mockResolvedValueOnce({
+				rows: [{
+					id_cash_register: 1,
+					status: "OPEN",
+					opened_by: 1,
+				}],
+			});
 			// transactions query
 			mockQuery.mockResolvedValueOnce({
 				rows: [
@@ -127,6 +135,14 @@ describe("Cash Register Endpoints", () => {
 		});
 
 		it("should close register and report gap", async () => {
+			// findById query (ownership check)
+			mockQuery.mockResolvedValueOnce({
+				rows: [{
+					id_cash_register: 1,
+					status: "OPEN",
+					opened_by: 1,
+				}],
+			});
 			// transactions query - theoretical = 200
 			mockQuery.mockResolvedValueOnce({
 				rows: [

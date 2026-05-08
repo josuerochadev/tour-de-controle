@@ -1,9 +1,9 @@
 // backend/src/controllers/user.controller.ts
 import type { Request, Response } from "express";
+import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/user_model";
 import { hashPassword } from "../utils/password_utils";
-import { DEFAULT_PAGE_LIMIT } from "../config/constants";
 
 /**
  * Retrieves a paginated list of all users.
@@ -12,10 +12,13 @@ import { DEFAULT_PAGE_LIMIT } from "../config/constants";
  * @returns JSON with paginated user data
  */
 export async function getAll(req: Request, res: Response) {
-	const page = Number(req.query.page) || 1;
-	const limit = Number(req.query.limit) || DEFAULT_PAGE_LIMIT;
-	const result = await model.findAll(page, limit);
-	return res.json(result);
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(
+    Math.max(1, Number(req.query.limit) || DEFAULT_PAGE_LIMIT),
+    100,
+  );
+  const result = await model.findAll(page, limit);
+  return res.json(result);
 }
 
 /**
@@ -26,11 +29,11 @@ export async function getAll(req: Request, res: Response) {
  * @throws {ApiError} 404 if user not found
  */
 export async function getById(req: Request, res: Response) {
-	const user = await model.findById(Number(req.params.id));
-	if (!user) {
-		throw new ApiError("User not found", 404);
-	}
-	return res.json(user);
+  const user = await model.findById(Number(req.params.id));
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
+  return res.json(user);
 }
 
 /**
@@ -40,16 +43,16 @@ export async function getById(req: Request, res: Response) {
  * @returns JSON with the newly created user (201)
  */
 export async function create(req: Request, res: Response) {
-	const validatedData = req.body;
-	// Hash the password
-	const hashedPassword = await hashPassword(validatedData.password);
-	// Insert the new user
-	const newUser = await model.create({
-		...validatedData,
-		password: hashedPassword,
-	});
+  const validatedData = req.body;
+  // Hash the password
+  const hashedPassword = await hashPassword(validatedData.password);
+  // Insert the new user
+  const newUser = await model.create({
+    ...validatedData,
+    password: hashedPassword,
+  });
 
-	return res.status(201).json(newUser);
+  return res.status(201).json(newUser);
 }
 
 /**
@@ -60,24 +63,24 @@ export async function create(req: Request, res: Response) {
  * @throws {ApiError} 404 if user not found
  */
 export async function update(req: Request, res: Response) {
-	const id = Number(req.params.id);
-	const validatedData = req.body;
+  const id = Number(req.params.id);
+  const validatedData = req.body;
 
-	const existingUser = await model.findById(id);
-	if (!existingUser) {
-		throw new ApiError("User not found", 404);
-	}
+  const existingUser = await model.findById(id);
+  if (!existingUser) {
+    throw new ApiError("User not found", 404);
+  }
 
-	// Prepare the updated data
-	const patchedData = { ...existingUser, ...validatedData };
+  // Prepare the updated data
+  const patchedData = { ...existingUser, ...validatedData };
 
-	// If patching the password, hash it
-	if (validatedData.password) {
-		patchedData.password = await hashPassword(validatedData.password);
-	}
+  // If patching the password, hash it
+  if (validatedData.password) {
+    patchedData.password = await hashPassword(validatedData.password);
+  }
 
-	const updated = await model.update(id, patchedData);
-	return res.json(updated);
+  const updated = await model.update(id, patchedData);
+  return res.json(updated);
 }
 
 /**
@@ -88,15 +91,15 @@ export async function update(req: Request, res: Response) {
  * @throws {ApiError} 404 if user not found
  */
 export async function remove(req: Request, res: Response) {
-	const id = Number(req.params.id);
+  const id = Number(req.params.id);
 
-	const user = await model.findById(id);
-	if (!user) {
-		throw new ApiError("User not found", 404);
-	}
+  const user = await model.findById(id);
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
 
-	await model.remove(id);
-	return res.sendStatus(204);
+  await model.remove(id);
+  return res.sendStatus(204);
 }
 
 /**
@@ -107,21 +110,21 @@ export async function remove(req: Request, res: Response) {
  * @throws {ApiError} 400 if not authenticated, 404 if user not found
  */
 export async function getProfile(req: Request, res: Response) {
-	const userId = req.user?.userId;
+  const userId = req.user?.userId;
 
-	if (!userId) {
-		throw new ApiError("Not authenticated", 400);
-	}
+  if (!userId) {
+    throw new ApiError("Not authenticated", 400);
+  }
 
-	const user = await model.findById(userId);
+  const user = await model.findById(userId);
 
-	if (!user) {
-		throw new ApiError("User not found", 404);
-	}
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
 
-	return res.json({
-		first_name: user.first_name,
-		last_name: user.last_name,
-		email: user.email,
-	});
+  return res.json({
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+  });
 }

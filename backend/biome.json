@@ -1,32 +1,32 @@
 {
-	"$schema": "https://json.schemastore.org/schema-catalog.json",
-	"files": {
-		"ignore": ["dist/**", "node_modules/**"]
-	},
-	"formatter": {
-		"lineWidth": 80,
-		"indentStyle": "space",
-		"indentWidth": 2
-	},
-	"linter": {
-		"rules": {
-			"recommended": true,
-			"complexity": {
-				"noExtraBooleanCast": "error",
-				"noUselessSwitchCase": "error"
-			},
-			"correctness": {
-				"noUnusedVariables": "warn",
-				"noUnusedImports": "warn"
-			},
-			"suspicious": {
-				"noExplicitAny": "warn",
-				"noDoubleEquals": "error"
-			},
-			"style": {
-				"useConst": "error",
-				"noVar": "error"
-			}
-		}
-	}
+  "$schema": "https://biomejs.dev/schemas/2.4.14/schema.json",
+  "files": {
+    "includes": ["**", "!**/dist/**", "!**/node_modules/**"]
+  },
+  "formatter": {
+    "lineWidth": 80,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noExtraBooleanCast": "error",
+        "noUselessSwitchCase": "error"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn",
+        "noDoubleEquals": "error",
+        "noVar": "error"
+      },
+      "style": {
+        "useConst": "error"
+      }
+    }
+  }
 }

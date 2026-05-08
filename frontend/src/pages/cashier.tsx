@@ -209,4 +209,4 @@ const CashierPage = () => {
 	);
 };
 
-export default CashierPage;
+export default React.memo(CashierPage);

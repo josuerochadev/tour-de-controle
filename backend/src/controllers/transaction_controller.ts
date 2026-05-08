@@ -12,9 +12,9 @@ import { filterSchema } from "../schemas/transaction_schema";
  * @returns The filtered transactions as a JSON response.
  */
 export async function getAll(req: Request, res: Response) {
-	const filters = filterSchema.parse(req.query);
-	const result = await model.findAll(filters);
-	return res.json(result);
+  const filters = filterSchema.parse(req.query);
+  const result = await model.findAll(filters);
+  return res.json(result);
 }
 
 /**
@@ -26,11 +26,11 @@ export async function getAll(req: Request, res: Response) {
  * @returns The transaction as a JSON response.
  */
 export async function getById(req: Request, res: Response) {
-	const transaction = await model.findById(Number(req.params.id));
-	if (!transaction) {
-		throw new ApiError("Not found", 404);
-	}
-	return res.json(transaction);
+  const transaction = await model.findById(Number(req.params.id));
+  if (!transaction) {
+    throw new ApiError("Not found", 404);
+  }
+  return res.json(transaction);
 }
 
 /**
@@ -41,8 +41,8 @@ export async function getById(req: Request, res: Response) {
  * @returns The created transaction as a JSON response.
  */
 export async function create(req: Request, res: Response) {
-	const newTransaction = await model.create(req.body);
-	return res.status(201).json(newTransaction);
+  const newTransaction = await model.create(req.body);
+  return res.status(201).json(newTransaction);
 }
 
 /**
@@ -54,27 +54,35 @@ export async function create(req: Request, res: Response) {
  * @returns The updated transaction as a JSON response.
  */
 export async function updateById(req: Request, res: Response) {
-	const id = Number(req.params.id);
-	const validatedData = req.body;
+  const id = Number(req.params.id);
+  const validatedData = req.body;
 
-	const currentTransaction = await model.findById(id);
-	if (!currentTransaction) {
-		throw new ApiError("Transaction not found", 404);
-	}
+  const currentTransaction = await model.findById(id);
+  if (!currentTransaction) {
+    throw new ApiError("Transaction not found", 404);
+  }
 
-	// Combine current data with the updated data
-	const updatedData = {
-		amount: validatedData.amount ?? currentTransaction.amount,
-		tip: validatedData.tip ?? currentTransaction.tip,
-		id_cash_register:
-			validatedData.id_cash_register ?? currentTransaction.id_cash_register,
-		id_payment_type:
-			validatedData.id_payment_type ?? currentTransaction.id_payment_type,
-		id_user: currentTransaction.id_user, // Do not modify the creator
-	};
+  const userId = req.user?.userId;
+  if (currentTransaction.id_user !== userId) {
+    throw new ApiError(
+      "Forbidden: you can only modify your own transactions",
+      403,
+    );
+  }
 
-	const updatedTransaction = await model.update(id, updatedData);
-	return res.json(updatedTransaction);
+  // Combine current data with the updated data
+  const updatedData = {
+    amount: validatedData.amount ?? currentTransaction.amount,
+    tip: validatedData.tip ?? currentTransaction.tip,
+    id_cash_register:
+      validatedData.id_cash_register ?? currentTransaction.id_cash_register,
+    id_payment_type:
+      validatedData.id_payment_type ?? currentTransaction.id_payment_type,
+    id_user: currentTransaction.id_user, // Do not modify the creator
+  };
+
+  const updatedTransaction = await model.update(id, updatedData);
+  return res.json(updatedTransaction);
 }
 
 /**
@@ -86,13 +94,13 @@ export async function updateById(req: Request, res: Response) {
  * @returns A 204 No Content status.
  */
 export async function deleteById(req: Request, res: Response) {
-	const id = Number(req.params.id);
+  const id = Number(req.params.id);
 
-	const transaction = await model.findById(id);
-	if (!transaction) {
-		throw new ApiError("Not found", 404);
-	}
+  const transaction = await model.findById(id);
+  if (!transaction) {
+    throw new ApiError("Not found", 404);
+  }
 
-	await model.remove(id);
-	return res.sendStatus(204);
+  await model.remove(id);
+  return res.sendStatus(204);
 }

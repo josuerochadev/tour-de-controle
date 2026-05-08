@@ -19,6 +19,11 @@ class ErrorBoundary extends React.Component<Props, State> {
 		return { hasError: true, error };
 	}
 
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		// Ready to plug into Sentry, LogRocket, or any error tracking service
+		console.error("ErrorBoundary caught:", error, errorInfo.componentStack);
+	}
+
 	render() {
 		if (this.state.hasError) {
 			return (

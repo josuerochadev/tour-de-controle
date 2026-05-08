@@ -10,13 +10,13 @@ import * as model from "../models/cash_register_model";
  * @throws {ApiError} 401 if user not authenticated
  */
 export async function create(req: Request, res: Response) {
-	const userId = req.user?.userId;
-	if (!userId) {
-		throw new ApiError("User not authenticated", 401);
-	}
+  const userId = req.user?.userId;
+  if (!userId) {
+    throw new ApiError("User not authenticated", 401);
+  }
 
-	const newRegister = await model.create(userId);
-	return res.status(201).json(newRegister);
+  const newRegister = await model.create(userId);
+  return res.status(201).json(newRegister);
 }
 
 /**
@@ -27,29 +27,44 @@ export async function create(req: Request, res: Response) {
  * @throws {ApiError} 401 if user not authenticated
  */
 export async function close(req: Request, res: Response) {
-	const validatedData = req.body;
-	const { id } = req.params;
-	const userId = req.user?.userId;
+  const validatedData = req.body;
+  const { id } = req.params;
+  const userId = req.user?.userId;
 
-	if (!userId) {
-		throw new ApiError("User not authenticated", 401);
-	}
+  if (!userId) {
+    throw new ApiError("User not authenticated", 401);
+  }
 
-	const { cashRegister, hasGap } = await model.close(Number(id), validatedData, userId);
+  const existing = await model.findById(Number(id));
+  if (!existing) {
+    throw new ApiError("Cash register not found", 404);
+  }
+  if (existing.status !== "OPEN") {
+    throw new ApiError("Cash register is already closed", 400);
+  }
+  if (existing.opened_by !== userId && !req.user?.role) {
+    throw new ApiError("Forbidden: you did not open this register", 403);
+  }
 
-	if (hasGap) {
-		return res.status(200).json({
-			message: "Caisse fermée avec un écart détecté",
-			cashRegister,
-			hasGap: true,
-		});
-	}
+  const { cashRegister, hasGap } = await model.close(
+    Number(id),
+    validatedData,
+    userId,
+  );
 
-	return res.status(200).json({
-		message: "Caisse fermée avec succès",
-		cashRegister,
-		hasGap: false,
-	});
+  if (hasGap) {
+    return res.status(200).json({
+      message: "Caisse fermée avec un écart détecté",
+      cashRegister,
+      hasGap: true,
+    });
+  }
+
+  return res.status(200).json({
+    message: "Caisse fermée avec succès",
+    cashRegister,
+    hasGap: false,
+  });
 }
 
 /**
@@ -58,7 +73,7 @@ export async function close(req: Request, res: Response) {
  * @param res - Express response
  * @returns JSON array of open cash registers
  */
-export async function current(req: Request, res: Response) {
-	const cashRegisters = await model.current();
-	return res.json(cashRegisters);
+export async function current(_req: Request, res: Response) {
+  const cashRegisters = await model.current();
+  return res.json(cashRegisters);
 }

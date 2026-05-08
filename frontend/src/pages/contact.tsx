@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { z } from "zod";
 import ContactService from "../services/contact_service";
+
+const contactSchema = z.object({
+	name: z.string().min(2, "Le nom doit contenir au moins 2 caracteres"),
+	email: z.string().email("Email invalide"),
+	message: z.string().min(10, "Le message doit contenir au moins 10 caracteres"),
+});
 
 const inputClass = "w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
 
@@ -9,11 +16,24 @@ const ContactPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState("");
+	const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
 		setError("");
+		setValidationErrors({});
+
+		const result = contactSchema.safeParse(formData);
+		if (!result.success) {
+			const errors: Record<string, string> = {};
+			for (const issue of result.error.issues) {
+				errors[issue.path[0] as string] = issue.message;
+			}
+			setValidationErrors(errors);
+			setLoading(false);
+			return;
+		}
 
 		try {
 			const success = await ContactService.send(formData);
@@ -57,14 +77,17 @@ const ContactPage = () => {
 						<div>
 							<label htmlFor="name" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Nom</label>
 							<input type="text" id="name" name="name" required className={inputClass} value={formData.name} onChange={handleChange} disabled={loading} />
+							{validationErrors.name && <p className="text-signal text-xs mt-1">{validationErrors.name}</p>}
 						</div>
 						<div>
 							<label htmlFor="email" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Email</label>
 							<input type="email" id="email" name="email" required className={inputClass} value={formData.email} onChange={handleChange} disabled={loading} />
+							{validationErrors.email && <p className="text-signal text-xs mt-1">{validationErrors.email}</p>}
 						</div>
 						<div>
 							<label htmlFor="message" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5">Message</label>
 							<textarea id="message" name="message" required rows={4} className={`${inputClass} resize-none`} value={formData.message} onChange={handleChange} disabled={loading} />
+							{validationErrors.message && <p className="text-signal text-xs mt-1">{validationErrors.message}</p>}
 						</div>
 
 						{success && (

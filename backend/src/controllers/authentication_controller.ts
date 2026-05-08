@@ -1,11 +1,16 @@
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { comparePassword, hashPassword } from "../utils/password_utils";
+import {
+  COOKIE_MAX_AGE,
+  JWT_EXPIRES_IN,
+  JWT_SECRET,
+  RESET_TOKEN_EXPIRES_IN,
+} from "../config/constants";
+import { sendResetPasswordEmail } from "../config/mailer";
 import { ApiError } from "../middlewares/error_middleware";
 import * as model from "../models/authentication_model";
-import { JWT_SECRET, JWT_EXPIRES_IN, COOKIE_MAX_AGE } from "../config/constants";
+import { comparePassword, hashPassword } from "../utils/password_utils";
 import { blacklistToken } from "../utils/token_blacklist_utils";
-import { sendResetPasswordEmail } from "../config/mailer";
 
 /**
  * Authenticates a user with email and password, sets a JWT cookie on success.
@@ -15,37 +20,40 @@ import { sendResetPasswordEmail } from "../config/mailer";
  * @throws {ApiError} 400 if credentials missing, 401 if invalid
  */
 export async function login(req: Request, res: Response) {
-	const { email, password } = req.body;
+  const { email, password } = req.body;
 
-	if (!email || !password) {
-		throw new ApiError("Email and password are required", 400);
-	}
+  if (!email || !password) {
+    throw new ApiError("Email and password are required", 400);
+  }
 
-	const user = await model.findByEmail(email);
-	if (!user) {
-		throw new ApiError("Invalid email or password", 401);
-	}
+  const user = await model.findByEmail(email);
 
-	const isValidPassword = await comparePassword(password, user.password);
-	if (!isValidPassword) {
-		throw new ApiError("Invalid email or password", 401);
-	}
+  // Constant-time: always run bcrypt compare to prevent user enumeration via timing
+  const DUMMY_HASH =
+    "$2a$12$000000000000000000000uGiltReasonably.LongDummyHashForTiming";
+  const isValidPassword = await comparePassword(
+    password,
+    user?.password ?? DUMMY_HASH,
+  );
+  if (!user || !isValidPassword) {
+    throw new ApiError("Invalid email or password", 401);
+  }
 
-	const token = jwt.sign(
-		{ userId: user.id_user, role: user.id_role },
-		JWT_SECRET,
-		{ expiresIn: JWT_EXPIRES_IN },
-	);
+  const token = jwt.sign(
+    { userId: user.id_user, role: user.id_role },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN },
+  );
 
-	return res
-		.cookie("authenticationToken", token, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax",
-			maxAge: COOKIE_MAX_AGE,
-		})
-		.status(200)
-		.json({ message: "Connexion réussie" });
+  return res
+    .cookie("authenticationToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: COOKIE_MAX_AGE,
+    })
+    .status(200)
+    .json({ message: "Connexion réussie" });
 }
 
 /**
@@ -56,29 +64,29 @@ export async function login(req: Request, res: Response) {
  * @throws {ApiError} 401 if not authenticated, 404 if user not found
  */
 export async function getMe(req: Request, res: Response) {
-	const userId = req.user?.userId;
-	if (!userId) {
-		throw new ApiError("Not authenticated", 401);
-	}
-	const user = await model.findById(userId);
-	if (!user) {
-		throw new ApiError("User not found", 404);
-	}
+  const userId = req.user?.userId;
+  if (!userId) {
+    throw new ApiError("Not authenticated", 401);
+  }
+  const user = await model.findById(userId);
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
 
-	res.setHeader(
-		"Cache-Control",
-		"no-store, no-cache, must-revalidate, proxy-revalidate",
-	);
-	res.setHeader("Pragma", "no-cache");
-	res.setHeader("Expires", "0");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
 
-	return res.json({
-		id: user.id_user,
-		first_name: user.first_name,
-		last_name: user.last_name,
-		email: user.email,
-		role: user.id_role,
-	});
+  return res.json({
+    id: user.id_user,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    role: user.id_role,
+  });
 }
 
 /**
@@ -88,12 +96,12 @@ export async function getMe(req: Request, res: Response) {
  * @returns JSON success message
  */
 export async function logout(req: Request, res: Response) {
-	const token = req.cookies.authenticationToken;
-	if (token) {
-		await blacklistToken(token);
-	}
-	res.clearCookie("authenticationToken");
-	return res.status(200).json({ message: "Déconnexion réussie" });
+  const token = req.cookies.authenticationToken;
+  if (token) {
+    await blacklistToken(token);
+  }
+  res.clearCookie("authenticationToken");
+  return res.status(200).json({ message: "Déconnexion réussie" });
 }
 
 /**
@@ -103,19 +111,22 @@ export async function logout(req: Request, res: Response) {
  * @returns Generic JSON message (does not reveal whether the email exists)
  */
 export async function forgotPassword(req: Request, res: Response) {
-	const { email } = req.body;
-	const genericMessage = "Si cet email existe, un lien de réinitialisation a été envoyé.";
+  const { email } = req.body;
+  const genericMessage =
+    "Si cet email existe, un lien de réinitialisation a été envoyé.";
 
-	const user = await model.findByEmail(email);
-	if (!user) {
-		return res.json({ message: genericMessage });
-	}
+  const user = await model.findByEmail(email);
+  if (!user) {
+    return res.json({ message: genericMessage });
+  }
 
-	const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-	await model.saveResetToken(email, resetToken);
-	await sendResetPasswordEmail(email, resetToken);
+  const resetToken = jwt.sign({ email }, JWT_SECRET, {
+    expiresIn: RESET_TOKEN_EXPIRES_IN,
+  });
+  await model.saveResetToken(email, resetToken);
+  await sendResetPasswordEmail(email, resetToken);
 
-	return res.json({ message: genericMessage });
+  return res.json({ message: genericMessage });
 }
 
 /**
@@ -126,27 +137,27 @@ export async function forgotPassword(req: Request, res: Response) {
  * @throws {ApiError} 400 if token/password missing or token invalid/expired
  */
 export async function resetPassword(req: Request, res: Response) {
-	const { token, password } = req.body;
+  const { token, password } = req.body;
 
-	if (!token || !password) {
-		throw new ApiError("Token et mot de passe requis", 400);
-	}
+  if (!token || !password) {
+    throw new ApiError("Token et mot de passe requis", 400);
+  }
 
-	let decoded: { email: string };
-	try {
-		decoded = jwt.verify(token, JWT_SECRET) as { email: string };
-	} catch {
-		throw new ApiError("Token invalide ou expiré", 400);
-	}
+  let decoded: { email: string };
+  try {
+    decoded = jwt.verify(token, JWT_SECRET) as { email: string };
+  } catch {
+    throw new ApiError("Token invalide ou expiré", 400);
+  }
 
-	const user = await model.findByEmail(decoded.email);
-	if (!user || user.reset_token !== token) {
-		throw new ApiError("Token invalide ou expiré", 400);
-	}
+  const user = await model.findByEmail(decoded.email);
+  if (!user || user.reset_token !== token) {
+    throw new ApiError("Token invalide ou expiré", 400);
+  }
 
-	const hashedPassword = await hashPassword(password);
-	await model.updatePasswordByEmail(decoded.email, hashedPassword);
-	await model.saveResetToken(decoded.email, "");
+  const hashedPassword = await hashPassword(password);
+  await model.updatePasswordByEmail(decoded.email, hashedPassword);
+  await model.saveResetToken(decoded.email, "");
 
-	return res.json({ message: "Mot de passe mis à jour avec succès" });
+  return res.json({ message: "Mot de passe mis à jour avec succès" });
 }

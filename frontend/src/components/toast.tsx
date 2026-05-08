@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { TOAST_DURATION_MS } from "../constants";
 
+const ERROR_TOAST_DURATION_MS = 8000;
+
 type ToastType = "success" | "error" | "info";
 
 interface Toast {
@@ -53,9 +55,10 @@ const bgColors: Record<ToastType, string> = {
 
 const ToastItem: React.FC<{ toast: Toast; onClose: () => void }> = ({ toast, onClose }) => {
 	useEffect(() => {
-		const timer = setTimeout(onClose, TOAST_DURATION_MS);
+		const duration = toast.type === "error" ? ERROR_TOAST_DURATION_MS : TOAST_DURATION_MS;
+		const timer = setTimeout(onClose, duration);
 		return () => clearTimeout(timer);
-	}, [onClose]);
+	}, [onClose, toast.type]);
 
 	return (
 		<div

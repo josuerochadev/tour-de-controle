@@ -1,21 +1,25 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { setupAxiosInterceptors } from "./config/axios_interceptor";
 import ErrorBoundary from "./components/error_boundary";
 import { ToastProvider } from "./components/toast";
 import { DialogProvider } from "./components/dialog";
+
+// Eager-loaded: login is the entry point
 import Login from "./pages/login";
-import ForgotPassword from "./pages/forgot_password";
-import ResetPassword from "./pages/reset_password";
-import Dashboard from "./pages/dashboard";
-import Users from "./pages/users";
-import AuthenticationLayout from "./layouts/authentication_layout";
-import AddUser from "./pages/add_user";
-import EditUser from "./pages/edit_user";
-import ViewUser from "./pages/view_user";
-import Contact from "./pages/contact";
-import CashierPage from "./pages/cashier";
-import Transactions from "./pages/transactions";
+
+// Lazy-loaded: split per route
+const ForgotPassword = lazy(() => import("./pages/forgot_password"));
+const ResetPassword = lazy(() => import("./pages/reset_password"));
+const Dashboard = lazy(() => import("./pages/dashboard"));
+const Users = lazy(() => import("./pages/users"));
+const AuthenticationLayout = lazy(() => import("./layouts/authentication_layout"));
+const AddUser = lazy(() => import("./pages/add_user"));
+const EditUser = lazy(() => import("./pages/edit_user"));
+const ViewUser = lazy(() => import("./pages/view_user"));
+const Contact = lazy(() => import("./pages/contact"));
+const CashierPage = lazy(() => import("./pages/cashier"));
+const Transactions = lazy(() => import("./pages/transactions"));
 
 const App: React.FC = () => {
 	useEffect(() => {
@@ -27,6 +31,7 @@ const App: React.FC = () => {
 			<ToastProvider>
 				<DialogProvider>
 					<Router>
+						<Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-paper"><p className="text-ink-3">Chargement...</p></div>}>
 						<Routes>
 							<Route path="/" element={<Login />} />
 							<Route path="/login" element={<Login />} />
@@ -44,6 +49,7 @@ const App: React.FC = () => {
 							</Route>
 						<Route path="*" element={<Login />} />
 						</Routes>
+						</Suspense>
 					</Router>
 				</DialogProvider>
 			</ToastProvider>

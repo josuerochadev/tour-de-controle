@@ -1,23 +1,36 @@
 import pool from "../config/db";
 
 export interface CashRegister {
-	id_cash_register: number;
-	date_opened: Date;
-	date_closed?: Date;
-	has_gap: boolean;
-	physical_amount: number;
-	theoretical_amount: number;
-	status: "OPEN" | "CLOSED";
-	opened_by: number;
-	closed_by?: number;
+  id_cash_register: number;
+  date_opened: Date;
+  date_closed?: Date;
+  has_gap: boolean;
+  physical_amount: number;
+  theoretical_amount: number;
+  status: "OPEN" | "CLOSED";
+  opened_by: number;
+  closed_by?: number;
 }
 
 export interface CashRegisterClose {
-	funds: {
-		id_payment_type: number;
-		physical_amount: number;
-	}[];
+  funds: {
+    id_payment_type: number;
+    physical_amount: number;
+  }[];
 }
+
+/**
+ * Finds a cash register by its ID.
+ * @param id - The cash register ID
+ * @returns The cash register, or null if not found
+ */
+export const findById = async (id: number): Promise<CashRegister | null> => {
+  const result = await pool.query(
+    "SELECT * FROM cash_registers WHERE id_cash_register = $1",
+    [id],
+  );
+  return result.rows[0] || null;
+};
 
 /**
  * Opens a new cash register with zero initial amounts.
@@ -25,17 +38,17 @@ export interface CashRegisterClose {
  * @returns The newly created cash register
  */
 export const create = async (opened_by: number): Promise<CashRegister> => {
-	const initialAmount = 0;
+  const initialAmount = 0;
 
-	const result = await pool.query(
-		`INSERT INTO cash_registers
+  const result = await pool.query(
+    `INSERT INTO cash_registers
      (date_opened, physical_amount, theoretical_amount, status, opened_by)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-		[new Date(), initialAmount, initialAmount, "OPEN", opened_by],
-	);
+    [new Date(), initialAmount, initialAmount, "OPEN", opened_by],
+  );
 
-	return result.rows[0];
+  return result.rows[0];
 };
 
 /**
@@ -46,27 +59,27 @@ export const create = async (opened_by: number): Promise<CashRegister> => {
  * @returns The closed cash register and whether a gap was detected
  */
 export const close = async (
-	id: number,
-	obj: CashRegisterClose,
-	closedBy: number,
+  id: number,
+  obj: CashRegisterClose,
+  closedBy: number,
 ): Promise<{ cashRegister: CashRegister; hasGap: boolean }> => {
-	const transactions = await pool.query(
-		"SELECT * FROM transactions WHERE id_cash_register = $1",
-		[id],
-	);
+  const transactions = await pool.query(
+    "SELECT * FROM transactions WHERE id_cash_register = $1",
+    [id],
+  );
 
-	const theoreticalAmount = transactions.rows.reduce((acc, cur) => {
-		return acc + Number(cur.amount);
-	}, 0);
+  const theoreticalAmount = transactions.rows.reduce((acc, cur) => {
+    return acc + Number(cur.amount);
+  }, 0);
 
-	const physicalAmount = obj.funds.reduce((acc, cur) => {
-		return acc + cur.physical_amount;
-	}, 0);
+  const physicalAmount = obj.funds.reduce((acc, cur) => {
+    return acc + cur.physical_amount;
+  }, 0);
 
-	const hasGap = theoreticalAmount !== physicalAmount;
+  const hasGap = theoreticalAmount !== physicalAmount;
 
-	const result = await pool.query(
-		`UPDATE cash_registers SET
+  const result = await pool.query(
+    `UPDATE cash_registers SET
       date_closed = $1,
       has_gap = $2,
       physical_amount = $3,
@@ -75,10 +88,18 @@ export const close = async (
       closed_by = $6
      WHERE id_cash_register = $7
      RETURNING *`,
-		[new Date(), hasGap, physicalAmount, theoreticalAmount, "CLOSED", closedBy, id],
-	);
+    [
+      new Date(),
+      hasGap,
+      physicalAmount,
+      theoreticalAmount,
+      "CLOSED",
+      closedBy,
+      id,
+    ],
+  );
 
-	return { cashRegister: result.rows[0], hasGap };
+  return { cashRegister: result.rows[0], hasGap };
 };
 
 /**
@@ -86,9 +107,9 @@ export const close = async (
  * @returns Array of open cash registers
  */
 export const current = async (): Promise<CashRegister[]> => {
-	const result = await pool.query(
-		"SELECT * FROM cash_registers WHERE status = $1",
-		["OPEN"],
-	);
-	return result.rows;
+  const result = await pool.query(
+    "SELECT * FROM cash_registers WHERE status = $1",
+    ["OPEN"],
+  );
+  return result.rows;
 };

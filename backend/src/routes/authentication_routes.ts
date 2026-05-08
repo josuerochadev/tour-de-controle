@@ -1,11 +1,11 @@
 import express from "express";
 
 import {
-	login,
-	logout,
-	forgotPassword,
-	getMe,
-	resetPassword,
+  forgotPassword,
+  getMe,
+  login,
+  logout,
+  resetPassword,
 } from "../controllers/authentication_controller";
 import { authenticateJWT } from "../middlewares/authentication_middleware";
 import { authLimiter } from "../middlewares/rate_limit_middleware";

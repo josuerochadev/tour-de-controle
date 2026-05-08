@@ -1,19 +1,19 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import logger from "../config/logger";
 
 /**
  * Custom error class for API errors with an HTTP status code and optional error code.
  */
 export class ApiError extends Error {
-	public statusCode: number;
-	public code?: string;
+  public statusCode: number;
+  public code?: string;
 
-	constructor(message: string, statusCode: number, code?: string) {
-		super(message);
-		this.name = "ApiError";
-		this.statusCode = statusCode;
-		this.code = code;
-	}
+  constructor(message: string, statusCode: number, code?: string) {
+    super(message);
+    this.name = "ApiError";
+    this.statusCode = statusCode;
+    this.code = code;
+  }
 }
 
 /**
@@ -24,22 +24,30 @@ export class ApiError extends Error {
  * @param _next - Next function (unused, required by Express error handler signature)
  */
 export function errorHandler(
-	err: unknown,
-	req: Request,
-	res: Response,
-	_next: NextFunction,
+  err: unknown,
+  req: Request,
+  res: Response,
+  _next: NextFunction,
 ) {
-	if (err instanceof ApiError) {
-		return res.status(err.statusCode).json({
-			error: err.message,
-			statusCode: err.statusCode,
-			code: err.code,
-		});
-	}
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      error: err.message,
+      statusCode: err.statusCode,
+      code: err.code,
+    });
+  }
 
-	logger.error("Unexpected error", { error: err, path: req.path, method: req.method });
-	return res.status(500).json({
-		error: "Internal Server Error",
-		statusCode: 500,
-	});
+  const safeError =
+    err instanceof Error
+      ? { message: err.message, stack: err.stack }
+      : String(err);
+  logger.error("Unexpected error", {
+    error: safeError,
+    path: req.path,
+    method: req.method,
+  });
+  return res.status(500).json({
+    error: "Internal Server Error",
+    statusCode: 500,
+  });
 }

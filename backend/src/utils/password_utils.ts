@@ -1,6 +1,6 @@
 // backend/src/utils/password.utils.ts
-import bcrypt from 'bcryptjs';
-import { SALT_ROUNDS } from '../config/constants';
+import bcrypt from "bcryptjs";
+import { SALT_ROUNDS } from "../config/constants";
 
 /**
  * Hashes a plaintext password using bcrypt.
@@ -8,7 +8,7 @@ import { SALT_ROUNDS } from '../config/constants';
  * @returns The bcrypt hash string
  */
 export const hashPassword = async (password: string): Promise<string> => {
-    return await bcrypt.hash(password, SALT_ROUNDS);
+  return await bcrypt.hash(password, SALT_ROUNDS);
 };
 
 /**
@@ -17,6 +17,9 @@ export const hashPassword = async (password: string): Promise<string> => {
  * @param hash - The bcrypt hash to compare against
  * @returns True if the password matches the hash
  */
-export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
-    return await bcrypt.compare(password, hash);
+export const comparePassword = async (
+  password: string,
+  hash: string,
+): Promise<boolean> => {
+  return await bcrypt.compare(password, hash);
 };

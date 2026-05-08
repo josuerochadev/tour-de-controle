@@ -106,4 +106,4 @@ const TransactionsPage = () => {
 	);
 };
 
-export default TransactionsPage;
+export default React.memo(TransactionsPage);

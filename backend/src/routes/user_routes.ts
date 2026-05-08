@@ -1,22 +1,20 @@
 import express from "express";
-import {
-	getAll,
-	getById,
-	create,
-	update,
-	remove,
-	getProfile,
-} from "../controllers/user_controller";
-
-import {
-	authenticateJWT,
-	authorizeRoles,
-} from "../middlewares/authentication_middleware";
-
-import { validateBody } from "../middlewares/validate_middleware";
-import { validateIdParam } from "../middlewares/validate_id_param";
-import { createSchema, updateSchema } from "../schemas/user_schema";
 import { ADMIN_ROLES } from "../config/constants";
+import {
+  create,
+  getAll,
+  getById,
+  getProfile,
+  remove,
+  update,
+} from "../controllers/user_controller";
+import {
+  authenticateJWT,
+  authorizeRoles,
+} from "../middlewares/authentication_middleware";
+import { validateIdParam } from "../middlewares/validate_id_param";
+import { validateBody } from "../middlewares/validate_middleware";
+import { createSchema, updateSchema } from "../schemas/user_schema";
 
 const router = express.Router();
 
@@ -91,7 +89,13 @@ router.get("/", authenticateJWT, authorizeRoles(ADMIN_ROLES), getAll);
  *       404:
  *         description: Utilisateur non trouve
  */
-router.get("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), validateIdParam(), getById);
+router.get(
+  "/:id",
+  authenticateJWT,
+  authorizeRoles(ADMIN_ROLES),
+  validateIdParam(),
+  getById,
+);
 
 /**
  * @swagger
@@ -118,11 +122,11 @@ router.get("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), validateIdParam
  *         description: Donnees invalides
  */
 router.post(
-	"/",
-	authenticateJWT,
-	authorizeRoles(ADMIN_ROLES),
-	validateBody(createSchema),
-	create,
+  "/",
+  authenticateJWT,
+  authorizeRoles(ADMIN_ROLES),
+  validateBody(createSchema),
+  create,
 );
 
 /**
@@ -152,12 +156,12 @@ router.post(
  *         description: Utilisateur non trouve
  */
 router.patch(
-	"/:id",
-	authenticateJWT,
-	authorizeRoles(ADMIN_ROLES),
-	validateIdParam(),
-	validateBody(updateSchema),
-	update,
+  "/:id",
+  authenticateJWT,
+  authorizeRoles(ADMIN_ROLES),
+  validateIdParam(),
+  validateBody(updateSchema),
+  update,
 );
 
 /**
@@ -180,6 +184,12 @@ router.patch(
  *       404:
  *         description: Utilisateur non trouve
  */
-router.delete("/:id", authenticateJWT, authorizeRoles(ADMIN_ROLES), validateIdParam(), remove);
+router.delete(
+  "/:id",
+  authenticateJWT,
+  authorizeRoles(ADMIN_ROLES),
+  validateIdParam(),
+  remove,
+);
 
 export default router;
