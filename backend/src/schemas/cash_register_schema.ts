@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const createSchema = z.object({
-  id_restaurant: z.number(),
+  physical_amount: z.number().min(0).default(0),
 });
 
 export const closeSchema = z.object({

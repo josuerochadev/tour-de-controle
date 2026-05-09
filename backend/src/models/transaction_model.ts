@@ -9,7 +9,7 @@ export interface Transaction {
   updated_at?: Date;
   id_payment_type: number;
   id_cash_register: number;
-  id_user: number;
+  created_by: number;
 }
 
 export interface TransactionQuery {
@@ -73,7 +73,7 @@ export const findAll = async (
     }
     if (query.user_id) {
       params.push(query.user_id);
-      const clause = ` AND id_user = $${params.length}`;
+      const clause = ` AND created_by = $${params.length}`;
       sql += clause;
       countSql += clause;
     }
@@ -118,7 +118,7 @@ export const create = async (
   transaction: Partial<Transaction>,
 ): Promise<Transaction> => {
   const result = await pool.query(
-    `INSERT INTO transactions (amount, tip, created_at, id_payment_type, id_cash_register, id_user)
+    `INSERT INTO transactions (amount, tip, created_at, id_payment_type, id_cash_register, created_by)
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
     [
       transaction.amount,
@@ -126,7 +126,7 @@ export const create = async (
       new Date(),
       transaction.id_payment_type,
       transaction.id_cash_register,
-      transaction.id_user,
+      transaction.created_by,
     ],
   );
   return result.rows[0];
@@ -149,7 +149,7 @@ export const update = async (
 				updated_at = $3,
 				id_payment_type = $4,
 				id_cash_register = $5,
-				id_user = $6
+				created_by = $6
        WHERE id_transaction = $7
        RETURNING *`,
     [
@@ -158,7 +158,7 @@ export const update = async (
       new Date(),
       transaction.id_payment_type,
       transaction.id_cash_register,
-      transaction.id_user,
+      transaction.created_by,
       id,
     ],
   );

@@ -15,7 +15,8 @@ export async function create(req: Request, res: Response) {
     throw new ApiError("User not authenticated", 401);
   }
 
-  const newRegister = await model.create(userId);
+  const { physical_amount = 0 } = req.body;
+  const newRegister = await model.create(userId, physical_amount);
   return res.status(201).json(newRegister);
 }
 

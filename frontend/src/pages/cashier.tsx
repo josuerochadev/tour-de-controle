@@ -1,13 +1,17 @@
 import React, { useState, useMemo } from "react";
 import { useCashRegister } from "../hooks/use_cash_register";
 import { useDialog } from "../components/dialog";
+import { useToast } from "../components/toast";
+import { useAuth } from "../contexts/auth_context";
 import Filters from "../components/filters";
 import { formatTodayDate } from "../constants";
+import CashRegisterService from "../services/cash_register_service";
 
 const CashierPage = () => {
 	const {
 		currentRegister,
 		transactions,
+		paymentTypes,
 		loading,
 		error,
 		totalsByType,
@@ -19,8 +23,13 @@ const CashierPage = () => {
 	} = useCashRegister();
 
 	const { showDialog } = useDialog();
+	const { showToast } = useToast();
+	const { user } = useAuth();
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
 	const [openingAmount, setOpeningAmount] = useState<number>(0);
+	const [txAmount, setTxAmount] = useState<string>("");
+	const [txPaymentType, setTxPaymentType] = useState<number>(1);
+	const [txLoading, setTxLoading] = useState(false);
 
 	const handleDateChange = async (date: string) => {
 		setSelectedDate(date);
@@ -51,6 +60,29 @@ const CashierPage = () => {
 				currentRegister.id_cash_register,
 				currentRegister.physical_amount,
 			);
+		}
+	};
+
+	const handleAddTransaction = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const amount = Number(txAmount);
+		if (!amount || amount <= 0 || !currentRegister || !user) return;
+		setTxLoading(true);
+		try {
+			await CashRegisterService.createTransaction({
+				amount,
+				tip: 0,
+				id_payment_type: txPaymentType,
+				id_cash_register: currentRegister.id_cash_register,
+				created_by: user.id,
+			});
+			setTxAmount("");
+			await refreshTransactions(selectedDate);
+			showToast("Transaction enregistree", "success");
+		} catch {
+			showToast("Erreur lors de l'enregistrement", "error");
+		} finally {
+			setTxLoading(false);
 		}
 	};
 
@@ -183,6 +215,50 @@ const CashierPage = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Add transaction form — only when register is open */}
+			{isOpen && (
+				<form onSubmit={handleAddTransaction} className="mt-6 p-7 bg-paper-soft border border-sand rounded-3xl">
+					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4 mb-5">// Nouvelle transaction</div>
+					<div className="flex gap-3 flex-wrap items-end">
+						<div className="flex-1 min-w-[120px]">
+							<label htmlFor="tx-amount" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Montant (€)</label>
+							<input
+								id="tx-amount"
+								type="number"
+								step="0.01"
+								min="0.01"
+								placeholder="0,00"
+								value={txAmount}
+								onChange={(e) => setTxAmount(e.target.value)}
+								className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper font-display text-lg outline-none focus:ring-2 focus:ring-signal tabular-nums"
+								required
+							/>
+						</div>
+						<div className="flex-1 min-w-[160px]">
+							<label htmlFor="tx-payment" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Moyen de paiement</label>
+							<select
+								id="tx-payment"
+								value={txPaymentType}
+								onChange={(e) => setTxPaymentType(Number(e.target.value))}
+								className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper font-sans text-base outline-none focus:ring-2 focus:ring-signal"
+							>
+								{Object.entries(paymentTypes).map(([id, name]) => (
+									<option key={id} value={id}>{name}</option>
+								))}
+							</select>
+						</div>
+						<button
+							type="submit"
+							disabled={txLoading || !txAmount}
+							aria-label="Enregistrer la transaction"
+							className="py-3.5 px-7 rounded-[14px] bg-ink text-paper border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors duration-200 disabled:opacity-40 whitespace-nowrap"
+						>
+							{txLoading ? "..." : "+ Encaisser"}
+						</button>
+					</div>
+				</form>
+			)}
 
 			{/* Transactions list */}
 			<div className="mt-6 bg-paper-soft border border-sand rounded-3xl overflow-hidden">

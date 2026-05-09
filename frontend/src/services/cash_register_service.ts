@@ -25,7 +25,7 @@ export interface Transaction {
 	created_at: string;
 	id_payment_type: number;
 	id_cash_register: number;
-	id_user: number;
+	created_by: number;
 }
 
 export interface Funds {

@@ -22,6 +22,7 @@ initMonitoring();
 import pool from "./config/db";
 import authRoutes from "./routes/authentication_routes";
 import cashRegisterRoutes from "./routes/cash_register_routes";
+import paymentTypeRoutes from "./routes/payment_type_routes";
 import transactionRoutes from "./routes/transaction_routes";
 import userRoutes from "./routes/user_routes";
 
@@ -85,6 +86,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/cash-registers", cashRegisterRoutes);
+app.use("/api/payment-types", paymentTypeRoutes);
 
 app.get("/health", async (_req, res) => {
   try {

@@ -63,7 +63,7 @@ export async function updateById(req: Request, res: Response) {
   }
 
   const userId = req.user?.userId;
-  if (currentTransaction.id_user !== userId) {
+  if (currentTransaction.created_by !== userId) {
     throw new ApiError(
       "Forbidden: you can only modify your own transactions",
       403,
@@ -78,7 +78,7 @@ export async function updateById(req: Request, res: Response) {
       validatedData.id_cash_register ?? currentTransaction.id_cash_register,
     id_payment_type:
       validatedData.id_payment_type ?? currentTransaction.id_payment_type,
-    id_user: currentTransaction.id_user, // Do not modify the creator
+    created_by: currentTransaction.created_by, // Do not modify the creator
   };
 
   const updatedTransaction = await model.update(id, updatedData);

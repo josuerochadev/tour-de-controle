@@ -37,15 +37,16 @@ export const findById = async (id: number): Promise<CashRegister | null> => {
  * @param opened_by - The user ID who opens the register
  * @returns The newly created cash register
  */
-export const create = async (opened_by: number): Promise<CashRegister> => {
-  const initialAmount = 0;
-
+export const create = async (
+  opened_by: number,
+  physical_amount = 0,
+): Promise<CashRegister> => {
   const result = await pool.query(
     `INSERT INTO cash_registers
      (date_opened, physical_amount, theoretical_amount, status, opened_by)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [new Date(), initialAmount, initialAmount, "OPEN", opened_by],
+    [new Date(), physical_amount, physical_amount, "OPEN", opened_by],
   );
 
   return result.rows[0];
