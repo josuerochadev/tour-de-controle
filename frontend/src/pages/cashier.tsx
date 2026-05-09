@@ -28,6 +28,7 @@ const CashierPage = () => {
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
 	const [openingAmount, setOpeningAmount] = useState<number>(0);
 	const [txAmount, setTxAmount] = useState<string>("");
+	const [txTip, setTxTip] = useState<string>("");
 	const [txPaymentType, setTxPaymentType] = useState<number>(1);
 	const [txLoading, setTxLoading] = useState(false);
 
@@ -71,12 +72,13 @@ const CashierPage = () => {
 		try {
 			await CashRegisterService.createTransaction({
 				amount,
-				tip: 0,
+				tip: txTip ? Number(txTip) : 0,
 				id_payment_type: txPaymentType,
 				id_cash_register: currentRegister.id_cash_register,
 				created_by: user.id,
 			});
 			setTxAmount("");
+			setTxTip("");
 			await refreshTransactions(selectedDate);
 			showToast("Transaction enregistree", "success");
 		} catch {
@@ -233,6 +235,19 @@ const CashierPage = () => {
 								onChange={(e) => setTxAmount(e.target.value)}
 								className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper font-display text-lg outline-none focus:ring-2 focus:ring-signal tabular-nums"
 								required
+							/>
+						</div>
+						<div className="min-w-[100px]">
+							<label htmlFor="tx-tip" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Pourboire (€)</label>
+							<input
+								id="tx-tip"
+								type="number"
+								step="0.01"
+								min="0"
+								placeholder="0,00"
+								value={txTip}
+								onChange={(e) => setTxTip(e.target.value)}
+								className="w-full py-3.5 px-4 border border-sand rounded-[14px] bg-paper font-display text-lg outline-none focus:ring-2 focus:ring-signal tabular-nums"
 							/>
 						</div>
 						<div className="flex-1 min-w-[160px]">

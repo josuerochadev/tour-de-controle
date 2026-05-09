@@ -20,6 +20,7 @@ dotenv.config({
 initMonitoring();
 
 import pool from "./config/db";
+import actionLogRoutes from "./routes/action_log_routes";
 import authRoutes from "./routes/authentication_routes";
 import cashRegisterRoutes from "./routes/cash_register_routes";
 import paymentTypeRoutes from "./routes/payment_type_routes";
@@ -87,6 +88,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/cash-registers", cashRegisterRoutes);
 app.use("/api/payment-types", paymentTypeRoutes);
+app.use("/api/action-logs", actionLogRoutes);
 
 app.get("/health", async (_req, res) => {
   try {

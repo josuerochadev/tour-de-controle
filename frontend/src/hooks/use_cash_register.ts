@@ -46,17 +46,27 @@ export const useCashRegister = () => {
 		}
 	};
 
-	const fetchTransactions = async (date?: string) => {
+	const fetchTransactions = async (
+		date?: string,
+		extraFilters?: {
+			payment_type?: number;
+			amount_min?: number;
+			amount_max?: number;
+		},
+	) => {
 		try {
-			// Format de la date pour l'API
-			const query = date
-				? {
-						date_from: `${date}T00:00:00.000Z`,
-						date_to: `${date}T23:59:59.999Z`,
-					}
-				: undefined;
+			const query: Parameters<typeof CashRegisterService.getTransactions>[0] = {};
+			if (date) {
+				query.date_from = `${date}T00:00:00.000Z`;
+				query.date_to = `${date}T23:59:59.999Z`;
+			}
+			if (extraFilters?.payment_type) query.payment_type = extraFilters.payment_type;
+			if (extraFilters?.amount_min !== undefined) query.amount_min = extraFilters.amount_min;
+			if (extraFilters?.amount_max !== undefined) query.amount_max = extraFilters.amount_max;
 
-			const result = await CashRegisterService.getTransactions(query);
+			const result = await CashRegisterService.getTransactions(
+				Object.keys(query).length > 0 ? query : undefined,
+			);
 			// L'API retourne { data, total, page, limit } ou un tableau directement
 			const raw = Array.isArray(result) ? result : result.data;
 			// PostgreSQL DECIMAL retourne des strings, on les convertit en numbers
@@ -90,7 +100,7 @@ export const useCashRegister = () => {
 			const funds: Funds[] = [
 				{
 					id_payment_type: PAYMENT_TYPES.CASH,
-					physical_amount: amount,
+					physical_amount: Number(amount),
 				},
 			];
 

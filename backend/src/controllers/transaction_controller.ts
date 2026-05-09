@@ -1,6 +1,7 @@
 // controllers/transaction.controller.ts
 import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
+import * as actionLog from "../models/action_log_model";
 import * as model from "../models/transaction_model";
 import { filterSchema } from "../schemas/transaction_schema";
 
@@ -42,6 +43,11 @@ export async function getById(req: Request, res: Response) {
  */
 export async function create(req: Request, res: Response) {
   const newTransaction = await model.create(req.body);
+  actionLog.insert("TRANSACTION", "CREATE", req.user?.userId, {
+    id_transaction: newTransaction.id_transaction,
+    amount: newTransaction.amount,
+    id_payment_type: newTransaction.id_payment_type,
+  });
   return res.status(201).json(newTransaction);
 }
 

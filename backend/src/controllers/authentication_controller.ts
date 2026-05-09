@@ -8,6 +8,7 @@ import {
 } from "../config/constants";
 import { sendResetPasswordEmail } from "../config/mailer";
 import { ApiError } from "../middlewares/error_middleware";
+import * as actionLog from "../models/action_log_model";
 import * as model from "../models/authentication_model";
 import { comparePassword, hashPassword } from "../utils/password_utils";
 import { blacklistToken } from "../utils/token_blacklist_utils";
@@ -44,6 +45,8 @@ export async function login(req: Request, res: Response) {
     JWT_SECRET,
     { expiresIn: JWT_EXPIRES_IN },
   );
+
+  actionLog.insert("AUTH", "LOGIN", user.id_user, { email: user.email });
 
   return res
     .cookie("authenticationToken", token, {
@@ -100,6 +103,7 @@ export async function logout(req: Request, res: Response) {
   if (token) {
     await blacklistToken(token);
   }
+  actionLog.insert("AUTH", "LOGOUT", req.user?.userId);
   res.clearCookie("authenticationToken");
   return res.status(200).json({ message: "Déconnexion réussie" });
 }

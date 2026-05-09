@@ -21,6 +21,7 @@ const ViewUser = lazy(() => import("./pages/view_user"));
 const Contact = lazy(() => import("./pages/contact"));
 const CashierPage = lazy(() => import("./pages/cashier"));
 const Transactions = lazy(() => import("./pages/transactions"));
+const Logs = lazy(() => import("./pages/logs"));
 
 const App: React.FC = () => {
 	useEffect(() => {
@@ -47,6 +48,7 @@ const App: React.FC = () => {
 								<Route path="/users/view/:id" element={<ViewUser />} />
 								<Route path="/cash-register" element={<CashierPage />} />
 								<Route path="/transactions" element={<Transactions />} />
+								<Route path="/logs" element={<Logs />} />
 							</Route>
 						<Route path="*" element={<NotFound />} />
 						</Routes>

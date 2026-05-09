@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { ADMIN_ROLES } from "../constants";
 import { useAuth } from "../contexts/auth_context";
 import ProfileModal from "./profile_modal";
 import LogoIcon from "./logo_icon";
@@ -8,11 +9,12 @@ interface HeaderProps {
 	onLogout: () => void;
 }
 
-const NAV_ITEMS = [
-	{ id: "/dashboard", label: "Vigie", title: "Tableau de bord" },
-	{ id: "/cash-register", label: "Caisse", title: "Gestion de caisse" },
-	{ id: "/transactions", label: "Flux", title: "Historique des transactions" },
-	{ id: "/users", label: "Equipage", title: "Gestion des membres" },
+const BASE_NAV_ITEMS = [
+	{ id: "/dashboard", label: "Vigie", title: "Tableau de bord", adminOnly: false },
+	{ id: "/cash-register", label: "Caisse", title: "Gestion de caisse", adminOnly: false },
+	{ id: "/transactions", label: "Flux", title: "Historique des transactions", adminOnly: false },
+	{ id: "/users", label: "Equipage", title: "Gestion des membres", adminOnly: false },
+	{ id: "/logs", label: "Journaux", title: "Journal d'activité", adminOnly: true },
 ];
 
 /** Main application header with navigation, user info, and logout action. */
@@ -22,6 +24,8 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 	const location = useLocation();
 
 	const currentPath = location.pathname;
+	const isAdmin = user ? ADMIN_ROLES.includes(user.role) : false;
+	const NAV_ITEMS = BASE_NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
 
 	return (
 		<>

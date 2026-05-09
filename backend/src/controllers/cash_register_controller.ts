@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { ApiError } from "../middlewares/error_middleware";
+import * as actionLog from "../models/action_log_model";
 import * as model from "../models/cash_register_model";
 
 /**
@@ -17,6 +18,10 @@ export async function create(req: Request, res: Response) {
 
   const { physical_amount = 0 } = req.body;
   const newRegister = await model.create(userId, physical_amount);
+  actionLog.insert("CASH", "OPEN", userId, {
+    id_cash_register: newRegister.id_cash_register,
+    physical_amount,
+  });
   return res.status(201).json(newRegister);
 }
 
@@ -52,6 +57,11 @@ export async function close(req: Request, res: Response) {
     validatedData,
     userId,
   );
+
+  actionLog.insert("CASH", hasGap ? "CLOSE_GAP" : "CLOSE", userId, {
+    id_cash_register: cashRegister.id_cash_register,
+    has_gap: hasGap,
+  });
 
   if (hasGap) {
     return res.status(200).json({

@@ -4,14 +4,34 @@ import Filters from "../components/filters";
 import { formatTodayDate } from "../constants";
 
 const TransactionsPage = () => {
-	const { transactions, loading, error, refreshTransactions, getPaymentTypeName } =
+	const { transactions, paymentTypes, loading, error, refreshTransactions, getPaymentTypeName } =
 		useCashRegister();
 
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
+	const [filterPaymentType, setFilterPaymentType] = useState<number>(0);
+	const [filterAmountMin, setFilterAmountMin] = useState<string>("");
+	const [filterAmountMax, setFilterAmountMax] = useState<string>("");
+
+	const buildExtraFilters = () => ({
+		payment_type: filterPaymentType || undefined,
+		amount_min: filterAmountMin ? Number(filterAmountMin) : undefined,
+		amount_max: filterAmountMax ? Number(filterAmountMax) : undefined,
+	});
 
 	const handleDateChange = async (date: string) => {
 		setSelectedDate(date);
-		await refreshTransactions(date);
+		await refreshTransactions(date, buildExtraFilters());
+	};
+
+	const handleApplyFilters = async () => {
+		await refreshTransactions(selectedDate, buildExtraFilters());
+	};
+
+	const handleResetFilters = async () => {
+		setFilterPaymentType(0);
+		setFilterAmountMin("");
+		setFilterAmountMax("");
+		await refreshTransactions(selectedDate);
 	};
 
 	const totalTransactions = useMemo(
@@ -36,7 +56,7 @@ const TransactionsPage = () => {
 	return (
 		<div className="max-w-[1200px] mx-auto">
 			{/* Page header */}
-			<div className="flex justify-between items-end flex-wrap gap-6 mb-12">
+			<div className="flex justify-between items-end flex-wrap gap-6 mb-8">
 				<div>
 					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
 						// Journal &middot; {new Date(selectedDate).toLocaleDateString("fr-FR")}
@@ -46,6 +66,66 @@ const TransactionsPage = () => {
 					</h1>
 				</div>
 				<Filters onDateChange={handleDateChange} />
+			</div>
+
+			{/* Advanced filters */}
+			<div className="mb-8 p-5 bg-paper-soft border border-sand rounded-2xl flex flex-wrap gap-4 items-end">
+				<div>
+					<label htmlFor="filter-payment" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Moyen de paiement</label>
+					<select
+						id="filter-payment"
+						value={filterPaymentType}
+						onChange={(e) => setFilterPaymentType(Number(e.target.value))}
+						className="py-2.5 px-4 border border-sand rounded-[12px] bg-paper font-sans text-sm outline-none focus:ring-2 focus:ring-signal"
+					>
+						<option value={0}>Tous</option>
+						{Object.entries(paymentTypes).map(([id, name]) => (
+							<option key={id} value={id}>{name}</option>
+						))}
+					</select>
+				</div>
+				<div>
+					<label htmlFor="filter-min" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Montant min (€)</label>
+					<input
+						id="filter-min"
+						type="number"
+						step="0.01"
+						min="0"
+						placeholder="0,00"
+						value={filterAmountMin}
+						onChange={(e) => setFilterAmountMin(e.target.value)}
+						className="w-28 py-2.5 px-4 border border-sand rounded-[12px] bg-paper font-display text-base outline-none focus:ring-2 focus:ring-signal tabular-nums"
+					/>
+				</div>
+				<div>
+					<label htmlFor="filter-max" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Montant max (€)</label>
+					<input
+						id="filter-max"
+						type="number"
+						step="0.01"
+						min="0"
+						placeholder="999,00"
+						value={filterAmountMax}
+						onChange={(e) => setFilterAmountMax(e.target.value)}
+						className="w-28 py-2.5 px-4 border border-sand rounded-[12px] bg-paper font-display text-base outline-none focus:ring-2 focus:ring-signal tabular-nums"
+					/>
+				</div>
+				<div className="flex gap-2 self-end">
+					<button
+						type="button"
+						onClick={handleApplyFilters}
+						className="py-2.5 px-5 rounded-[12px] bg-ink text-paper border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-ink-2 transition-colors duration-200"
+					>
+						Filtrer
+					</button>
+					<button
+						type="button"
+						onClick={handleResetFilters}
+						className="py-2.5 px-5 rounded-[12px] border border-sand bg-paper text-ink-2 font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-paper-2 transition-colors duration-200"
+					>
+						Réinitialiser
+					</button>
+				</div>
 			</div>
 
 			{/* KPI cards */}
