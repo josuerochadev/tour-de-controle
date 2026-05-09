@@ -63,7 +63,7 @@ const CashierPage = () => {
 			<div className="flex justify-between items-end mb-8 flex-wrap gap-4">
 				<div>
 					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Tableau de bord &middot; caisse principale</div>
-					<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase">La caisse</h1>
+					<h1 className="mt-2 font-display text-[32px] md:text-[44px] lg:text-[56px] font-semibold leading-none tracking-tight uppercase">La caisse</h1>
 				</div>
 				<div className={`flex items-center gap-3 px-5 py-3 rounded-full ${isOpen ? "bg-ok-soft" : "bg-paper-2"}`}>
 					<span className={`w-2 h-2 rounded-full ${isOpen ? "bg-ok animate-tdc-pulse" : "bg-ink-4"}`} />
@@ -84,11 +84,11 @@ const CashierPage = () => {
 				<div className="p-9 bg-ink text-paper rounded-3xl">
 					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Theorique en caisse</div>
 					<div className="mt-4">
-						<span className="font-display text-[104px] font-semibold leading-none tracking-tight tabular-nums">
+						<span className="font-display text-[48px] md:text-[72px] lg:text-[104px] font-semibold leading-none tracking-tight tabular-nums">
 							{Math.floor(theoreticalTotal)}
 							<span className="text-ink-3">,{(theoreticalTotal % 1).toFixed(2).slice(2)}</span>
 						</span>
-						<span className="font-display text-[44px] font-medium text-signal ml-1">&euro;</span>
+						<span className="font-display text-[24px] md:text-[34px] lg:text-[44px] font-medium text-signal ml-1">&euro;</span>
 					</div>
 
 					<div className="flex gap-6 mt-8 pt-6 border-t border-ink-2">

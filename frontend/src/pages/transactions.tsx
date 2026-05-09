@@ -41,7 +41,7 @@ const TransactionsPage = () => {
 					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
 						// Journal &middot; {new Date(selectedDate).toLocaleDateString("fr-FR")}
 					</div>
-					<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase whitespace-nowrap">
+					<h1 className="mt-2 font-display text-[32px] md:text-[44px] lg:text-[56px] font-semibold leading-none tracking-tight uppercase">
 						Le flux
 					</h1>
 				</div>

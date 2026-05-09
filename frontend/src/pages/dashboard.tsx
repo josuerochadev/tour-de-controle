@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
 				<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
 					// Service &middot; {new Date(selectedDate).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
 				</div>
-				<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase">
+				<h1 className="mt-2 font-display text-[32px] md:text-[44px] lg:text-[56px] font-semibold leading-none tracking-tight uppercase">
 					La vigie
 				</h1>
 				<p className="mt-4 text-ink-2 text-base max-w-[560px] leading-relaxed">
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
 						<div>
 							<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Encaisse &middot; service en cours</div>
 							<div className="mt-3">
-								<span className="font-display text-[88px] font-semibold leading-none tracking-tight tabular-nums">
+								<span className="font-display text-[48px] md:text-[68px] lg:text-[88px] font-semibold leading-none tracking-tight tabular-nums">
 									{Math.floor(theoreticalTotal)}
 									<span className="text-ink-3">,{(theoreticalTotal % 1).toFixed(2).slice(2)}</span>
 								</span>

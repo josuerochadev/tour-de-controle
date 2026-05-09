@@ -78,7 +78,7 @@ const Login: React.FC = () => {
 				{/* Form */}
 				<div className="max-w-[420px]">
 					<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4 mb-5">// Acces operateur</div>
-					<h1 className="font-display text-[44px] leading-[1.05] tracking-tight font-semibold uppercase m-0">
+					<h1 className="font-display text-[30px] sm:text-[44px] leading-[1.05] tracking-tight font-semibold uppercase m-0">
 						Bienvenue.<br />Prenez le <span className="text-signal">quart</span>.
 					</h1>
 

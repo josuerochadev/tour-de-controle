@@ -73,7 +73,7 @@ const UsersList: React.FC = () => {
 			{/* Page header */}
 			<div className="mb-8">
 				<div className="font-mono text-[11px] tracking-[2px] uppercase text-ink-4">// Personnel &middot; {users.length} membres</div>
-				<h1 className="mt-2 font-display text-[56px] font-semibold leading-none tracking-tight uppercase">L'equipage</h1>
+				<h1 className="mt-2 font-display text-[32px] md:text-[44px] lg:text-[56px] font-semibold leading-none tracking-tight uppercase">L'equipage</h1>
 			</div>
 
 			{/* Search + Add */}
