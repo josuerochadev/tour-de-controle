@@ -52,7 +52,11 @@ const ContactPage = () => {
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		const updated = { ...formData, [name]: value };
+		setFormData(updated);
+		const result = contactSchema.safeParse(updated);
+		const fieldError = result.success ? "" : (result.error.issues.find((i) => String(i.path[0]) === name)?.message ?? "");
+		setValidationErrors((prev) => ({ ...prev, [name]: fieldError }));
 	};
 
 	return (

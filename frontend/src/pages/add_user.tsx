@@ -52,6 +52,16 @@ const AddUser: React.FC = () => {
 		}
 	};
 
+	const handleFieldChange = (field: string, value: unknown) => {
+		const updated = { ...formData, [field]: value } as CreateUserFormData;
+		setFormData(updated);
+		if (errors[field] !== undefined) {
+			const result = createUserSchema.safeParse(updated);
+			const msg = result.success ? "" : (result.error.issues.find((i) => i.path[0] === field)?.message ?? "");
+			setErrors((prev) => ({ ...prev, [field]: msg }));
+		}
+	};
+
 	const fieldError = (field: string) =>
 		errors[field] ? <p className="text-signal text-xs mt-1">{errors[field]}</p> : null;
 
@@ -63,17 +73,17 @@ const AddUser: React.FC = () => {
 			<form onSubmit={handleSubmit} className="bg-paper-soft border border-sand rounded-3xl p-8 space-y-5">
 				<div>
 					<label htmlFor="last_name" className={labelClass}>Nom *</label>
-					<input id="last_name" type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} className={inputClass} required />
+					<input id="last_name" type="text" value={formData.last_name} onChange={(e) => handleFieldChange("last_name", e.target.value)} className={inputClass} required />
 					{fieldError("last_name")}
 				</div>
 				<div>
 					<label htmlFor="first_name" className={labelClass}>Prenom *</label>
-					<input id="first_name" type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} className={inputClass} required />
+					<input id="first_name" type="text" value={formData.first_name} onChange={(e) => handleFieldChange("first_name", e.target.value)} className={inputClass} required />
 					{fieldError("first_name")}
 				</div>
 				<div>
 					<label htmlFor="email" className={labelClass}>Email *</label>
-					<input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={inputClass} required />
+					<input id="email" type="email" value={formData.email} onChange={(e) => handleFieldChange("email", e.target.value)} className={inputClass} required />
 					{fieldError("email")}
 				</div>
 				<div>
@@ -81,7 +91,7 @@ const AddUser: React.FC = () => {
 					<PasswordInput
 						id="password"
 						value={formData.password}
-						onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+						onChange={(e) => handleFieldChange("password", e.target.value)}
 						className={inputClass}
 						required
 					/>
@@ -90,21 +100,21 @@ const AddUser: React.FC = () => {
 				</div>
 				<div>
 					<label htmlFor="address" className={labelClass}>Adresse</label>
-					<input id="address" type="text" value={formData.postal_address} onChange={(e) => setFormData({ ...formData, postal_address: e.target.value })} className={inputClass} />
+					<input id="address" type="text" value={formData.postal_address} onChange={(e) => handleFieldChange("postal_address", e.target.value)} className={inputClass} />
 				</div>
 				<div>
 					<label htmlFor="telephone" className={labelClass}>Telephone</label>
-					<input id="telephone" type="tel" value={formData.phone_number} onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })} className={inputClass} placeholder="0612345678" />
+					<input id="telephone" type="tel" value={formData.phone_number} onChange={(e) => handleFieldChange("phone_number", e.target.value)} className={inputClass} placeholder="0612345678" />
 					{fieldError("phone_number")}
 				</div>
 				<div>
 					<label htmlFor="hire_date" className={labelClass}>Date d'embauche *</label>
-					<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })} className={inputClass} required />
+					<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => handleFieldChange("hire_date", e.target.value)} className={inputClass} required />
 					{fieldError("hire_date")}
 				</div>
 				<div>
 					<label htmlFor="role" className={labelClass}>Role *</label>
-					<select id="role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className={inputClass} required>
+					<select id="role" value={formData.id_role} onChange={(e) => handleFieldChange("id_role", Number.parseInt(e.target.value))} className={inputClass} required>
 						<option value="">Selectionner un role</option>
 						{Object.entries(ROLE_LABELS).map(([id, label]) => (
 							<option key={id} value={id}>{label}</option>
