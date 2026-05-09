@@ -2,20 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthenticationService from "../services/authentification_service";
 import PasswordInput from "../components/password_input";
+import LogoIcon from "../components/logo_icon";
 
-const Logo = ({ size = 120 }: { size?: number }) => (
-	<svg width={size} height={size} viewBox="0 0 64 64" className="text-paper" aria-hidden="true">
-		<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
-		<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
-		<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
-		<rect x="26" y="14" width="12" height="10" rx="1.5" fill="currentColor" />
-		<circle cx="32" cy="19" r="3" fill="#dc2626" />
-		<path d="M28 14 L36 14 L34 10 L30 10 Z" fill="currentColor" />
-		<circle cx="32" cy="9" r="1.5" fill="currentColor" />
-		<rect x="24" y="36" width="18" height="4" fill="#dc2626" />
-		<rect x="20" y="56" width="24" height="3" rx="1" fill="currentColor" />
-	</svg>
-);
 
 const Login: React.FC = () => {
 	const navigate = useNavigate();
@@ -58,17 +46,7 @@ const Login: React.FC = () => {
 			<div className="px-8 py-12 lg:px-14 flex flex-col justify-between gap-12">
 				{/* Wordmark */}
 				<div className="flex items-center gap-3 text-ink">
-					<svg width={36} height={36} viewBox="0 0 64 64" aria-hidden="true">
-						<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
-						<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
-						<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
-						<rect x="26" y="14" width="12" height="10" rx="1.5" fill="currentColor" />
-						<circle cx="32" cy="19" r="3" fill="#dc2626" />
-						<path d="M28 14 L36 14 L34 10 L30 10 Z" fill="currentColor" />
-						<circle cx="32" cy="9" r="1.5" fill="currentColor" />
-						<rect x="24" y="36" width="18" height="4" fill="#dc2626" />
-						<rect x="20" y="56" width="24" height="3" rx="1" fill="currentColor" />
-					</svg>
+					<LogoIcon size={36} />
 					<div className="flex flex-col leading-none">
 						<span className="font-display text-sm font-semibold tracking-wider">TOUR DE CONTROLE</span>
 						<span className="font-mono text-[10px] tracking-[2px] uppercase text-ink-4 mt-1">Restaurant ops</span>
@@ -161,7 +139,7 @@ const Login: React.FC = () => {
 				<div className="absolute inset-0" style={{ background: "radial-gradient(circle at 50% 50%, transparent 0%, rgba(28,25,23,0.7) 70%)" }} />
 				{/* Content */}
 				<div className="relative text-center text-paper p-8">
-					<Logo size={120} />
+					<LogoIcon size={120} className="text-paper" />
 					<div className="mt-7 font-display text-[22px] font-medium tracking-[2px] uppercase">
 						&laquo; Garde le cap &raquo;
 					</div>

@@ -19,7 +19,6 @@ export default {
 				ok: "#059669",
 				"ok-soft": "#d1fae5",
 				"ok-deep": "#065f46",
-				danger: "#dc2626",
 				"danger-soft": "#fee2e2",
 				sand: "#efe0c4",
 				mist: "#706860",

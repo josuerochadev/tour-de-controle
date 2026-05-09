@@ -6,9 +6,7 @@ import userService from "../services/user_service";
 import { ROLES, ROLE_LABELS, formatTodayDate } from "../constants";
 import { createUserSchema } from "../schemas/user_schema";
 import type { CreateUserFormData } from "../types/user";
-
-const inputClass = "w-full py-3 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal";
-const labelClass = "font-mono text-[11px] tracking-[1.5px] uppercase text-ink-3 block mb-1.5";
+import { inputClass, labelClass } from "../styles/form_classes";
 
 const AddUser: React.FC = () => {
 	const navigate = useNavigate();
