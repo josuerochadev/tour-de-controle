@@ -9,10 +9,10 @@ interface HeaderProps {
 }
 
 const NAV_ITEMS = [
-	{ id: "/dashboard", label: "Vigie" },
-	{ id: "/cash-register", label: "Caisse" },
-	{ id: "/transactions", label: "Flux" },
-	{ id: "/users", label: "Equipage" },
+	{ id: "/dashboard", label: "Vigie", title: "Tableau de bord" },
+	{ id: "/cash-register", label: "Caisse", title: "Gestion de caisse" },
+	{ id: "/transactions", label: "Flux", title: "Historique des transactions" },
+	{ id: "/users", label: "Equipage", title: "Gestion des membres" },
 ];
 
 /** Main application header with navigation, user info, and logout action. */
@@ -43,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 							<Link
 								key={item.id}
 								to={item.id}
+								title={item.title}
 								aria-current={isActive ? "page" : undefined}
 								className={`px-5 py-2.5 rounded-full font-display text-xs font-semibold tracking-wider uppercase transition-colors duration-200 no-underline ${
 									isActive
@@ -93,6 +94,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 						<Link
 							key={item.id}
 							to={item.id}
+							title={item.title}
 							aria-current={isActive ? "page" : undefined}
 							className={`px-4 py-2 rounded-full font-display text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap no-underline ${
 								isActive

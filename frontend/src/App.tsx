@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { setupAxiosInterceptors } from "./config/axios_interceptor";
 import ErrorBoundary from "./components/error_boundary";
 import { ToastProvider } from "./components/toast";
@@ -34,7 +34,7 @@ const App: React.FC = () => {
 					<Router>
 						<Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-paper"><p className="text-ink-3">Chargement...</p></div>}>
 						<Routes>
-							<Route path="/" element={<Login />} />
+							<Route path="/" element={<Navigate to="/login" replace />} />
 							<Route path="/login" element={<Login />} />
 							<Route path="/forgot-password" element={<ForgotPassword />} />
 							<Route path="/reset-password" element={<ResetPassword />} />

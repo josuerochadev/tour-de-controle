@@ -78,17 +78,17 @@ const EditUser: React.FC = () => {
 
 			<form onSubmit={handleSubmit} className="bg-paper-soft border border-sand rounded-3xl p-8 space-y-5">
 				<div>
-					<label htmlFor="last_name" className={labelClass}>Nom</label>
+					<label htmlFor="last_name" className={labelClass}>Nom *</label>
 					<input id="last_name" type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} className={inputClass} required />
 					{fieldError("last_name")}
 				</div>
 				<div>
-					<label htmlFor="first_name" className={labelClass}>Prenom</label>
+					<label htmlFor="first_name" className={labelClass}>Prenom *</label>
 					<input id="first_name" type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} className={inputClass} required />
 					{fieldError("first_name")}
 				</div>
 				<div>
-					<label htmlFor="email" className={labelClass}>Email</label>
+					<label htmlFor="email" className={labelClass}>Email *</label>
 					<input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={inputClass} required />
 					{fieldError("email")}
 				</div>
@@ -102,12 +102,12 @@ const EditUser: React.FC = () => {
 					{fieldError("phone_number")}
 				</div>
 				<div>
-					<label htmlFor="hire_date" className={labelClass}>Date d'embauche</label>
+					<label htmlFor="hire_date" className={labelClass}>Date d'embauche *</label>
 					<input id="hire_date" type="date" value={formData.hire_date} onChange={(e) => setFormData({ ...formData, hire_date: e.target.value })} className={inputClass} required />
 					{fieldError("hire_date")}
 				</div>
 				<div>
-					<label htmlFor="id_role" className={labelClass}>Role</label>
+					<label htmlFor="id_role" className={labelClass}>Role *</label>
 					<select id="id_role" value={formData.id_role} onChange={(e) => setFormData({ ...formData, id_role: Number.parseInt(e.target.value) })} className={inputClass} required>
 						<option value="">Selectionner un role</option>
 						{Object.entries(ROLE_LABELS).map(([id, label]) => (

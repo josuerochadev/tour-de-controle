@@ -26,8 +26,14 @@ const AuthenticationLayoutInner = () => {
 
 	return (
 		<div className="min-h-screen bg-paper">
+			<a
+				href="#main-content"
+				className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-ink focus:text-paper focus:rounded-xl focus:font-display focus:text-xs focus:uppercase focus:tracking-wider"
+			>
+				Aller au contenu principal
+			</a>
 			<Header onLogout={handleLogout} />
-			<main className="px-8 py-8 pb-20 max-w-[1400px] mx-auto">
+			<main id="main-content" className="px-8 py-8 pb-20 max-w-[1400px] mx-auto">
 				<Outlet />
 			</main>
 		</div>
