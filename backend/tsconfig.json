@@ -9,6 +9,6 @@
       "typeRoots": ["./node_modules/@types"],
       "sourceMap": true
     },
-    "include": ["src/**/*.ts", "dist/src/test-email.js", "src/utils/mailer.ts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "**/*.spec.ts"]
   }

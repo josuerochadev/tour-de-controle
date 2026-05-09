@@ -56,9 +56,9 @@ CREATE TABLE IF NOT EXISTS action_logs (
 );
 
 -- Indexes
-CREATE INDEX idx_transactions_date ON transactions(created_at);
-CREATE INDEX idx_cash_registers_date ON cash_registers(date_opened);
-CREATE INDEX idx_action_logs_date ON action_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_cash_registers_date ON cash_registers(date_opened);
+CREATE INDEX IF NOT EXISTS idx_action_logs_date ON action_logs(created_at);
 
 -- Triggers pour updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -69,6 +69,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_transactions_updated_at ON transactions;
 CREATE TRIGGER update_transactions_updated_at
    BEFORE UPDATE ON transactions
    FOR EACH ROW
