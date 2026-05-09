@@ -384,11 +384,28 @@ Le design system est solide et cohérent (tokens sémantiques, typographie, pale
 
 | ID | Action | Statut |
 |----|--------|--------|
-| M-01 | Fusionner `signal` et `danger` en un seul token dans `tailwind.config.js` | A faire |
-| M-02 | Extraire le SVG logo en composant partagé `<LogoIcon>` | A faire |
-| M-03 | Extraire `inputClass` / `labelClass` en fichier de constantes partagé | A faire |
-| M-04 | Ajouter validation onChange sur les formulaires principaux | A faire |
-| M-05 | Ajouter un lien "Aller au contenu" (skip nav) en début de page | A faire |
-| M-06 | Ajouter tooltips ou sous-textes sur les items de navigation thématisés | A faire |
-| M-07 | Ajouter `<Navigate from="/" to="/login" replace />` canonique | A faire |
-| M-08 | Aligner les astérisques `*` obligatoires entre `add_user` et `edit_user` | A faire |
+| M-01 | Fusionner `signal` et `danger` en un seul token dans `tailwind.config.js` | FAIT |
+| M-02 | Extraire le SVG logo en composant partagé `<LogoIcon>` | FAIT |
+| M-03 | Extraire `inputClass` / `labelClass` en fichier de constantes partagé | FAIT |
+| M-04 | Ajouter validation onChange sur les formulaires principaux | FAIT |
+| M-05 | Ajouter un lien "Aller au contenu" (skip nav) en début de page | FAIT |
+| M-06 | Ajouter tooltips ou sous-textes sur les items de navigation thématisés | FAIT |
+| M-07 | Ajouter `<Navigate from="/" to="/login" replace />` canonique | FAIT |
+| M-08 | Aligner les astérisques `*` obligatoires entre `add_user` et `edit_user` | FAIT |
+
+### Score final
+
+| Critère | Note avant | Note après |
+|---------|-----------|-----------|
+| Design system / cohérence visuelle | 8/10 | 9/10 |
+| Responsive design | 5/10 | 8/10 |
+| Accessibilité (contrastes, ARIA) | 3/10 | 8/10 |
+| Focus management | 2/10 | 8/10 |
+| Reduced-motion | 0/10 | 10/10 |
+| Feedback utilisateur | 6/10 | 8/10 |
+| Sémantique HTML | 5/10 | 9/10 |
+| Formulaires | 6/10 | 8/10 |
+| Navigation | 6/10 | 9/10 |
+| Animations | 5/10 | 7/10 |
+
+**Note globale : 4.5/10 → 8.4/10** — 27/27 constats résolus
