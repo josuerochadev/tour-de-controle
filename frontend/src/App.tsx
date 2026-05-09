@@ -5,8 +5,9 @@ import ErrorBoundary from "./components/error_boundary";
 import { ToastProvider } from "./components/toast";
 import { DialogProvider } from "./components/dialog";
 
-// Eager-loaded: login is the entry point
+// Eager-loaded: login is the entry point, 404 is lightweight
 import Login from "./pages/login";
+import NotFound from "./pages/not_found";
 
 // Lazy-loaded: split per route
 const ForgotPassword = lazy(() => import("./pages/forgot_password"));
@@ -47,7 +48,7 @@ const App: React.FC = () => {
 								<Route path="/cash-register" element={<CashierPage />} />
 								<Route path="/transactions" element={<Transactions />} />
 							</Route>
-						<Route path="*" element={<Login />} />
+						<Route path="*" element={<NotFound />} />
 						</Routes>
 						</Suspense>
 					</Router>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "../contexts/auth_context";
 import ProfileModal from "./profile_modal";
 
@@ -33,7 +33,6 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 	const { user } = useAuth();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const location = useLocation();
-	const navigate = useNavigate();
 
 	const currentPath = location.pathname;
 
@@ -54,18 +53,18 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 					{NAV_ITEMS.map((item) => {
 						const isActive = currentPath.startsWith(item.id);
 						return (
-							<button
+							<Link
 								key={item.id}
-								onClick={() => navigate(item.id)}
+								to={item.id}
 								aria-current={isActive ? "page" : undefined}
-								className={`px-5 py-2.5 rounded-full border-none cursor-pointer font-display text-xs font-semibold tracking-wider uppercase transition-colors duration-200 ${
+								className={`px-5 py-2.5 rounded-full font-display text-xs font-semibold tracking-wider uppercase transition-colors duration-200 no-underline ${
 									isActive
 										? "bg-ink text-paper"
-										: "bg-transparent text-ink-2 hover:text-ink"
+										: "text-ink-2 hover:text-ink"
 								}`}
 							>
 								{item.label}
-							</button>
+							</Link>
 						);
 					})}
 				</nav>
@@ -104,18 +103,18 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 				{NAV_ITEMS.map((item) => {
 					const isActive = currentPath.startsWith(item.id);
 					return (
-						<button
+						<Link
 							key={item.id}
-							onClick={() => navigate(item.id)}
+							to={item.id}
 							aria-current={isActive ? "page" : undefined}
-							className={`px-4 py-2 rounded-full border-none cursor-pointer font-display text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap ${
+							className={`px-4 py-2 rounded-full font-display text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap no-underline ${
 								isActive
 									? "bg-ink text-paper"
-									: "bg-transparent text-ink-2"
+									: "text-ink-2"
 							}`}
 						>
 							{item.label}
-						</button>
+						</Link>
 					);
 				})}
 			</nav>
