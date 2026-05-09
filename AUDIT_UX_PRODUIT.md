@@ -365,20 +365,20 @@ Le design system est solide et cohérent (tokens sémantiques, typographie, pale
 
 | ID | Action | Statut |
 |----|--------|--------|
-| I-01 | Ajouter `aria-hidden="true"` sur tous les SVG décoratifs | A faire |
-| I-02 | Ajouter `aria-current="page"` sur les nav pills actifs | A faire |
-| I-03 | Remplacer `<button onClick navigate>` par `<Link>` dans `header.tsx` | A faire |
-| I-04 | Ajouter `role="alert"` sur les erreurs inline (`login`, `forgot`, `reset`) | A faire |
-| I-05 | Lier le label "Fond de caisse" à son input avec `htmlFor` / `id` | A faire |
-| I-06 | Ajouter `aria-label` sur l'input de recherche dans `users.tsx` | A faire |
-| I-07 | Ajouter variants responsives sur les grands textes (`clamp` ou `sm:` / `md:`) | A faire |
-| I-08 | Ajouter un dialog de confirmation avant clôture de caisse | A faire |
-| I-09 | Passer `<h2>` en `<h1>` dans `contact.tsx` | A faire |
-| I-10 | Ajouter `role="dialog"`, `aria-modal`, `Escape`, click-outside dans `profile_modal.tsx` | A faire |
-| I-11 | Ajouter fermeture par `Escape` dans `dialog.tsx` | A faire |
-| I-12 | Créer une page 404 et brancher le catch-all `*` dessus | A faire |
+| I-01 | Ajouter `aria-hidden="true"` sur tous les SVG décoratifs | FAIT |
+| I-02 | Ajouter `aria-current="page"` sur les nav pills actifs | FAIT |
+| I-03 | Remplacer `<button onClick navigate>` par `<Link>` dans `header.tsx` | FAIT |
+| I-04 | Ajouter `role="alert"` sur les erreurs inline (`login`, `forgot`, `reset`) | FAIT |
+| I-05 | Lier le label "Fond de caisse" à son input avec `htmlFor` / `id` | FAIT |
+| I-06 | Ajouter `aria-label` sur l'input de recherche dans `users.tsx` | FAIT |
+| I-07 | Ajouter variants responsives sur les grands textes (`clamp` ou `sm:` / `md:`) | FAIT |
+| I-08 | Ajouter un dialog de confirmation avant clôture de caisse | FAIT |
+| I-09 | Passer `<h2>` en `<h1>` dans `contact.tsx` | FAIT |
+| I-10 | Ajouter `role="dialog"`, `aria-modal`, `Escape`, click-outside dans `profile_modal.tsx` | FAIT |
+| I-11 | Ajouter fermeture par `Escape` dans `dialog.tsx` | FAIT |
+| I-12 | Créer une page 404 et brancher le catch-all `*` dessus | FAIT |
 | I-13 | Corriger `lang="en"` → `lang="fr"` dans `dist/index.html` | FAIT |
-| I-14 | Ajouter `aria-label` sur les deux `<nav>` dans `header.tsx` | A faire |
+| I-14 | Ajouter `aria-label` sur les deux `<nav>` dans `header.tsx` | FAIT |
 
 ### Phase 3 — Mineurs
 
