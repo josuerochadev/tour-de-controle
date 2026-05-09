@@ -9,7 +9,6 @@ services:
   - type: web
     name: tour-de-controle-api
     env: docker
-    plan: free
     rootDir: backend
     envVars:
       - key: DATABASE_URL
@@ -31,7 +30,6 @@ services:
   - type: web
     name: tour-de-controle
     env: static
-    plan: free
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
