@@ -48,12 +48,13 @@ services:
       DB_PORT: 5432
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV:-production}
-      CLIENT_URL: http://localhost:3002
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:3002}
       REDIS_URL: redis://:${REDIS_PASSWORD:-changeme}@redis:6379
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
     ports:
       - "4000:4000"
     depends_on:
@@ -83,33 +84,6 @@ services:
     networks:
       - tour_network
 
-  swagger:
-    image: swaggerapi/swagger-ui
-    container_name: tour_de_controle_swagger
-    ports:
-      - "8080:8080"
-    environment:
-      SWAGGER_JSON: /swagger/swagger.json
-    volumes:
-      - ./backend/docs/swagger:/swagger
-    networks:
-      - tour_network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: tour_de_controle_pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "127.0.0.1:8081:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - db
-    networks:
-      - tour_network
-
   redis:
     image: redis:7-alpine
     container_name: tour_de_controle_redis
@@ -129,7 +103,6 @@ services:
 
 volumes:
   db_data:
-  pgadmin_data:
   redis_data:
 
 networks:

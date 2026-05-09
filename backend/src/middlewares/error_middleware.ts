@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import logger from "../config/logger";
+import { captureError } from "../config/monitoring";
 
 /**
  * Custom error class for API errors with an HTTP status code and optional error code.
@@ -41,6 +42,7 @@ export function errorHandler(
     err instanceof Error
       ? { message: err.message, stack: err.stack }
       : String(err);
+  captureError(err);
   logger.error("Unexpected error", {
     error: safeError,
     path: req.path,

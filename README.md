@@ -79,10 +79,14 @@ npm run dev        # http://localhost:5173
 ### Alternative Docker
 
 ```bash
+# Production (services essentiels uniquement)
 docker compose up -d
+
+# Developpement (avec pgAdmin + Swagger)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
-Services : Frontend (3000), Backend (4000), Swagger (8080), pgAdmin (8081)
+Services : Frontend (3002), Backend (4000), Swagger (8080, dev), pgAdmin (8081, dev)
 
 ## Comptes de démonstration
 

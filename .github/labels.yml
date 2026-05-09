@@ -1,0 +1,58 @@
+# Apply with: gh label create <name> --color <color> --description "<desc>"
+# Or use: https://github.com/marketplace/actions/github-labeler
+
+- name: bug
+  color: d73a4a
+  description: Something isn't working
+
+- name: enhancement
+  color: a2eeef
+  description: New feature or request
+
+- name: documentation
+  color: 0075ca
+  description: Improvements or additions to documentation
+
+- name: refactor
+  color: e4e669
+  description: Code refactoring without functional change
+
+- name: ci
+  color: 5319e7
+  description: CI/CD pipeline changes
+
+- name: dependencies
+  color: 0366d6
+  description: Dependency updates
+
+- name: security
+  color: b60205
+  description: Security-related issue or fix
+
+- name: good first issue
+  color: 7057ff
+  description: Good for newcomers
+
+- name: priority:high
+  color: d93f0b
+  description: High priority
+
+- name: priority:medium
+  color: fbca04
+  description: Medium priority
+
+- name: priority:low
+  color: 0e8a16
+  description: Low priority
+
+- name: backend
+  color: 1d76db
+  description: Backend related
+
+- name: frontend
+  color: f9d0c4
+  description: Frontend related
+
+- name: database
+  color: 006b75
+  description: Database / migrations related

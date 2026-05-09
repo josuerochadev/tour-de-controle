@@ -17,3 +17,17 @@ dist
 
 # Test coverage
 coverage/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Swagger generated files
+backend/docs/swagger/swagger.js
+backend/docs/swagger/swagger.js.map
+
+# Playwright
+test-results/
+playwright-report/
+
+# Design system exports
+Tour de Controle Design System*/

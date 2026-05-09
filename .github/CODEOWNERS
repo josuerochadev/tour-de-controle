@@ -1,0 +1,16 @@
+# Chaque PR necessite une review du owner principal
+
+* @josuerochadev
+
+# Backend
+/backend/ @josuerochadev
+
+# Frontend
+/frontend/ @josuerochadev
+
+# Infrastructure & CI
+/docker-compose.yml @josuerochadev
+/.github/ @josuerochadev
+
+# Database
+/db/ @josuerochadev

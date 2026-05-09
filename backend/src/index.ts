@@ -9,12 +9,15 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "../docs/swagger/swagger";
 import { FRONTEND_URL } from "./config/constants";
 import logger from "./config/logger";
+import { initMonitoring } from "./config/monitoring";
 import { errorHandler } from "./middlewares/error_middleware";
 import { apiLimiter } from "./middlewares/rate_limit_middleware";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
+
+initMonitoring();
 
 import pool from "./config/db";
 import authRoutes from "./routes/authentication_routes";

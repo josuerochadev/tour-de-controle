@@ -8,4 +8,14 @@ module.exports = {
 	transform: {
 		"^.+\\.ts$": ["ts-jest", { isolatedModules: true }],
 	},
+	coverageDirectory: "coverage",
+	collectCoverageFrom: ["src/**/*.ts", "!src/index.ts"],
+	coverageThreshold: {
+		global: {
+			branches: 50,
+			functions: 50,
+			lines: 50,
+			statements: 50,
+		},
+	},
 };
