@@ -180,29 +180,35 @@ const CashierPage = () => {
 				{transactions.length === 0 ? (
 					<p className="p-7 text-ink-4">Aucune transaction pour cette date</p>
 				) : (
-					<>
-						<div className="flex px-7 py-3 border-b border-sand font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
-							<div className="w-20">Heure</div>
-							<div className="flex-1">Moyen</div>
-							<div className="w-36 text-right">Montant</div>
-						</div>
-						{transactions.map((transaction) => (
-							<div
-								key={transaction.id_transaction}
-								className="flex items-center px-7 py-4 border-t border-sand hover:bg-paper-2 transition-colors duration-150"
-							>
-								<div className="w-20 font-mono text-[13px] text-ink-3 tabular-nums">
-									{new Date(transaction.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
-								</div>
-								<div className="flex-1 text-[15px]">{getPaymentTypeName(transaction.id_payment_type)}</div>
-								<div className="w-36 text-right font-display text-lg font-medium tabular-nums">{transaction.amount.toFixed(2)}&nbsp;&euro;</div>
-							</div>
-						))}
-						<div className="flex justify-between items-baseline px-7 py-5 border-t-2 border-ink">
-							<span className="font-display text-[13px] tracking-wider uppercase font-semibold">Total</span>
-							<span className="font-display text-2xl font-semibold text-signal tabular-nums">{totalTransactions.toFixed(2)}&nbsp;&euro;</span>
-						</div>
-					</>
+					<table className="w-full">
+						<thead>
+							<tr className="border-b border-sand font-mono text-[11px] tracking-[2px] uppercase text-ink-4">
+								<th scope="col" className="px-7 py-3 text-left font-mono font-normal">Heure</th>
+								<th scope="col" className="px-2 py-3 text-left font-mono font-normal">Moyen</th>
+								<th scope="col" className="px-7 py-3 text-right font-mono font-normal">Montant</th>
+							</tr>
+						</thead>
+						<tbody>
+							{transactions.map((transaction) => (
+								<tr
+									key={transaction.id_transaction}
+									className="border-t border-sand hover:bg-paper-2 transition-colors duration-150"
+								>
+									<td className="px-7 py-4 font-mono text-[13px] text-ink-3 tabular-nums whitespace-nowrap">
+										{new Date(transaction.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+									</td>
+									<td className="px-2 py-4 text-[15px]">{getPaymentTypeName(transaction.id_payment_type)}</td>
+									<td className="px-7 py-4 text-right font-display text-lg font-medium tabular-nums whitespace-nowrap">{transaction.amount.toFixed(2)}&nbsp;&euro;</td>
+								</tr>
+							))}
+						</tbody>
+						<tfoot>
+							<tr className="border-t-2 border-ink">
+								<td colSpan={2} className="px-7 py-5 font-display text-[13px] tracking-wider uppercase font-semibold">Total</td>
+								<td className="px-7 py-5 text-right font-display text-2xl font-semibold text-signal tabular-nums whitespace-nowrap">{totalTransactions.toFixed(2)}&nbsp;&euro;</td>
+							</tr>
+						</tfoot>
+					</table>
 				)}
 			</div>
 		</div>

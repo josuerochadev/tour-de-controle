@@ -11,7 +11,7 @@ export default {
 				ink: "#1c1917",
 				"ink-2": "#3f3a36",
 				"ink-3": "#6b645e",
-				"ink-4": "#9a928a",
+				"ink-4": "#706860",
 				signal: "#dc2626",
 				"signal-deep": "#991b1b",
 				beacon: "#f59e0b",
@@ -22,7 +22,7 @@ export default {
 				danger: "#dc2626",
 				"danger-soft": "#fee2e2",
 				sand: "#efe0c4",
-				mist: "#9a928a",
+				mist: "#706860",
 			},
 			fontFamily: {
 				sans: ["'Inter Variable'", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
