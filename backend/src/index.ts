@@ -26,6 +26,7 @@ import cashRegisterRoutes from "./routes/cash_register_routes";
 import paymentTypeRoutes from "./routes/payment_type_routes";
 import transactionRoutes from "./routes/transaction_routes";
 import userRoutes from "./routes/user_routes";
+import { runMigrations } from "./scripts/migrate";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -112,9 +113,16 @@ app.use((_req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  logger.info(`Backend running on port ${PORT}`);
-});
+runMigrations()
+  .then(() => {
+    app.listen(PORT, () => {
+      logger.info(`Backend running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    logger.error("Migration failed, aborting startup", { error: err.message });
+    process.exit(1);
+  });
 
 process.on("SIGINT", () => {
   logger.info("Server shutting down...");

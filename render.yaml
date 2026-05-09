@@ -11,8 +11,6 @@ services:
     env: docker
     plan: free
     rootDir: backend
-    # Runs migrations + seed before the new version goes live
-    preDeployCommand: "node dist/src/scripts/migrate.js"
     envVars:
       - key: DATABASE_URL
         fromDatabase:

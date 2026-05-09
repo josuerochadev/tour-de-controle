@@ -1,25 +1,8 @@
 /**
- * Migration + seed script — runs before the backend starts (Render preDeployCommand).
+ * Migration + seed — called at backend startup.
  * Safe to re-run: uses CREATE TABLE IF NOT EXISTS and checks for existing data.
  */
-import path from "node:path";
-import dotenv from "dotenv";
 import { Client } from "pg";
-
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
-
-const client = process.env.DATABASE_URL
-  ? new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    })
-  : new Client({
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      database: process.env.DB_NAME,
-      password: process.env.DB_PASS,
-      port: Number(process.env.DB_PORT || "5432"),
-    });
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS roles (
@@ -144,10 +127,21 @@ INSERT INTO action_logs (action_type, action, details, created_at, id_user) VALU
   ('AUTH', 'LOGOUT', NULL, NOW() - INTERVAL '12 hours', 3);
 `;
 
-async function run() {
-  await client.connect();
-  console.log("[migrate] Connected to database");
+export async function runMigrations(): Promise<void> {
+  const client = process.env.DATABASE_URL
+    ? new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+      })
+    : new Client({
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASS,
+        port: Number(process.env.DB_PORT || "5432"),
+      });
 
+  await client.connect();
   console.log("[migrate] Running schema...");
   await client.query(SCHEMA);
 
@@ -155,7 +149,6 @@ async function run() {
   if (Number(rows[0].count) === 0) {
     console.log("[migrate] Seeding initial data...");
     await client.query(SEED);
-    console.log("[migrate] Seed complete");
   } else {
     console.log("[migrate] Data already present, skipping seed");
   }
@@ -163,8 +156,3 @@ async function run() {
   await client.end();
   console.log("[migrate] Done");
 }
-
-run().catch((err) => {
-  console.error("[migrate] Error:", err.message);
-  process.exit(1);
-});
