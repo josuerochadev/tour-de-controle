@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useCashRegister } from "../hooks/use_cash_register";
+import { useDialog } from "../components/dialog";
 import Filters from "../components/filters";
 import { formatTodayDate } from "../constants";
 
@@ -17,6 +18,7 @@ const CashierPage = () => {
 		refreshTransactions,
 	} = useCashRegister();
 
+	const { showDialog } = useDialog();
 	const [selectedDate, setSelectedDate] = useState<string>(formatTodayDate());
 	const [openingAmount, setOpeningAmount] = useState<number>(0);
 
@@ -35,7 +37,16 @@ const CashierPage = () => {
 	};
 
 	const handleCloseRegister = async () => {
-		if (currentRegister) {
+		if (!currentRegister) return;
+		const confirmed = await showDialog({
+			title: "Cloturer la caisse",
+			message: `Confirmer la cloture ? Montant theorique : ${theoreticalTotal.toFixed(2)} €. Cette action est irreversible.`,
+			buttons: [
+				{ label: "Annuler", className: "px-5 py-3 border border-sand rounded-2xl font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-paper-2 transition-colors" },
+				{ label: "Cloturer", className: "px-5 py-3 bg-signal text-paper rounded-2xl border-none font-display text-xs font-semibold tracking-wider uppercase cursor-pointer hover:bg-signal-deep transition-colors" },
+			],
+		});
+		if (confirmed) {
 			await closeRegister(
 				currentRegister.id_cash_register,
 				currentRegister.physical_amount,
