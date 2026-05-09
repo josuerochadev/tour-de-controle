@@ -59,7 +59,7 @@ const ContactPage = () => {
 			<div className="min-h-screen flex flex-col items-center justify-center px-4">
 				<div className="bg-paper-soft border border-sand rounded-3xl p-8 w-full max-w-md">
 					<div className="flex flex-col items-center mb-8">
-						<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4">
+						<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4" aria-hidden="true">
 							<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
 							<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
 							<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
@@ -70,7 +70,7 @@ const ContactPage = () => {
 							<rect x="24" y="36" width="18" height="4" fill="#dc2626" />
 							<rect x="20" y="56" width="24" height="3" rx="1" fill="currentColor" />
 						</svg>
-						<h2 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink">Contactez-nous</h2>
+						<h1 className="font-display text-2xl font-semibold uppercase tracking-tight text-ink">Contactez-nous</h1>
 					</div>
 
 					<form onSubmit={handleSubmit} className="space-y-5">

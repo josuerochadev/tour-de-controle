@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
 		<div className="min-h-screen flex items-center justify-center bg-paper p-4">
 			<div className="bg-paper-soft border border-sand rounded-3xl p-8 w-full max-w-md">
 				<div className="flex flex-col items-center mb-8">
-					<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4">
+					<svg width={64} height={64} viewBox="0 0 64 64" className="text-ink mb-4" aria-hidden="true">
 						<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
 						<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
 						<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
@@ -81,7 +81,7 @@ const ForgotPasswordPage = () => {
 					</div>
 
 					{error && (
-						<div className="p-3 rounded-2xl bg-danger-soft">
+						<div role="alert" className="p-3 rounded-2xl bg-danger-soft">
 							<p className="text-signal text-sm">{error}</p>
 						</div>
 					)}

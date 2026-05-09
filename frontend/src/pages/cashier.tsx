@@ -112,9 +112,10 @@ const CashierPage = () => {
 						{!isOpen ? (
 							<>
 								<div className="flex-1">
-									<label className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Fond de caisse</label>
+									<label htmlFor="opening-amount" className="font-mono text-[11px] tracking-[1.5px] uppercase text-ink-4 block mb-2">Fond de caisse</label>
 									<input
 										type="number"
+									id="opening-amount"
 										className="w-full py-3.5 px-4 border border-ink-2 rounded-[14px] bg-ink text-paper font-display text-lg outline-none focus:ring-2 focus:ring-signal tabular-nums"
 										value={openingAmount}
 										onChange={(e) => setOpeningAmount(Number(e.target.value))}

@@ -4,7 +4,7 @@ import AuthenticationService from "../services/authentification_service";
 import PasswordInput from "../components/password_input";
 
 const Logo = ({ size = 120 }: { size?: number }) => (
-	<svg width={size} height={size} viewBox="0 0 64 64" className="text-paper">
+	<svg width={size} height={size} viewBox="0 0 64 64" className="text-paper" aria-hidden="true">
 		<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
 		<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
 		<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
 			<div className="px-8 py-12 lg:px-14 flex flex-col justify-between gap-12">
 				{/* Wordmark */}
 				<div className="flex items-center gap-3 text-ink">
-					<svg width={36} height={36} viewBox="0 0 64 64">
+					<svg width={36} height={36} viewBox="0 0 64 64" aria-hidden="true">
 						<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
 						<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
 						<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
@@ -117,7 +117,7 @@ const Login: React.FC = () => {
 							</Link>
 						</div>
 
-						{error && <div className="text-signal text-sm font-medium">{error}</div>}
+						{error && <div role="alert" className="text-signal text-sm font-medium">{error}</div>}
 
 						<button
 							type="submit"

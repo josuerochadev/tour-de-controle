@@ -15,7 +15,7 @@ const NAV_ITEMS = [
 ];
 
 const Logo = ({ size = 32 }: { size?: number }) => (
-	<svg width={size} height={size} viewBox="0 0 64 64">
+	<svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
 		<path d="M32 18 L52 8 L52 28 Z" fill="#f59e0b" opacity="0.55" />
 		<path d="M32 18 L12 8 L12 28 Z" fill="#f59e0b" opacity="0.55" />
 		<path d="M24 22 L40 22 L42 56 L22 56 Z" fill="currentColor" />
@@ -50,13 +50,14 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 				</div>
 
 				{/* Nav pills */}
-				<nav className="hidden md:flex gap-1 p-1 bg-paper-2 rounded-full">
+				<nav aria-label="Navigation principale" className="hidden md:flex gap-1 p-1 bg-paper-2 rounded-full">
 					{NAV_ITEMS.map((item) => {
 						const isActive = currentPath.startsWith(item.id);
 						return (
 							<button
 								key={item.id}
 								onClick={() => navigate(item.id)}
+								aria-current={isActive ? "page" : undefined}
 								className={`px-5 py-2.5 rounded-full border-none cursor-pointer font-display text-xs font-semibold tracking-wider uppercase transition-colors duration-200 ${
 									isActive
 										? "bg-ink text-paper"
@@ -99,13 +100,14 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
 			</header>
 
 			{/* Mobile nav */}
-			<nav className="md:hidden flex gap-1 p-2 bg-paper-2 border-b border-sand overflow-x-auto">
+			<nav aria-label="Navigation mobile" className="md:hidden flex gap-1 p-2 bg-paper-2 border-b border-sand overflow-x-auto">
 				{NAV_ITEMS.map((item) => {
 					const isActive = currentPath.startsWith(item.id);
 					return (
 						<button
 							key={item.id}
 							onClick={() => navigate(item.id)}
+							aria-current={isActive ? "page" : undefined}
 							className={`px-4 py-2 rounded-full border-none cursor-pointer font-display text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap ${
 								isActive
 									? "bg-ink text-paper"

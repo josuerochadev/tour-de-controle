@@ -80,7 +80,7 @@ const UsersList: React.FC = () => {
 			<div className="flex justify-between items-center mb-6 gap-4 flex-wrap">
 				<input
 					type="text"
-					placeholder="Rechercher un membre..."
+					placeholder="Rechercher un membre..." aria-label="Rechercher un membre"
 					className="flex-1 min-w-[280px] py-3.5 px-4 border border-sand rounded-[14px] bg-paper-soft font-sans text-base text-ink outline-none focus:ring-2 focus:ring-signal"
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
