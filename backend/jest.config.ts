@@ -5,6 +5,7 @@ module.exports = {
   testMatch: ["**/tests/**/*.test.ts"],
   modulePaths: ["<rootDir>/src"],
   setupFiles: ["<rootDir>/tests/setup.ts"],
+  resetAllMocks: true,
   transform: {
     "^.+\\.ts$": ["ts-jest", { isolatedModules: true }],
   },

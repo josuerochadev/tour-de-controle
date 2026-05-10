@@ -154,7 +154,7 @@ describe("Transaction Endpoints", () => {
               tip: 5,
               id_cash_register: 1,
               id_payment_type: 1,
-              id_user: 1,
+              created_by: 1,
             },
           ],
         })
