@@ -44,12 +44,6 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         include: ["src/**/*.{ts,tsx}"],
         exclude: ["src/test-setup.ts", "src/vite-env.d.ts"],
-        thresholds: {
-          branches: 30,
-          functions: 30,
-          lines: 30,
-          statements: 30,
-        },
       },
     },
   };

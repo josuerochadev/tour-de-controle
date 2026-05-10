@@ -9,10 +9,10 @@ process.env.JWT_SECRET = "test-secret-key";
 
 // Mock Redis to avoid connection attempts during tests
 jest.mock("ioredis", () => {
-	return jest.fn().mockImplementation(() => ({
-		connect: jest.fn().mockRejectedValue(new Error("No Redis in tests")),
-		set: jest.fn(),
-		exists: jest.fn().mockResolvedValue(0),
-		on: jest.fn(),
-	}));
+  return jest.fn().mockImplementation(() => ({
+    connect: jest.fn().mockRejectedValue(new Error("No Redis in tests")),
+    set: jest.fn(),
+    exists: jest.fn().mockResolvedValue(0),
+    on: jest.fn(),
+  }));
 });
