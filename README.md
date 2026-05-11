@@ -10,8 +10,8 @@
 |--------|-------------|
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS |
 | Backend | Express.js, TypeScript, Zod, JWT |
-| Base de données | PostgreSQL 15, Sqitch |
-| Infrastructure | Docker Compose, GitHub Actions, Render |
+| Base de données | PostgreSQL 15 (Neon) |
+| Infrastructure | Docker Compose · Railway · Vercel |
 | Tests | Jest + Supertest · Vitest · Playwright |
 
 ## Fonctionnalités
@@ -35,6 +35,15 @@ tour-de-controle/
 └── conception/     # UML, wireframes, maquettes
 ```
 
+## Demo live
+
+**[tour-de-controle-omega.vercel.app](https://tour-de-controle-omega.vercel.app)**
+
+| Service | URL |
+|---------|-----|
+| Frontend | https://tour-de-controle-omega.vercel.app |
+| Backend API | https://tour-de-controle-production.up.railway.app |
+
 ## Démarrage rapide
 
 ```bash
@@ -56,6 +65,7 @@ Mot de passe : `Password1`
 
 | Rôle | Email |
 |------|-------|
+| Développeur *(admin complet)* | `developpeur@tour-de-controle.com` |
 | Gérant | `gerant@tour-de-controle.com` |
 | Responsable | `responsable@tour-de-controle.com` |
 | Serveur | `serveur@tour-de-controle.com` |
