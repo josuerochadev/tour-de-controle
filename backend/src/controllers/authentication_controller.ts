@@ -52,7 +52,7 @@ export async function login(req: Request, res: Response) {
     .cookie("authenticationToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: COOKIE_MAX_AGE,
     })
     .status(200)
@@ -104,7 +104,11 @@ export async function logout(req: Request, res: Response) {
     await blacklistToken(token);
   }
   actionLog.insert("AUTH", "LOGOUT", req.user?.userId);
-  res.clearCookie("authenticationToken");
+  res.clearCookie("authenticationToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
   return res.status(200).json({ message: "Déconnexion réussie" });
 }
 
